@@ -12,7 +12,7 @@ export interface AutocompleteItem<T> {
 
 export interface AutocompleteSettings<T> {
     input: HTMLInputElement;
-    render?: (text: string, item: T) => HTMLDivElement;
+    render?: (item: AutocompleteItem<T>) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
@@ -83,6 +83,16 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         let prevGroup = "#9?$";
         items.forEach(function(item: AutocompleteItem<T>): void { if (item.group) { grouping = true; }});
 
+        // function for rendering autocomplete suggestions
+        let render = function(item: AutocompleteItem<T>): HTMLDivElement | undefined {
+            let itemElement = doc.createElement("div");
+            itemElement.textContent = item.label;
+            return itemElement;
+        };
+        if (settings.render) {
+            render = settings.render;
+        }
+
         items.forEach(function(item: AutocompleteItem<T>): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
@@ -91,18 +101,19 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
                 groupDiv.textContent = item.group;
                 container.appendChild(groupDiv);
             }
-            let itemElement = doc.createElement("div");
-            itemElement.textContent = item.label;
-            if (item === selected) {
-                itemElement.className = "selected";
+            let div = render(item);
+            if (div) {
+                div.addEventListener("click", function(ev: MouseEvent): void {
+                    settings.itemSelected(item.item, input);
+                    clear();
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                });
+                if (item === selected) {
+                    div.className += " selected";
+                }
+                container.appendChild(div);
             }
-            itemElement.addEventListener("click", function(ev: MouseEvent): void {
-                settings.itemSelected(item.item, input);
-                clear();
-                ev.preventDefault();
-                ev.stopPropagation();
-            });
-            container.appendChild(itemElement);
         });
         if (settings.emptyMsg && items.length < 1) {
             let empty = doc.createElement("div");
