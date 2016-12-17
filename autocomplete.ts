@@ -1,5 +1,5 @@
  /*
-  * https://github.com/kraaden/web-autocomplete
+  * https://github.com/kraaden/autocomplete
   * Copyright (c) 2016 Denys Krasnoshchok
   * MIT License
   */
@@ -17,7 +17,7 @@ export interface AutocompleteSettings<T> {
     className?: string;
     minLength?: number;
     emptyMsg?: string;
-    itemSelected: (item: T, input: HTMLInputElement) => void;
+    onSelect: (item: T, input: HTMLInputElement) => void;
     fetch: (text: string, update: (items: Array<AutocompleteItem<T>>) => void) => void;
 }
 
@@ -116,7 +116,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             let div = render(item);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
-                    settings.itemSelected(item.item, input);
+                    settings.onSelect(item.item, input);
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -270,7 +270,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         if (keyCode === Keys.Enter && selected) {
-            settings.itemSelected(selected.item, input);
+            settings.onSelect(selected.item, input);
             clear();
         }
     }
