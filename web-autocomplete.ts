@@ -169,11 +169,18 @@ export function WebAutocomplete<T>(settings: AutocompleteSettings<T>): Autocompl
     function updateScroll(): void {
         let elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
-            let selected = elements[0] as HTMLDivElement;
-            if (selected.offsetTop < container.scrollTop) {
-                container.scrollTop = selected.offsetTop;
+            let element = elements[0] as HTMLDivElement;
+            
+            // make group visible
+            let previous = element.previousElementSibling as HTMLDivElement;
+            if (previous && previous.className.indexOf("group") !== -1) {
+                element = previous;
+            }
+
+            if (element.offsetTop < container.scrollTop) {
+                container.scrollTop = element.offsetTop;
             } else {
-                let selectBottom = selected.offsetTop + selected.offsetHeight;
+                let selectBottom = element.offsetTop + element.offsetHeight;
                 let containerBottom = container.scrollTop + container.offsetHeight;
                 if (selectBottom > containerBottom) {
                     container.scrollTop += selectBottom - containerBottom;
