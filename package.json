@@ -16,7 +16,7 @@
     "tslint": "^4.1.0",
     "typescript": "^2.1.4"
   },
-  "homepage": "https://github.com/kraaden/web-autocomplete",
+  "homepage": "https://kraaden.github.io/web-autocomplete/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kraaden/web-autocomplete.git"
