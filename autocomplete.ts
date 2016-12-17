@@ -13,6 +13,7 @@ export interface AutocompleteItem<T> {
 export interface AutocompleteSettings<T> {
     input: HTMLInputElement;
     render?: (item: AutocompleteItem<T>) => HTMLDivElement | undefined;
+    renderGroup?: (name: string) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
@@ -93,13 +94,24 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             render = settings.render;
         }
 
+        // function to render autocomplete groups
+        let renderGroup = function(groupName: string): HTMLDivElement | undefined {
+            let groupDiv = doc.createElement("div");
+            groupDiv.textContent = groupName;
+            return groupDiv;
+        };
+        if (settings.renderGroup) {
+            renderGroup = settings.renderGroup;
+        }
+
         items.forEach(function(item: AutocompleteItem<T>): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
-                let groupDiv = doc.createElement("div");
-                groupDiv.className = "group";
-                groupDiv.textContent = item.group;
-                container.appendChild(groupDiv);
+                let groupDiv = renderGroup(item.group);
+                if (groupDiv) {
+                    groupDiv.className += " group";
+                    container.appendChild(groupDiv);
+                }
             }
             let div = render(item);
             if (div) {
