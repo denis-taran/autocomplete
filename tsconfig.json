@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "module": "umd",
+        "target": "es5",
+        "moduleResolution": "node",
+        "noFallthroughCasesInSwitch": true,
+        "newLine": "CRLF",
+        "noImplicitThis": true,
+        "strictNullChecks": true
+    }
+}
