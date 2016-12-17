@@ -1,4 +1,12 @@
 
+## Installation
+
+If you want to use the library in browser, just include the `autocomplete.js` and `autocomplete.css` into your HTML file and use it.
+
+For `node.js`:
+
+    npm install autocompleter
+
 ## Sample
 
     var countries = [
