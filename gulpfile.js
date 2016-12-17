@@ -19,7 +19,7 @@ var template = "(function (root, factory) {\r\n" +
                "    \"use strict\""
 
 gulp.task('default', function () {
-    return gulp.src('./autocomplete.ts')
+    return gulp.src('./web-autocomplete.ts')
         .pipe(ts(tsconfig))
         .pipe(replace(/^(\n|\r|.)+"use strict"/gmi, template))
         .pipe(uglify({
@@ -29,5 +29,5 @@ gulp.task('default', function () {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./autocomplete.ts', ['default']);
+    gulp.watch('./web-autocomplete.ts', ['default']);
 });
