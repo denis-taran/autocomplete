@@ -1,4 +1,24 @@
 
+## Sample
+
+    var countries = [
+        { label: 'United Kingdom', item: 'UK' },
+        { label: 'United States', item: 'US' }
+    ];
+    
+    autocomplete({
+        input: document.getElementById("country"),
+        fetch: function(text, update) {
+            text = text.toLowerCase();
+            var suggestions =
+                countries.filter(n => n.label.toLowerCase().startsWith(text))
+            update(suggestions);
+        },
+        onSelect: function(item) {
+            alert(item); // will display 'US' or 'UK'
+        }
+    });
+
 ## License
 
 Autocomplete is released under the MIT License.

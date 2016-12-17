@@ -2,7 +2,7 @@
 <!doctype html>
 <head>
 	<meta charset="utf-8">
-	<title>Autocomplete</title>
+	<title>Autocomplete - lightweight open-source autocomplete library</title>
 	<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
 	<script src="./autocomplete.js"></script>
 	<link rel="stylesheet" type="text/css" href="./autocomplete.css">
@@ -169,10 +169,6 @@
 			text-shadow: 0 1px 1px rgba(0,0,0,0.4)
 		}
 
-		.boxes > div.box.small > div {
-			font-size: 12px;
-		}
-
 		.box + .box {
 			margin-left: 15px;
 		}
@@ -202,7 +198,7 @@
 			margin-top: 18px;
 		}
 
-		.features {
+		.headline {
 			width: 100%;
 			margin: 60px 0 0 0;
 			padding: 0;
@@ -211,7 +207,39 @@
 			border-bottom: 1px dotted white;
 		}
 
+		.headline.links {
+			margin-top: 30px;
+		}
 
+		.link {
+			color: white;
+			text-decoration: none;
+			font: 15px/30px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+		}
+
+		.link:hover {
+			text-decoration: underline;
+		}
+
+		.link + .link {
+			margin-left: 15px;
+		}
+
+		@media (max-width: 600px) {
+			.headline + .link {
+				margin-top: 10px;
+			}
+
+			.link {
+				width: 100%;
+				display: block;
+				font-size: 14px;
+			}
+
+			.link + .link {
+				margin-left: 0;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -222,7 +250,7 @@
 		<span class="label">Demo</span>
         <input type="text" id="testinput" placeholder="Start typing a country/continent" />
 
-		<div class="features text-shadow">Features</div>
+		<div class="headline text-shadow">Features</div>
 		
 		<div class="boxes">
 			<div class="box">
@@ -243,18 +271,25 @@
 		<div class="boxes">
 			<div class="box">
 				<div>
+					Custom Rendering
+				</div>
+			</div>
+			<div class="box">
+				<div>
 					Made with Typescript
 				</div>
 			</div>
 			<div class="box small">
-				<div>Open Source &amp; MIT Licensed</div>
-			</div>
-			<div class="box">
-				<div>
-					Custom Rendering
-				</div>
+				<div>Open-Source &amp; Free</div>
 			</div>
 		</div>
+
+		<div class="headline links text-shadow"></div>
+
+		<a class="link" href="https://github.com/kraaden/autocomplete">Getting Started</a>
+		<a class="link" href="https://github.com/kraaden/autocomplete">Download</a>
+		<a class="link" href="https://github.com/kraaden/autocomplete/issues">Issue Tracker</a>
+		<a class="link" href="https://www.npmjs.com/package/autocompleter">NPM Package</a>
 
 		
     </div>
