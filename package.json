@@ -1,7 +1,7 @@
 {
   "name": "web-autocomplete",
   "version": "0.1.0",
-  "description": "autocomplete, lightweight, javascript, auto-complete, vanilla, input, ui, complete, ajax, form, component, collapse, dropdown, suggester, fast, tiny, small, typescript",
+  "description": "Very fast and lightweight autocomplete library, no dependencies",
   "main": "web-autocomplete.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,33 @@
     "tslint": "^4.1.0",
     "typescript": "^2.1.4"
   },
-  "homepage": "https://github.com/kraaden/web-autocomplete"
+  "homepage": "https://github.com/kraaden/web-autocomplete",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraaden/web-autocomplete.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kraaden/web-autocomplete/issues"
+  },
+  "keywords": [
+    "autocomplete",
+    "lightweight",
+    "javascript",
+    "auto-complete",
+    "vanilla",
+    "vanilla-js",
+    "input",
+    "ui",
+    "complete",
+    "ajax",
+    "form",
+    "component",
+    "collapse",
+    "dropdown",
+    "suggester",
+    "fast",
+    "tiny",
+    "small",
+    "typescript"
+  ]
 }
