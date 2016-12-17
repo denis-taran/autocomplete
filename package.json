@@ -1,6 +1,6 @@
 {
   "name": "web-autocomplete",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "autocomplete, lightweight, javascript, auto-complete, vanilla, input, ui, complete, ajax, form, component, collapse, dropdown, suggester, fast, tiny, small, typescript",
   "main": "web-autocomplete.js",
   "scripts": {
@@ -15,5 +15,6 @@
     "gulp-uglify": "^2.0.0",
     "tslint": "^4.1.0",
     "typescript": "^2.1.4"
-  }
+  },
+  "homepage": "https://github.com/kraaden/web-autocomplete"
 }
