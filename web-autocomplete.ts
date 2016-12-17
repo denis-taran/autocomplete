@@ -37,7 +37,7 @@ const enum Keys {
     Down = 40
 }
 
-export function Autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
+export function WebAutocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
     let doc = document;
@@ -62,31 +62,28 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     container.className = "autocomplete " + (settings.className || "");
     containerStyle.position = "absolute";
 
-    function esc(ev: KeyboardEvent): void {
-        clear();
-    }
+    /**
+     * Clear autocomplete state and hide container
+     */
 
     function clear(): void {
         keypressCounter++;
         items = [];
         selected = undefined;
-        hideContainer();
-    }
-
-    // remove all elements from container
-    function emptyContainer(): void {
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
-    }
-
-    function hideContainer(): void {
         containerStyle.display = "none";
     }
 
-    // redraw our select box
+    /**
+     * Redraw the autocomplete div element with suggestions
+     */
+
     function update(): void {
-        emptyContainer();
+        
+        // delete all children from autocomplete DOM container
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
         items.forEach(function(item: AutocompleteItem<T>): void {
             let itemElement = doc.createElement("div");
             itemElement.textContent = item.label;
@@ -118,6 +115,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         containerStyle.display = "block";
         updateScroll();
     }
+
+    /**
+     * Event handler for both keyup and focus events
+     */
 
     function keyupOrFocus(ev: KeyboardEvent): void {
         let keyCode = ev.which || ev.keyCode || 0;
@@ -175,6 +176,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
     }
 
+    /**
+     * Select the previous item in suggestions
+     */
+
     function selectPrev(): void {
         if (items.length < 1) {
             selected = undefined;
@@ -192,6 +197,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
     }
 
+    /**
+     * Select the next item in suggestions
+     */
+
     function selectNext(): void {
         if (items.length < 1) {
             selected = undefined;
@@ -207,6 +216,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             }
         }
     }
+
+    /**
+     * keydown keyboard event handler
+     */
 
     function keydown(ev: KeyboardEvent): void {
         let keyCode = ev.which || ev.keyCode || 0;
@@ -226,6 +239,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
     }
 
+    /**
+     * Blur keyboard event handler
+     */
+
     function blur(): void {
         setTimeout(() => {
             if (doc.activeElement !== input) {
@@ -233,6 +250,10 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             }
         }, 100);
     }
+
+    /**
+     * This function will remove DOM elements and clear event handlers
+     */
 
     function destroy(): void {
         input.removeEventListener("keydown", keydown);
@@ -248,6 +269,7 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
     }
 
+    // setup handlers
     input.addEventListener("keydown", keydown);
     input.addEventListener("keyup", keyupOrFocus);
     input.addEventListener("focus", keyupOrFocus);
@@ -257,5 +279,3 @@ export function Autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         destroy
     };
 }
-
-

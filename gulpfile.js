@@ -9,7 +9,7 @@ var tsconfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8')).compilerOpti
 // fix for: https://github.com/Microsoft/TypeScript/issues/8436
 var template = "(function (root, factory) {\r\n" +
                "    if (typeof define === 'function' && define.amd) {\r\n" +
-               "        define('Autocomplete', [], factory);\r\n" +
+               "        define('WebAutocomplete', [], factory);\r\n" +
                "    } else if (typeof exports === 'object') {\r\n" +
                "        module.exports = factory(require, exports);\r\n" +
                "    } else {\r\n" +
