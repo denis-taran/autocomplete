@@ -7,18 +7,12 @@
 export interface AutocompleteItem<T> {
     label: string;
     item: T;
+    group?: string;
 }
-
-export interface AutocompleteGroup<T> {
-    groupName: string;
-    items: Array<AutocompleteItem<T>>;
-}
-
-export type AutocompleteItems<T> = AutocompleteGroup<T> | Array<AutocompleteItem<T>>;
 
 export interface AutocompleteSettings<T> {
     input: HTMLInputElement;
-    render?: (text: string, item: T) => HTMLDivElement; // ???
+    render?: (text: string, item: T) => HTMLDivElement;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
@@ -84,7 +78,19 @@ export function WebAutocomplete<T>(settings: AutocompleteSettings<T>): Autocompl
             container.removeChild(container.firstChild);
         }
 
+        // check if groups are specified
+        let grouping = false;
+        let prevGroup = "#9?$";
+        items.forEach(function(item: AutocompleteItem<T>): void { if (item.group) { grouping = true; }});
+
         items.forEach(function(item: AutocompleteItem<T>): void {
+            if (item.group && item.group !== prevGroup) {
+                prevGroup = item.group;
+                let groupDiv = doc.createElement("div");
+                groupDiv.className = "group";
+                groupDiv.textContent = item.group;
+                container.appendChild(groupDiv);
+            }
             let itemElement = doc.createElement("div");
             itemElement.textContent = item.label;
             if (item === selected) {
@@ -269,7 +275,7 @@ export function WebAutocomplete<T>(settings: AutocompleteSettings<T>): Autocompl
         }
     }
 
-    // setup handlers
+    // setup event handlers
     input.addEventListener("keydown", keydown);
     input.addEventListener("keyup", keyupOrFocus);
     input.addEventListener("focus", keyupOrFocus);

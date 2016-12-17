@@ -8,12 +8,16 @@
     border: 1px solid rgba(50, 50, 50, 0.6);
 }
 
+.autocomplete * {
+    font: inherit;
+}
+
 .autocomplete > div {
     padding: 0 4px;
 }
 
-.autocomplete * {
-    font: inherit;
+.autocomplete .group {
+    background: #eee;
 }
 
 .autocomplete > div:hover,
