@@ -184,7 +184,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             
             // make group visible
             let previous = element.previousElementSibling as HTMLDivElement;
-            if (previous && previous.className.indexOf("group") !== -1) {
+            if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
                 element = previous;
             }
 
