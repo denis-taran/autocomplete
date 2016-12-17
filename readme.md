@@ -1,7 +1,7 @@
 
 ## Installation
 
-If you want to use the library in browser, just include the `autocomplete.js` and `autocomplete.css` into your HTML file and use it.
+If you want to use the library in browser, just include the `autocomplete.js` and `autocomplete.css` into your HTML file.
 
 For `node.js`:
 
@@ -9,29 +9,31 @@ For `node.js`:
 
 ## Sample
 
-    var countries = [
-        { label: 'United Kingdom', item: 'UK' },
-        { label: 'United States', item: 'US' }
-    ];
-    
-    autocomplete({
-        input: document.getElementById("country"),
-        fetch: function(text, update) {
-            text = text.toLowerCase();
-            var suggestions =
-                countries.filter(n => n.label.toLowerCase().startsWith(text))
-            update(suggestions);
-        },
-        onSelect: function(item) {
-            alert(item); // will display 'US' or 'UK'
-        }
-    });
+```javascript
+var countries = [
+    { label: 'United Kingdom', item: 'UK' },
+    { label: 'United States', item: 'US' }
+];
+
+autocomplete({
+    input: document.getElementById("country"),
+    fetch: function(text, update) {
+        text = text.toLowerCase();
+        var suggestions =
+            countries.filter(n => n.label.toLowerCase().startsWith(text))
+        update(suggestions);
+    },
+    onSelect: function(item) {
+        alert(item); // will display 'US' or 'UK'
+    }
+});
+```
 
 ## License
 
 Autocomplete is released under the MIT License.
 
-Copyright (c) 2016 Denys Krasnoshchok
+Copyright (c) 2016 - Denys Krasnoshchok
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
