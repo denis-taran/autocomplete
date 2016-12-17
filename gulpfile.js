@@ -9,7 +9,7 @@ var tsconfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8')).compilerOpti
 // fix for: https://github.com/Microsoft/TypeScript/issues/8436
 var template = "(function (root, factory) {\r\n" +
                "    if (typeof define === 'function' && define.amd) {\r\n" +
-               "        define('WebAutocomplete', [], factory);\r\n" +
+               "        define('autocomplete', [], factory);\r\n" +
                "    } else if (typeof exports === 'object') {\r\n" +
                "        module.exports = factory(require, exports);\r\n" +
                "    } else {\r\n" +
@@ -19,7 +19,7 @@ var template = "(function (root, factory) {\r\n" +
                "    \"use strict\""
 
 gulp.task('default', function () {
-    return gulp.src('./web-autocomplete.ts')
+    return gulp.src('./autocomplete.ts')
         .pipe(ts(tsconfig))
         .pipe(replace(/^(\n|\r|.)+"use strict"/gmi, template))
         .pipe(uglify({
@@ -29,5 +29,5 @@ gulp.task('default', function () {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./web-autocomplete.ts', ['default']);
+    gulp.watch('./autocomplete.ts', ['default']);
 });

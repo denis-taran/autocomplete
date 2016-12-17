@@ -4,8 +4,8 @@
 	<meta charset="utf-8">
 	<title>Autocomplete</title>
 	<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
-	<script src="./web-autocomplete.js"></script>
-	<link rel="stylesheet" type="text/css" href="./web-autocomplete.css">
+	<script src="./autocomplete.js"></script>
+	<link rel="stylesheet" type="text/css" href="./autocomplete.css">
 	<style>
 		html {
 			height: 100%;
@@ -254,7 +254,7 @@
 		var items = countries.map(n => { return { label: n, item: n, group: "Countries" }}).concat(conts);
 		
 
-		WebAutocomplete({
+		autocomplete({
 			input: document.getElementById('testinput'),
 			minLength: 1,
 			itemSelected: (item, inp) => {

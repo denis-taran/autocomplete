@@ -1,7 +1,7 @@
 
 ## License
 
-Web-Autocomplete is released under the MIT License.
+Autocomplete is released under the MIT License.
 
 Copyright (c) 2016 Denys Krasnoshchok
 

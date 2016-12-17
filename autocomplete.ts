@@ -31,7 +31,7 @@ const enum Keys {
     Down = 40
 }
 
-export function WebAutocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
+export function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
     let doc = document;
