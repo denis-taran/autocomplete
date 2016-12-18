@@ -1,4 +1,6 @@
-index.html
 node_modules
+*.tgz
+bower.json
+index.html
 npm-debug.log
 debug.log
