@@ -1,4 +1,8 @@
 
+Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.
+
+Demo: https://kraaden.github.io/autocomplete/
+
 ## Installation
 
 If you want to use the library in browser, just include the `autocomplete.js` and `autocomplete.css` into your HTML file.
@@ -7,7 +11,7 @@ For `node.js`:
 
     npm install autocompleter
 
-## Sample
+## Getting Started
 
 ```javascript
 var countries = [
@@ -19,14 +23,67 @@ autocomplete({
     input: document.getElementById("country"),
     fetch: function(text, update) {
         text = text.toLowerCase();
-        var suggestions =
-            countries.filter(n => n.label.toLowerCase().startsWith(text))
+        // you can also use AJAX requests instead of preloaded data here
+        var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
         update(suggestions);
     },
     onSelect: function(item) {
         alert(item); // will display 'US' or 'UK'
     }
 });
+```
+
+## Options
+
+You can pass the following options to `autocomplete`:
+
+|Parameter|Description|Default|
+|---|---|---|
+|`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|-|
+|`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|-|
+|`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
+|`emptyMsg`|The message that will be showed when there are no suggestions that match the entered value.|`undefined`|
+|`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
+|`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
+|`className`|The autocomplete container will have this class name if specified.|`undefined`|
+|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. All elements must have the following format: `{ label: "text", item: ... }`|-|
+
+### Options sample
+
+```javascript
+autocomplete({
+    onSelect: function(item) {
+        alert(item);
+    },
+    input: document.getElementById('myinput'),
+    minLength: 2,
+    emptyMsg: 'No elements found',
+    render: function(item) {
+        var div = doc.createElement("div");
+        div.textContent = item.label;
+        return div;
+    },
+    renderGroup: function(groupName) {
+        var div = doc.createElement("div");
+        div.textContent = groupName;
+        return div;
+    },
+    className: 'autocomplete-customizations',
+    fetch: function(text, callback) {
+        text = text.toLowerCase();
+        var suggestions = [{ label: "United States", item: "US" }];
+        update(suggestions);
+    }
+});
+```
+
+### Unload autocomplete
+
+You can call `destroy` method on the returned object in order to remove event handlers and DOM elements after usage:
+
+```javascript
+var autocompl = autocomplete({ /* options */ });
+autocompl.destroy();
 ```
 
 ## License
