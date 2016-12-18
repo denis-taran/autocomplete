@@ -23,7 +23,7 @@ autocomplete({
     input: document.getElementById("country"),
     fetch: function(text, update) {
         text = text.toLowerCase();
-        // you can also use AJAX requests instead of preloaded data here
+        // you can also use AJAX requests instead of preloaded data
         var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
         update(suggestions);
     },
@@ -112,6 +112,8 @@ autocomplete({
     }
 });
 ```
+
+[Try online](https://fiddle.jshell.net/0qq5bfv3/)
 
 ## License
 
