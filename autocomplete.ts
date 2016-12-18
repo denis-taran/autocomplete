@@ -144,7 +144,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";
         containerStyle.width = input.offsetWidth + "px";
-        containerStyle.maxHeight = (window.innerHeight - top) + "px";
+        containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
         containerStyle.height = "auto";
         containerStyle.display = "block";
         updateScroll();
