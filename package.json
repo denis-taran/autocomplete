@@ -1,6 +1,6 @@
 {
   "name": "autocompleter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
   "main": "autocomplete.js",
   "scripts": {
