@@ -84,15 +84,6 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         let prevGroup = "#9?$";
         items.forEach(function(item: AutocompleteItem<T>): void { if (item.group) { grouping = true; }});
 
-        // if grouping is used, sort items by group
-        if (grouping) {
-            items = items.sort(function (a: AutocompleteItem<T>, b: AutocompleteItem<T>): number {
-                let first = (a.group || "").toLowerCase();
-                let second = (b.group || "").toLowerCase();
-                return (first < second) ? -1 : (first > second) ? 1 : 0;
-            });
-        }
-
         // function for rendering autocomplete suggestions
         let render = function(item: AutocompleteItem<T>): HTMLDivElement | undefined {
             let itemElement = doc.createElement("div");
@@ -148,7 +139,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             }
         }
         let inputRect = input.getBoundingClientRect();
-        let top = inputRect.top + input.offsetHeight;
+        let top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
         
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";

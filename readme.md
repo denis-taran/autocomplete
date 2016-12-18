@@ -115,6 +115,8 @@ autocomplete({
 
 [Try online](https://fiddle.jshell.net/0qq5bfv3/)
 
+Note: Please make sure that all items are sorted by the group property.
+
 ## License
 
 Autocomplete is released under the MIT License.
