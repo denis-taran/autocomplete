@@ -20,7 +20,7 @@
     background: #eee;
 }
 
-.autocomplete > div:hover,
+.autocomplete > div:hover:not(.group),
 .autocomplete > div.selected {
     background: #81ca91;
     cursor: pointer;
