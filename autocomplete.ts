@@ -127,11 +127,16 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
                 container.appendChild(div);
             }
         });
-        if (settings.emptyMsg && items.length < 1) {
-            let empty = doc.createElement("div");
-            empty.className = "empty";
-            empty.textContent = settings.emptyMsg;
-            container.appendChild(empty);
+        if (items.length < 1) {
+            if (settings.emptyMsg) {
+                let empty = doc.createElement("div");
+                empty.className = "empty";
+                empty.textContent = settings.emptyMsg;
+                container.appendChild(empty);
+            } else {
+                clear();
+                return;
+            }
         }
         let inputRect = input.getBoundingClientRect();
         let top = inputRect.top + input.offsetHeight;

@@ -305,7 +305,7 @@
 		autocomplete({
 			input: document.getElementById('testinput'),
 			minLength: 1,
-			itemSelected: (item, inp) => {
+			onSelect: (item, inp) => {
 				inp.value = item
 			},
 			fetch: function (text, callback) {
