@@ -163,13 +163,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // saved and checked before redraw our autocomplete box.
         let savedKeypressCounter = ++keypressCounter;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Enter) {
-            return;
-        }
-
-        // esc
-        if (keyCode === Keys.Esc) {
-            clear();
+        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Enter || keyCode === Keys.Esc) {
             return;
         }
 
@@ -265,11 +259,16 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     function keydown(ev: KeyboardEvent): void {
         let keyCode = ev.which || ev.keyCode || 0;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Down) {
-            keyCode === Keys.Up
-                ? selectPrev()
-                : selectNext();
-            update();
+        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
+            if (keyCode === Keys.Esc) {
+                clear();
+            } else {
+                keyCode === Keys.Up
+                    ? selectPrev()
+                    : selectNext();
+                update();
+            }
+            
             ev.preventDefault();
             return;
         }
