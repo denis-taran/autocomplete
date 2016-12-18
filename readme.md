@@ -1,5 +1,5 @@
 
-Blazing fast and lightweight autocomplete library without dependencies. Only 1KB gzipped.
+Blazing fast and lightweight autocomplete widget without dependencies. Only 1KB gzipped.
 
 Demo: https://kraaden.github.io/autocomplete/
 
@@ -86,6 +86,31 @@ You can call `destroy` method on the returned object in order to remove event ha
 ```javascript
 var autocompl = autocomplete({ /* options */ });
 autocompl.destroy();
+```
+
+## Grouping suggestions
+
+You can display suggestions separated into one or multiple groups/categories:
+
+```javascript
+var countries = [
+    { label: 'United Kingdom', item: 'UK', group: "North America" },
+    { label: 'United States', item: 'US', group: "North America" },
+    { label: 'Uzbekistan', item: 'UZ', group: "Asia" },
+];
+
+autocomplete({
+    minLength: 1,
+    input: document.getElementById("country"),
+    fetch: function(text, update) {
+        text = text.toLowerCase();
+        var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
+        update(suggestions);
+    },
+    onSelect: function(item) {
+        alert(item);
+    }
+});
 ```
 
 ## License
