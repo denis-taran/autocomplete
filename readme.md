@@ -1,5 +1,5 @@
 
-Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.
+Blazing fast and lightweight autocomplete library without dependencies. Only 1KB gzipped.
 
 Demo: https://kraaden.github.io/autocomplete/
 
@@ -33,6 +33,8 @@ autocomplete({
 });
 ```
 
+[Try online](https://fiddle.jshell.net/Ly58ktfq/)
+
 ## Options
 
 You can pass the following options to `autocomplete`:
@@ -48,7 +50,7 @@ You can pass the following options to `autocomplete`:
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
 |`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. All elements must have the following format: `{ label: "text", item: ... }`|-|
 
-### Options sample
+### Advanced options sample
 
 ```javascript
 autocomplete({
