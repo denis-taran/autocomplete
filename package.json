@@ -1,6 +1,6 @@
 {
   "name": "autocompleter",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
   "main": "autocomplete.js",
   "scripts": {
@@ -24,6 +24,7 @@
   "bugs": {
     "url": "https://github.com/kraaden/autocomplete/issues"
   },
+  "types": "./autocomplete.d.ts",
   "keywords": [
     "autocomplete",
     "autocompleter",
