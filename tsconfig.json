@@ -9,5 +9,8 @@
         "noImplicitThis": true,
         "strictNullChecks": true,
         "declaration": true
-    }
+    },
+    "files": [
+        "autocomplete.ts"
+    ]
 }
