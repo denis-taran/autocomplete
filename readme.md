@@ -11,6 +11,12 @@ For `node.js`:
 
     npm install autocompleter
 
+Then import it into your javascript code:
+
+    import autocomplete from 'autocompleter';
+    // or
+    var autocomplete = require('autocompleter');
+
 ## Getting Started
 
 ```javascript
@@ -50,7 +56,7 @@ You can pass the following options to `autocomplete`:
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
 |`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. All elements must have the following format: `{ label: "text", item: ... }`|-|
 
-### Advanced options sample
+### Sample config using all options
 
 ```javascript
 autocomplete({
