@@ -319,3 +319,5 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         destroy
     };
 }
+
+export default autocomplete;

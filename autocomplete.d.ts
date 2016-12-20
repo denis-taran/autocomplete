@@ -17,3 +17,4 @@ export interface AutocompleteResult {
     destroy: () => void;
 }
 export declare function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult;
+export default autocomplete;
