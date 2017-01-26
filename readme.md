@@ -80,7 +80,7 @@ autocomplete({
     fetch: function(text, callback) {
         text = text.toLowerCase();
         var suggestions = [{ label: "United States", item: "US" }];
-        update(suggestions);
+        callback(suggestions);
     }
 });
 ```
