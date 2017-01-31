@@ -292,14 +292,6 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     }
 
     /**
-     * Window resize event handler
-     */
-
-    function windowResize(): void {
-        update();
-    }
-
-    /**
      * This function will remove DOM elements and clear event handlers
      */
 
@@ -308,7 +300,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         input.removeEventListener("keyup", keyupOrFocus);
         input.removeEventListener("focus", keyupOrFocus);
         input.removeEventListener("blur", blur);
-        window.removeEventListener("resize", windowResize);
+        window.removeEventListener("resize", update);
         clear();
 
         // remove container from DOM
@@ -323,7 +315,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     input.addEventListener("keyup", keyupOrFocus);
     input.addEventListener("focus", keyupOrFocus);
     input.addEventListener("blur", blur);
-    window.addEventListener("resize", windowResize);
+    window.addEventListener("resize", update);
 
     return {
         destroy
