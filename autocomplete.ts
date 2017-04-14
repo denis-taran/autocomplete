@@ -37,18 +37,18 @@ const enum Keys {
 export function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
-    let doc = document;
+    const doc = document;
 
     let input: HTMLInputElement;
-    let container: HTMLDivElement = doc.createElement("div");
-    let containerStyle = container.style;
+    const container: HTMLDivElement = doc.createElement("div");
+    const containerStyle = container.style;
     let items: Array<AutocompleteItem<T>> = [];
-    let minLen = settings.minLength || 2;
+    const minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
     let keypressCounter = 0;
 
     if (!settings.input) {
-        throw "input undefined";
+        throw new Error("input undefined");
     }
 
     input = settings.input;
@@ -94,7 +94,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
 
         // function for rendering autocomplete suggestions
         let render = function(item: AutocompleteItem<T>): HTMLDivElement | undefined {
-            let itemElement = doc.createElement("div");
+            const itemElement = doc.createElement("div");
             itemElement.textContent = item.label;
             return itemElement;
         };
@@ -104,7 +104,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
 
         // function to render autocomplete groups
         let renderGroup = function(groupName: string): HTMLDivElement | undefined {
-            let groupDiv = doc.createElement("div");
+            const groupDiv = doc.createElement("div");
             groupDiv.textContent = groupName;
             return groupDiv;
         };
@@ -115,13 +115,13 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         items.forEach(function(item: AutocompleteItem<T>): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
-                let groupDiv = renderGroup(item.group);
+                const groupDiv = renderGroup(item.group);
                 if (groupDiv) {
                     groupDiv.className += " group";
                     container.appendChild(groupDiv);
                 }
             }
-            let div = render(item);
+            const div = render(item);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
                     settings.onSelect(item.item, input);
@@ -137,7 +137,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         });
         if (items.length < 1) {
             if (settings.emptyMsg) {
-                let empty = doc.createElement("div");
+                const empty = doc.createElement("div");
                 empty.className = "empty";
                 empty.textContent = settings.emptyMsg;
                 container.appendChild(empty);
@@ -146,8 +146,8 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
                 return;
             }
         }
-        let inputRect = input.getBoundingClientRect();
-        let top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
+        const inputRect = input.getBoundingClientRect();
+        const top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
         
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";
@@ -163,13 +163,13 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
      */
 
     function keyupOrFocus(ev: KeyboardEvent): void {
-        let keyCode = ev.which || ev.keyCode || 0;
+        const keyCode = ev.which || ev.keyCode || 0;
 
         // if multiple keys were pressed, before we get update from server,
         // this may cause redrawing our autocomplete multiple times after the last key press.
         // to avoid this, the number of times keyboard was pressed will be
         // saved and checked before redraw our autocomplete box.
-        let savedKeypressCounter = ++keypressCounter;
+        const savedKeypressCounter = ++keypressCounter;
 
         if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left || keyCode === 0) {
             return;
@@ -181,7 +181,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         if (input.value.length >= minLen) {
-            settings.fetch(input.value, function (elements: Array<AutocompleteItem<T>>): void {
+            settings.fetch(input.value, function(elements: Array<AutocompleteItem<T>>): void {
                 if (keypressCounter === savedKeypressCounter && elements) {
                     items = elements;
                     selected = items.length > 0 ? items[0] : undefined;
@@ -198,12 +198,12 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
      */
 
     function updateScroll(): void {
-        let elements = container.getElementsByClassName("selected");
+        const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
             
             // make group visible
-            let previous = element.previousElementSibling as HTMLDivElement;
+            const previous = element.previousElementSibling as HTMLDivElement;
             if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
                 element = previous;
             }
@@ -211,8 +211,8 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             if (element.offsetTop < container.scrollTop) {
                 container.scrollTop = element.offsetTop;
             } else {
-                let selectBottom = element.offsetTop + element.offsetHeight;
-                let containerBottom = container.scrollTop + container.offsetHeight;
+                const selectBottom = element.offsetTop + element.offsetHeight;
+                const containerBottom = container.scrollTop + container.offsetHeight;
                 if (selectBottom > containerBottom) {
                     container.scrollTop += selectBottom - containerBottom;
                 }
@@ -266,7 +266,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
      */
 
     function keydown(ev: KeyboardEvent): void {
-        let keyCode = ev.which || ev.keyCode || 0;
+        const keyCode = ev.which || ev.keyCode || 0;
 
         if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
             const containerIsDisplayed = containerDisplayed();
@@ -323,7 +323,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         clear();
 
         // remove container from DOM
-        let parent = container.parentNode;
+        const parent = container.parentNode;
         if (parent) {
             parent.removeChild(container);
         }
@@ -341,4 +341,5 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     };
 }
 
+// tslint:disable-next-line:no-default-export
 export default autocomplete;
