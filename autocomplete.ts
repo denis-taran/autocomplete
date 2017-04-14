@@ -163,7 +163,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // saved and checked before redraw our autocomplete box.
         let savedKeypressCounter = ++keypressCounter;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Enter || keyCode === Keys.Esc) {
+        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === 0) {
             return;
         }
 
@@ -284,11 +284,12 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
      */
 
     function blur(): void {
+        // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
         setTimeout(() => {
             if (doc.activeElement !== input) {
                 clear();
             }
-        }, 100);
+        }, 200);
     }
 
     /**
