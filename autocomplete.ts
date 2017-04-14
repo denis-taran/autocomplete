@@ -44,14 +44,12 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     let minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
     let keypressCounter = 0;
-    let prevValue: string;
 
     if (!settings.input) {
         throw "input undefined";
     }
 
     input = settings.input;
-    prevValue = input.value;
 
     doc.body.appendChild(container);
     container.className = "autocomplete " + (settings.className || "");
@@ -168,20 +166,16 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         if (input.value.length >= minLen) {
-            if (input.value !== prevValue) {
-                settings.fetch(input.value, function (elements: Array<AutocompleteItem<T>>): void {
-                    if (keypressCounter === savedKeypressCounter && elements) {
-                        items = elements;
-                        selected = items.length > 0 ? items[0] : undefined;
-                        update();
-                    }
-                });
-            }
+            settings.fetch(input.value, function (elements: Array<AutocompleteItem<T>>): void {
+                if (keypressCounter === savedKeypressCounter && elements) {
+                    items = elements;
+                    selected = items.length > 0 ? items[0] : undefined;
+                    update();
+                }
+            });
         } else {
             clear();
         }
-
-        prevValue = input.value;
     }
 
     /**
@@ -260,6 +254,11 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         let keyCode = ev.which || ev.keyCode || 0;
 
         if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
+            ev.preventDefault();
+            if (container.style.display !== "none") {
+                ev.stopPropagation();
+            }
+
             if (keyCode === Keys.Esc) {
                 clear();
             } else {
@@ -268,8 +267,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
                     : selectNext();
                 update();
             }
-            
-            ev.preventDefault();
+
             return;
         }
 
