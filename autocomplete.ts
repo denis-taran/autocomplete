@@ -29,7 +29,9 @@ const enum Keys {
     Enter = 13,
     Esc = 27,
     Up = 38,
-    Down = 40
+    Down = 40,
+    Left = 37,
+    Right = 39
 }
 
 export function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -161,7 +163,12 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // saved and checked before redraw our autocomplete box.
         let savedKeypressCounter = ++keypressCounter;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === 0) {
+        if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left || keyCode === 0) {
+            return;
+        }
+
+        // the down key is used to open autocomplete
+        if (keyCode === Keys.Down && container.style.display !== "none") {
             return;
         }
 
