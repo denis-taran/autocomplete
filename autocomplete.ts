@@ -58,6 +58,14 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     containerStyle.position = "absolute";
 
     /**
+     * Check if container for autocomplete is displayed
+     */
+
+    function containerDisplayed(): boolean {
+        return containerStyle.display !== "none";
+    }
+
+    /**
      * Clear autocomplete state and hide container
      */
 
@@ -168,7 +176,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         // the down key is used to open autocomplete
-        if (keyCode === Keys.Down && container.style.display !== "none") {
+        if (keyCode === Keys.Down && containerDisplayed()) {
             return;
         }
 
@@ -261,18 +269,23 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         let keyCode = ev.which || ev.keyCode || 0;
 
         if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
-            ev.preventDefault();
-            if (container.style.display !== "none") {
-                ev.stopPropagation();
-            }
+            const containerIsDisplayed = containerDisplayed();
 
             if (keyCode === Keys.Esc) {
                 clear();
             } else {
+                if (!containerDisplayed || items.length < 1) {
+                    return;
+                }
                 keyCode === Keys.Up
                     ? selectPrev()
                     : selectNext();
                 update();
+            }
+
+            ev.preventDefault();
+            if (containerIsDisplayed) {
+                ev.stopPropagation();
             }
 
             return;

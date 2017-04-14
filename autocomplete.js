@@ -1,1 +1,287 @@
-!function(e){if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof module&&"undefined"!=typeof module.exports){var t=e();Object.defineProperty(exports,"__esModule",{value:!0}),exports.autocomplete=t,exports.default=t}else window.autocomplete=e()}(function(){"use strict";function e(e){function t(){g++,h=[],u=void 0,v.display="none"}function n(){for(;c.firstChild;)c.removeChild(c.firstChild);var n=!1,o="#9?$";h.forEach(function(e){e.group&&(n=!0)});var r=function(e){var t=p.createElement("div");return t.textContent=e.label,t};e.render&&(r=e.render);var l=function(e){var t=p.createElement("div");return t.textContent=e,t};if(e.renderGroup&&(l=e.renderGroup),h.forEach(function(n){if(n.group&&n.group!==o){o=n.group;var i=l(n.group);i&&(i.className+=" group",c.appendChild(i))}var d=r(n);d&&(d.addEventListener("click",function(o){e.onSelect(n.item,f),t(),o.preventDefault(),o.stopPropagation()}),n===u&&(d.className+=" selected"),c.appendChild(d))}),h.length<1){if(!e.emptyMsg)return void t();var d=p.createElement("div");d.className="empty",d.textContent=e.emptyMsg,c.appendChild(d)}var s=f.getBoundingClientRect(),a=s.top+f.offsetHeight+p.body.scrollTop;v.top=a+"px",v.left=s.left+"px",v.width=f.offsetWidth+"px",v.maxHeight=window.innerHeight-(s.top+f.offsetHeight)+"px",v.height="auto",v.display="block",i()}function o(o){var i=o.which||o.keyCode||0,r=++g;38!==i&&13!==i&&27!==i&&39!==i&&37!==i&&0!==i&&(40===i&&"none"!==c.style.display||(f.value.length>=m?e.fetch(f.value,function(e){g===r&&e&&(h=e,u=h.length>0?h[0]:void 0,n())}):t()))}function i(){var e=c.getElementsByClassName("selected");if(e.length>0){var t=e[0],n=t.previousElementSibling;if(n&&n.className.indexOf("group")!==-1&&!n.previousElementSibling&&(t=n),t.offsetTop<c.scrollTop)c.scrollTop=t.offsetTop;else{var o=t.offsetTop+t.offsetHeight,i=c.scrollTop+c.offsetHeight;o>i&&(c.scrollTop+=o-i)}}}function r(){if(h.length<1)u=void 0;else if(u===h[0])u=h[h.length-1];else for(var e=h.length-1;e>0;e--)if(u===h[e]||1===e){u=h[e-1];break}}function l(){if(h.length<1&&(u=void 0),!u||u===h[h.length-1])return void(u=h[0]);for(var e=0;e<h.length-1;e++)if(u===h[e]){u=h[e+1];break}}function d(o){var i=o.which||o.keyCode||0;return 38===i||40===i||27===i?(o.preventDefault(),"none"!==c.style.display&&o.stopPropagation(),void(27===i?t():(38===i?r():l(),n()))):void(13===i&&u&&(e.onSelect(u.item,f),t()))}function s(){setTimeout(function(){p.activeElement!==f&&t()},200)}function a(){f.removeEventListener("keydown",d),f.removeEventListener("keyup",o),f.removeEventListener("focus",o),f.removeEventListener("blur",s),window.removeEventListener("resize",n),t();var e=c.parentNode;e&&e.removeChild(c)}var f,u,p=document,c=p.createElement("div"),v=c.style,h=[],m=e.minLength||2,g=0;if(!e.input)throw"input undefined";return f=e.input,p.body.appendChild(c),c.className="autocomplete "+(e.className||""),v.position="absolute",f.addEventListener("keydown",d),f.addEventListener("keyup",o),f.addEventListener("focus",o),f.addEventListener("blur",s),window.addEventListener("resize",n),{destroy:a}}return e});
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+        var f = factory();
+        Object.defineProperty(exports, '__esModule', { value: true });
+        exports.autocomplete = f;
+        exports.default = f;
+    } else {
+        window['autocomplete'] = factory();
+    }
+})(function () {
+    "use strict";
+    function autocomplete(settings) {
+        // just an alias to minimize JS file size
+        var doc = document;
+        var input;
+        var container = doc.createElement("div");
+        var containerStyle = container.style;
+        var items = [];
+        var minLen = settings.minLength || 2;
+        var selected;
+        var keypressCounter = 0;
+        if (!settings.input) {
+            throw "input undefined";
+        }
+        input = settings.input;
+        doc.body.appendChild(container);
+        container.className = "autocomplete " + (settings.className || "");
+        containerStyle.position = "absolute";
+        /**
+         * Check if container is displayed
+         */
+        function containerDisplayed() {
+            return containerStyle.display !== "none";
+        }
+        /**
+         * Clear autocomplete state and hide container
+         */
+        function clear() {
+            keypressCounter++;
+            items = [];
+            selected = undefined;
+            containerStyle.display = "none";
+        }
+        /**
+         * Redraw the autocomplete div element with suggestions
+         */
+        function update() {
+            // delete all children from autocomplete DOM container
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            // check if groups are specified
+            var grouping = false;
+            var prevGroup = "#9?$";
+            items.forEach(function (item) { if (item.group) {
+                grouping = true;
+            } });
+            // function for rendering autocomplete suggestions
+            var render = function (item) {
+                var itemElement = doc.createElement("div");
+                itemElement.textContent = item.label;
+                return itemElement;
+            };
+            if (settings.render) {
+                render = settings.render;
+            }
+            // function to render autocomplete groups
+            var renderGroup = function (groupName) {
+                var groupDiv = doc.createElement("div");
+                groupDiv.textContent = groupName;
+                return groupDiv;
+            };
+            if (settings.renderGroup) {
+                renderGroup = settings.renderGroup;
+            }
+            items.forEach(function (item) {
+                if (item.group && item.group !== prevGroup) {
+                    prevGroup = item.group;
+                    var groupDiv = renderGroup(item.group);
+                    if (groupDiv) {
+                        groupDiv.className += " group";
+                        container.appendChild(groupDiv);
+                    }
+                }
+                var div = render(item);
+                if (div) {
+                    div.addEventListener("click", function (ev) {
+                        settings.onSelect(item.item, input);
+                        clear();
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                    });
+                    if (item === selected) {
+                        div.className += " selected";
+                    }
+                    container.appendChild(div);
+                }
+            });
+            if (items.length < 1) {
+                if (settings.emptyMsg) {
+                    var empty = doc.createElement("div");
+                    empty.className = "empty";
+                    empty.textContent = settings.emptyMsg;
+                    container.appendChild(empty);
+                }
+                else {
+                    clear();
+                    return;
+                }
+            }
+            var inputRect = input.getBoundingClientRect();
+            var top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
+            containerStyle.top = top + "px";
+            containerStyle.left = inputRect.left + "px";
+            containerStyle.width = input.offsetWidth + "px";
+            containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
+            containerStyle.height = "auto";
+            containerStyle.display = "block";
+            updateScroll();
+        }
+        /**
+         * Event handler for both keyup and focus events
+         */
+        function keyupOrFocus(ev) {
+            var keyCode = ev.which || ev.keyCode || 0;
+            // if multiple keys were pressed, before we get update from server,
+            // this may cause redrawing our autocomplete multiple times after the last key press.
+            // to avoid this, the number of times keyboard was pressed will be
+            // saved and checked before redraw our autocomplete box.
+            var savedKeypressCounter = ++keypressCounter;
+            if (keyCode === 38 /* Up */ || keyCode === 13 /* Enter */ || keyCode === 27 /* Esc */ || keyCode === 39 /* Right */ || keyCode === 37 /* Left */ || keyCode === 0) {
+                return;
+            }
+            // the down key is used to open autocomplete
+            if (keyCode === 40 /* Down */ && containerDisplayed()) {
+                return;
+            }
+            if (input.value.length >= minLen) {
+                settings.fetch(input.value, function (elements) {
+                    if (keypressCounter === savedKeypressCounter && elements) {
+                        items = elements;
+                        selected = items.length > 0 ? items[0] : undefined;
+                        update();
+                    }
+                });
+            }
+            else {
+                clear();
+            }
+        }
+        /**
+         * Automatically move scroll bar if selected item is not visible
+         */
+        function updateScroll() {
+            var elements = container.getElementsByClassName("selected");
+            if (elements.length > 0) {
+                var element = elements[0];
+                // make group visible
+                var previous = element.previousElementSibling;
+                if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
+                    element = previous;
+                }
+                if (element.offsetTop < container.scrollTop) {
+                    container.scrollTop = element.offsetTop;
+                }
+                else {
+                    var selectBottom = element.offsetTop + element.offsetHeight;
+                    var containerBottom = container.scrollTop + container.offsetHeight;
+                    if (selectBottom > containerBottom) {
+                        container.scrollTop += selectBottom - containerBottom;
+                    }
+                }
+            }
+        }
+        /**
+         * Select the previous item in suggestions
+         */
+        function selectPrev() {
+            if (items.length < 1) {
+                selected = undefined;
+            }
+            else {
+                if (selected === items[0]) {
+                    selected = items[items.length - 1];
+                }
+                else {
+                    for (var i = items.length - 1; i > 0; i--) {
+                        if (selected === items[i] || i === 1) {
+                            selected = items[i - 1];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        /**
+         * Select the next item in suggestions
+         */
+        function selectNext() {
+            if (items.length < 1) {
+                selected = undefined;
+            }
+            if (!selected || selected === items[items.length - 1]) {
+                selected = items[0];
+                return;
+            }
+            for (var i = 0; i < (items.length - 1); i++) {
+                if (selected === items[i]) {
+                    selected = items[i + 1];
+                    break;
+                }
+            }
+        }
+        /**
+         * keydown keyboard event handler
+         */
+        function keydown(ev) {
+            var keyCode = ev.which || ev.keyCode || 0;
+            if (keyCode === 38 /* Up */ || keyCode === 40 /* Down */ || keyCode === 27 /* Esc */) {
+                var containerIsDisplayed = containerDisplayed();
+                if (keyCode === 27 /* Esc */) {
+                    clear();
+                }
+                else {
+                    if (!containerDisplayed || items.length < 1) {
+                        return;
+                    }
+                    keyCode === 38 /* Up */
+                        ? selectPrev()
+                        : selectNext();
+                    console.log("ins. keydown length:" + items.length);
+                    update();
+                }
+                ev.preventDefault();
+                if (containerIsDisplayed) {
+                    ev.stopPropagation();
+                }
+                return;
+            }
+            if (keyCode === 13 /* Enter */ && selected) {
+                settings.onSelect(selected.item, input);
+                clear();
+            }
+        }
+        /**
+         * Blur keyboard event handler
+         */
+        function blur() {
+            // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
+            setTimeout(function () {
+                if (doc.activeElement !== input) {
+                    clear();
+                }
+            }, 200);
+        }
+        /**
+         * This function will remove DOM elements and clear event handlers
+         */
+        function destroy() {
+            input.removeEventListener("keydown", keydown);
+            input.removeEventListener("keyup", keyupOrFocus);
+            input.removeEventListener("focus", keyupOrFocus);
+            input.removeEventListener("blur", blur);
+            window.removeEventListener("resize", update);
+            clear();
+            // remove container from DOM
+            var parent = container.parentNode;
+            if (parent) {
+                parent.removeChild(container);
+            }
+        }
+        // setup event handlers
+        input.addEventListener("keydown", keydown);
+        input.addEventListener("keyup", keyupOrFocus);
+        input.addEventListener("focus", keyupOrFocus);
+        input.addEventListener("blur", blur);
+        window.addEventListener("resize", update);
+        return {
+            destroy: destroy
+        };
+    }
+    return autocomplete;
+    
+    
+});
