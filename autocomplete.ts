@@ -56,6 +56,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     doc.body.appendChild(container);
     container.className = "autocomplete " + (settings.className || "");
     containerStyle.position = "absolute";
+    containerStyle.display = "none";
 
     /**
      * Check if container for autocomplete is displayed
