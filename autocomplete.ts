@@ -172,7 +172,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // saved and checked before redraw our autocomplete box.
         const savedKeypressCounter = ++keypressCounter;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left || keyCode === 0) {
+        if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left) {
             return;
         }
 
