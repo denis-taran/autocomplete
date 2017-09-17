@@ -42,6 +42,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     let input: HTMLInputElement;
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
+    const initiated = new Date().getTime();
     let items: Array<AutocompleteItem<T>> = [];
     const minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
@@ -173,6 +174,11 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         const savedKeypressCounter = ++keypressCounter;
 
         if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left) {
+            return;
+        }
+
+        // do not show autocomplete on initial autofocus / IE only
+        if ((new Date().getTime() - initiated) < 350) {
             return;
         }
 
