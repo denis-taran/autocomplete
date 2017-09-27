@@ -42,7 +42,6 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     let input: HTMLInputElement;
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
-    const initiated = new Date().getTime();
     let items: Array<AutocompleteItem<T>> = [];
     const minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
@@ -161,10 +160,10 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     }
 
     /**
-     * Event handler for both keyup and focus events
+     * Event handler for keyup event
      */
 
-    function keyupOrFocus(ev: KeyboardEvent): void {
+    function keyup(ev: KeyboardEvent): void {
         const keyCode = ev.which || ev.keyCode || 0;
 
         // if multiple keys were pressed, before we get update from server,
@@ -174,11 +173,6 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         const savedKeypressCounter = ++keypressCounter;
 
         if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left) {
-            return;
-        }
-
-        // do not show autocomplete on initial autofocus / IE only
-        if ((new Date().getTime() - initiated) < 350) {
             return;
         }
 
@@ -323,8 +317,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
 
     function destroy(): void {
         input.removeEventListener("keydown", keydown);
-        input.removeEventListener("keyup", keyupOrFocus);
-        input.removeEventListener("focus", keyupOrFocus);
+        input.removeEventListener("keyup", keyup);
         input.removeEventListener("blur", blur);
         window.removeEventListener("resize", update);
         clear();
@@ -338,8 +331,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
 
     // setup event handlers
     input.addEventListener("keydown", keydown);
-    input.addEventListener("keyup", keyupOrFocus);
-    input.addEventListener("focus", keyupOrFocus);
+    input.addEventListener("keyup", keyup);
     input.addEventListener("blur", blur);
     window.addEventListener("resize", update);
 
