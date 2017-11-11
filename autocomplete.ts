@@ -46,6 +46,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     const minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
     let keypressCounter = 0;
+    let unloaded: boolean;
 
     if (!settings.input) {
         throw new Error("input undefined");
@@ -183,7 +184,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
 
         if (input.value.length >= minLen) {
             settings.fetch(input.value, function(elements: Array<AutocompleteItem<T>>): void {
-                if (keypressCounter === savedKeypressCounter && elements) {
+                if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
                     items = elements;
                     selected = items.length > 0 ? items[0] : undefined;
                     update();
@@ -316,6 +317,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
      */
 
     function destroy(): void {
+        unloaded = true;
         input.removeEventListener("keydown", keydown);
         input.removeEventListener("keyup", keyup);
         input.removeEventListener("blur", blur);
