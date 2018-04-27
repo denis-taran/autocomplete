@@ -161,6 +161,17 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     }
 
     /**
+     * Separate resize handler to avoid showing empty message
+     * https://github.com/kraaden/autocomplete/issues/3
+     */
+
+    function resize() {
+        if (containerDisplayed()) {
+            update();
+        }
+    }
+
+    /**
      * Event handler for keyup event
      */
 
@@ -321,7 +332,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         input.removeEventListener("keydown", keydown);
         input.removeEventListener("keyup", keyup);
         input.removeEventListener("blur", blur);
-        window.removeEventListener("resize", update);
+        window.removeEventListener("resize", resize);
         clear();
 
         // remove container from DOM
@@ -335,7 +346,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     input.addEventListener("keydown", keydown);
     input.addEventListener("keyup", keyup);
     input.addEventListener("blur", blur);
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", resize);
 
     return {
         destroy
