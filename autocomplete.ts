@@ -31,7 +31,13 @@ const enum Keys {
     Up = 38,
     Down = 40,
     Left = 37,
-    Right = 39
+    Right = 39,
+    Shift = 16,
+    Ctrl = 17,
+    Alt = 18,
+    CapsLock = 20,
+    WindowsKey = 91,
+    Tab = 9
 }
 
 export function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -184,8 +190,11 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // saved and checked before redraw our autocomplete box.
         const savedKeypressCounter = ++keypressCounter;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Enter || keyCode === Keys.Esc || keyCode === Keys.Right || keyCode === Keys.Left) {
-            return;
+        var ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
+        for (const key of ignore) {
+            if (keyCode === key) {
+                return;
+            }
         }
 
         // the down key is used to open autocomplete
