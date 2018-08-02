@@ -155,16 +155,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             }
         }
         const inputRect = input.getBoundingClientRect();
-
-        // @ts-ignore
-        var strict = ( function () { return !this } ) ()
-
-        if ( strict ) {
-            const top = inputRect.top + input.offsetHeight + doc.documentElement.scrollTop;
-        } else {
-            const top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
-        }
-        
+        const top = inputRect.top + input.offsetHeight + doc.documentElement.scrollTop;
         
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";
@@ -175,15 +166,18 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         updateScroll();
     }
 
-    /**
-     * Separate resize handler to avoid showing empty message
-     * https://github.com/kraaden/autocomplete/issues/3
-     */
-
-    function resize() {
+    function updateIfDisplayed() {
         if (containerDisplayed()) {
             update();
         }
+    }
+
+    function resizeEventHandler() {
+        updateIfDisplayed();
+    }
+
+    function scrollEventHandler() {
+        updateIfDisplayed();
     }
 
     /**
@@ -350,7 +344,8 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         input.removeEventListener("keydown", keydown);
         input.removeEventListener("keyup", keyup);
         input.removeEventListener("blur", blur);
-        window.removeEventListener("resize", resize);
+        window.removeEventListener("resize", resizeEventHandler);
+        document.removeEventListener("scroll", scrollEventHandler, true);
         clear();
 
         // remove container from DOM
@@ -364,7 +359,8 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     input.addEventListener("keydown", keydown);
     input.addEventListener("keyup", keyup);
     input.addEventListener("blur", blur);
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resizeEventHandler);
+    document.addEventListener("scroll", scrollEventHandler, true);
 
     return {
         destroy
