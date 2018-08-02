@@ -155,7 +155,16 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             }
         }
         const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
+
+        // @ts-ignore
+        var strict = ( function () { return !this } ) ()
+
+        if ( strict ) {
+            const top = inputRect.top + input.offsetHeight + doc.documentElement.scrollTop;
+        } else {
+            const top = inputRect.top + input.offsetHeight + doc.body.scrollTop;
+        }
+        
         
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";
