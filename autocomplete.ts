@@ -156,6 +156,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
         const inputRect = input.getBoundingClientRect();
 
+        // @ts-ignore
         var strict = ( function () { return !this } ) ()
 
         if ( strict ) {
