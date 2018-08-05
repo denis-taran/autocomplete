@@ -318,7 +318,7 @@
 			},
 			fetch: function (text, callback) {
 				var match = text.toLowerCase();
-				callback(items.filter(function(n) { return n.label.toLowerCase().indexOf(match) === 0; }));
+				callback(items.filter(function(n) { return n.label.toLowerCase().indexOf(match) !== -1; }));
 			},
 			render: function(item, value) {
 				var itemElement = document.createElement("div");
