@@ -5,8 +5,8 @@ export interface AutocompleteItem<T> {
 }
 export interface AutocompleteSettings<T> {
     input: HTMLInputElement;
-    render?: (item: AutocompleteItem<T>) => HTMLDivElement | undefined;
-    renderGroup?: (name: string) => HTMLDivElement | undefined;
+    render?: (item: AutocompleteItem<T>, currentValue: string) => HTMLDivElement | undefined;
+    renderGroup?: (name: string, currentValue: string) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;

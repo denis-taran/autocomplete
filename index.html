@@ -225,6 +225,10 @@
 			margin-left: 15px;
 		}
 
+		strong {
+			font-weight: bold!important;
+		}
+
 		@media (max-width: 600px) {
 			.headline + .link {
 				margin-top: 10px;
@@ -300,7 +304,11 @@
 		var conts = continents.map(function(n) { return { label: n, item: n, group: "Continents" }});
 
 		var items = countries.map(function (n) { return { label: n, item: n, group: "Countries" }}).concat(conts);
-		
+		var allowedChars = new RegExp(/^[a-zA-Z\s]+$/)
+
+		function charsAllowed(value) {
+			return allowedChars.test(value);
+		}
 
 		autocomplete({
 			input: document.getElementById('testinput'),
@@ -311,6 +319,17 @@
 			fetch: function (text, callback) {
 				var match = text.toLowerCase();
 				callback(items.filter(function(n) { return n.label.toLowerCase().indexOf(match) === 0; }));
+			},
+			render: function(item, value) {
+				var itemElement = document.createElement("div");
+				if (charsAllowed(value)) {
+					var regex = new RegExp(value, 'gi');
+					var inner = item.label.replace(regex, function(match) { return "<strong>" + match + "</strong>" });
+					itemElement.innerHTML = inner;
+				} else {
+					itemElement.textContent = item.label;
+				}
+				return itemElement;
 			},
 			emptyMsg: "No countries found"
 		})

@@ -12,8 +12,8 @@ export interface AutocompleteItem<T> {
 
 export interface AutocompleteSettings<T> {
     input: HTMLInputElement;
-    render?: (item: AutocompleteItem<T>) => HTMLDivElement | undefined;
-    renderGroup?: (name: string) => HTMLDivElement | undefined;
+    render?: (item: AutocompleteItem<T>, currentValue: string) => HTMLDivElement | undefined;
+    renderGroup?: (name: string, currentValue: string) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
@@ -49,6 +49,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
     let items: Array<AutocompleteItem<T>> = [];
+    let inputValue = "";
     const minLen = settings.minLength || 2;
     let selected: AutocompleteItem<T> | undefined;
     let keypressCounter = 0;
@@ -80,6 +81,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     function clear(): void {
         keypressCounter++;
         items = [];
+        inputValue = "";
         selected = undefined;
         containerStyle.display = "none";
     }
@@ -101,7 +103,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         items.forEach(function(item: AutocompleteItem<T>): void { if (item.group) { grouping = true; }});
 
         // function for rendering autocomplete suggestions
-        let render = function(item: AutocompleteItem<T>): HTMLDivElement | undefined {
+        let render = function(item: AutocompleteItem<T>, currentValue: string): HTMLDivElement | undefined {
             const itemElement = doc.createElement("div");
             itemElement.textContent = item.label;
             return itemElement;
@@ -111,7 +113,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         // function to render autocomplete groups
-        let renderGroup = function(groupName: string): HTMLDivElement | undefined {
+        let renderGroup = function(groupName: string, currentValue: string): HTMLDivElement | undefined {
             const groupDiv = doc.createElement("div");
             groupDiv.textContent = groupName;
             return groupDiv;
@@ -123,13 +125,13 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         items.forEach(function(item: AutocompleteItem<T>): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
-                const groupDiv = renderGroup(item.group);
+                const groupDiv = renderGroup(item.group, inputValue);
                 if (groupDiv) {
                     groupDiv.className += " group";
                     container.appendChild(groupDiv);
                 }
             }
-            const div = render(item);
+            const div = render(item, inputValue);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
                     settings.onSelect(item.item, input);
@@ -205,10 +207,13 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             return;
         }
 
-        if (input.value.length >= minLen) {
-            settings.fetch(input.value, function(elements: Array<AutocompleteItem<T>>): void {
+        const val = input.value;
+
+        if (val.length >= minLen) {
+            settings.fetch(val, function(elements: Array<AutocompleteItem<T>>): void {
                 if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
                     items = elements;
+                    inputValue = val;
                     selected = items.length > 0 ? items[0] : undefined;
                     update();
                 }
