@@ -5,7 +5,7 @@
   */
 
 export interface AutocompleteItem {
-    label: string;
+    label?: string;
     group?: string;
 }
 
@@ -104,7 +104,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         // function for rendering autocomplete suggestions
         let render = function(item: T, currentValue: string): HTMLDivElement | undefined {
             const itemElement = doc.createElement("div");
-            itemElement.textContent = item.label;
+            itemElement.textContent = item.label || "";
             return itemElement;
         };
         if (settings.render) {

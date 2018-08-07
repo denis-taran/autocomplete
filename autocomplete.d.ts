@@ -1,5 +1,5 @@
 export interface AutocompleteItem {
-    label: string;
+    label?: string;
     group?: string;
 }
 export interface AutocompleteSettings<T extends AutocompleteItem> {
