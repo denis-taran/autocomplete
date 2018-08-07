@@ -21,8 +21,8 @@ Then import it into your javascript code:
 
 ```javascript
 var countries = [
-    { label: 'United Kingdom', item: 'UK' },
-    { label: 'United States', item: 'US' }
+    { label: 'United Kingdom', value: 'UK' },
+    { label: 'United States', value: 'US' }
 ];
 
 autocomplete({
@@ -34,12 +34,62 @@ autocomplete({
         update(suggestions);
     },
     onSelect: function(item) {
-        alert(item); // will display 'US' or 'UK'
+        alert(item.value); // will display 'US' or 'UK'
     }
 });
 ```
 
-[Try online](https://fiddle.jshell.net/Ly58ktfq/)
+[Try online](http://jsbin.com/yucowediti/1/edit?html,js,output)
+
+## Use with Typescript and Webpack
+
+Simply import the autocompleter in your typescript file:
+
+```javascript
+    import autocomplete from "autocompleter";
+```
+
+and call the `autocomplete` function as showed below:
+
+```javascript
+    autocomplete<Client>({
+        input: document.getElementById("myinputfield"),
+        emptyMsg: "No clients found",
+        minLength: 1,
+        fetch: (text: string, update: (items: Client[]) => void) => {
+	...
+        },
+        onSelect: (client: Client) => {
+	...
+        }
+    });
+```
+
+If your custom class doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
+
+```javascript
+    // this type will prevent typescript warnings
+    type AutocompleteClient = Client & AutocompleteItem;
+
+    autocomplete<AutocompleteClient>({
+        input: document.getElementById("myinputfield"),
+        emptyMsg: "No clients found",
+        minLength: 1,
+        fetch: (text: string, update: (items: Client[]) => void) => {
+	...
+        },
+        onSelect: (client: Client) => {
+	...
+        },
+        render: function(item: Client, currentValue: string): HTMLDivElement | undefined {
+            const itemElement = document.createElement("div");
+            itemElement.textContent = item.FirstName;
+            return itemElement;
+        }
+    });
+```
+
+If your class doesn't have a `label` property, you also have to provide a custom render function.
 
 ## Options
 
@@ -51,27 +101,27 @@ You can pass the following options to `autocomplete`:
 |`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|-|
 |`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
 |`emptyMsg`|The message that will be showed when there are no suggestions that match the entered value.|`undefined`|
-|`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
-|`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
+|`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. The current input field value will be passed as second parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
+|`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. The current input field value will be passed as second parameter. This function must return a `DIV` element or `undefined` to skip rendering.|`undefined`|
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
-|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. All elements must have the following format: `{ label: "text", item: ... }`|-|
+|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter.|-|
 
 ### Sample config using all options
 
 ```javascript
 autocomplete({
     onSelect: function(item) {
-        alert(item);
+        alert(item.value);
     },
     input: document.getElementById('myinput'),
     minLength: 2,
     emptyMsg: 'No elements found',
-    render: function(item) {
+    render: function(item, currentValue) {
         var div = doc.createElement("div");
         div.textContent = item.label;
         return div;
     },
-    renderGroup: function(groupName) {
+    renderGroup: function(groupName, currentValue) {
         var div = doc.createElement("div");
         div.textContent = groupName;
         return div;
@@ -79,7 +129,7 @@ autocomplete({
     className: 'autocomplete-customizations',
     fetch: function(text, callback) {
         text = text.toLowerCase();
-        var suggestions = [{ label: "United States", item: "US" }];
+        var suggestions = [{ label: "United States", value: "US" }];
         callback(suggestions);
     }
 });
@@ -100,9 +150,9 @@ You can display suggestions separated into one or multiple groups/categories:
 
 ```javascript
 var countries = [
-    { label: 'United Kingdom', item: 'UK', group: "North America" },
-    { label: 'United States', item: 'US', group: "North America" },
-    { label: 'Uzbekistan', item: 'UZ', group: "Asia" },
+    { label: 'United Kingdom', value: 'UK', group: "North America" },
+    { label: 'United States', value: 'US', group: "North America" },
+    { label: 'Uzbekistan', value: 'UZ', group: "Asia" },
 ];
 
 autocomplete({
@@ -114,12 +164,12 @@ autocomplete({
         update(suggestions);
     },
     onSelect: function(item) {
-        alert(item);
+        alert(item.value);
     }
 });
 ```
 
-[Try online](https://fiddle.jshell.net/0qq5bfv3/)
+[Try online](http://jsbin.com/sodicopeya/1/edit?html,js,output)
 
 Note: Please make sure that all items are sorted by the group property.
 
