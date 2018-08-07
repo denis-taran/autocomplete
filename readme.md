@@ -39,7 +39,7 @@ autocomplete({
 });
 ```
 
-[Try online](http://jsbin.com/yucowediti/1/edit?html,js,output)
+[Try online](http://jsbin.com/hawehudabi/1/edit?html,js,output)
 
 ## Use with Typescript and Webpack
 
@@ -52,6 +52,7 @@ Simply import the autocompleter in your typescript file:
 and call the `autocomplete` function as showed below:
 
 ```javascript
+    // replace the `Client` class with the class you want to use with autocompleter
     autocomplete<Client>({
         input: document.getElementById("myinputfield"),
         emptyMsg: "No clients found",
@@ -68,6 +69,8 @@ and call the `autocomplete` function as showed below:
 If your custom class doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
 
 ```javascript
+    import autocomplete, { AutocompleteItem } from "autocompleter";
+    
     // this type will prevent typescript warnings
     type AutocompleteClient = Client & AutocompleteItem;
 
