@@ -1,20 +1,19 @@
-export interface AutocompleteItem<T> {
+export interface AutocompleteItem {
     label: string;
-    item: T;
     group?: string;
 }
-export interface AutocompleteSettings<T> {
+export interface AutocompleteSettings<T extends AutocompleteItem> {
     input: HTMLInputElement;
-    render?: (item: AutocompleteItem<T>, currentValue: string) => HTMLDivElement | undefined;
+    render?: (item: T, currentValue: string) => HTMLDivElement | undefined;
     renderGroup?: (name: string, currentValue: string) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: Array<AutocompleteItem<T>>) => void) => void;
+    fetch: (text: string, update: (items: Array<T>) => void) => void;
 }
 export interface AutocompleteResult {
     destroy: () => void;
 }
-export declare function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult;
+export declare function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
 export default autocomplete;

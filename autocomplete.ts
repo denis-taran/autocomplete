@@ -4,21 +4,20 @@
   * MIT License
   */
 
-export interface AutocompleteItem<T> {
+export interface AutocompleteItem {
     label: string;
-    item: T;
     group?: string;
 }
 
-export interface AutocompleteSettings<T> {
+export interface AutocompleteSettings<T extends AutocompleteItem> {
     input: HTMLInputElement;
-    render?: (item: AutocompleteItem<T>, currentValue: string) => HTMLDivElement | undefined;
+    render?: (item: T, currentValue: string) => HTMLDivElement | undefined;
     renderGroup?: (name: string, currentValue: string) => HTMLDivElement | undefined;
     className?: string;
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: Array<AutocompleteItem<T>>) => void) => void;
+    fetch: (text: string, update: (items: Array<T>) => void) => void;
 }
 
 export interface AutocompleteResult {
@@ -40,7 +39,7 @@ const enum Keys {
     Tab = 9
 }
 
-export function autocomplete<T>(settings: AutocompleteSettings<T>): AutocompleteResult {
+export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
     const doc = document;
@@ -48,10 +47,10 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
     let input: HTMLInputElement;
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
-    let items: Array<AutocompleteItem<T>> = [];
+    let items: Array<T> = [];
     let inputValue = "";
     const minLen = settings.minLength || 2;
-    let selected: AutocompleteItem<T> | undefined;
+    let selected: T | undefined;
     let keypressCounter = 0;
     let unloaded: boolean;
 
@@ -100,10 +99,10 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         // check if groups are specified
         let grouping = false;
         let prevGroup = "#9?$";
-        items.forEach(function(item: AutocompleteItem<T>): void { if (item.group) { grouping = true; }});
+        items.forEach(function(item: T): void { if (item.group) { grouping = true; }});
 
         // function for rendering autocomplete suggestions
-        let render = function(item: AutocompleteItem<T>, currentValue: string): HTMLDivElement | undefined {
+        let render = function(item: T, currentValue: string): HTMLDivElement | undefined {
             const itemElement = doc.createElement("div");
             itemElement.textContent = item.label;
             return itemElement;
@@ -122,7 +121,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             renderGroup = settings.renderGroup;
         }
 
-        items.forEach(function(item: AutocompleteItem<T>): void {
+        items.forEach(function(item: T): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
                 const groupDiv = renderGroup(item.group, inputValue);
@@ -134,7 +133,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
             const div = render(item, inputValue);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
-                    settings.onSelect(item.item, input);
+                    settings.onSelect(item, input);
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -210,7 +209,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         const val = input.value;
 
         if (val.length >= minLen) {
-            settings.fetch(val, function(elements: Array<AutocompleteItem<T>>): void {
+            settings.fetch(val, function(elements: Array<T>): void {
                 if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
                     items = elements;
                     inputValue = val;
@@ -322,7 +321,7 @@ export function autocomplete<T>(settings: AutocompleteSettings<T>): Autocomplete
         }
 
         if (keyCode === Keys.Enter && selected) {
-            settings.onSelect(selected.item, input);
+            settings.onSelect(selected, input);
             clear();
         }
     }
