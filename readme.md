@@ -55,12 +55,12 @@ and call the `autocomplete` function as showed below:
     // replace the `Client` class with the class you want to use with autocompleter
     autocomplete<Client>({
         input: document.getElementById("myinputfield"),
-        emptyMsg: "No clients found",
+        emptyMsg: "No items found",
         minLength: 1,
         fetch: (text: string, update: (items: Client[]) => void) => {
 	...
         },
-        onSelect: (client: Client) => {
+        onSelect: (item: Client) => {
 	...
         }
     });
@@ -76,12 +76,12 @@ If your custom class doesn't have the `label` property, you might get a compilat
 
     autocomplete<AutocompleteClient>({
         input: document.getElementById("myinputfield"),
-        emptyMsg: "No clients found",
+        emptyMsg: "No items found",
         minLength: 1,
         fetch: (text: string, update: (items: Client[]) => void) => {
 	...
         },
-        onSelect: (client: Client) => {
+        onSelect: (item: Client) => {
 	...
         },
         render: function(item: Client, currentValue: string): HTMLDivElement | undefined {
