@@ -138,13 +138,14 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
             renderGroup = settings.renderGroup;
         }
 
+        var fragment = doc.createDocumentFragment();
         items.forEach(function(item: T): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
                 const groupDiv = renderGroup(item.group, inputValue);
                 if (groupDiv) {
                     groupDiv.className += " group";
-                    container.appendChild(groupDiv);
+                    fragment.appendChild(groupDiv);
                 }
             }
             const div = render(item, inputValue);
@@ -158,9 +159,10 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
                 if (item === selected) {
                     div.className += " selected";
                 }
-                container.appendChild(div);
+                fragment.appendChild(div);
             }
         });
+        container.appendChild(fragment);
         if (items.length < 1) {
             if (settings.emptyMsg) {
                 const empty = doc.createElement("div");
