@@ -47,6 +47,12 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     let input: HTMLInputElement;
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
+    const userAgent = navigator.userAgent;
+    const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
+    
+    // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
+    const keyUpEventName = mobileFirefox ? "input" : "keyup";
+    
     let items: Array<T> = [];
     let inputValue = "";
     const minLen = settings.minLength || 2;
@@ -376,7 +382,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     function destroy(): void {
         unloaded = true;
         input.removeEventListener("keydown", keydown);
-        input.removeEventListener("keyup", keyup);
+        input.removeEventListener(keyUpEventName, keyup);
         input.removeEventListener("blur", blur);
         window.removeEventListener("resize", resizeEventHandler);
         document.removeEventListener("scroll", scrollEventHandler, true);
@@ -385,7 +391,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
 
     // setup event handlers
     input.addEventListener("keydown", keydown);
-    input.addEventListener("keyup", keyup);
+    input.addEventListener(keyUpEventName, keyup);
     input.addEventListener("blur", blur);
     window.addEventListener("resize", resizeEventHandler);
     document.addEventListener("scroll", scrollEventHandler, true);
