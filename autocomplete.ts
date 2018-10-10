@@ -103,6 +103,22 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     }
 
     /**
+     * Update autocomplete position
+     */
+    function updatePosition() {
+        const inputRect = input.getBoundingClientRect();
+        const top = inputRect.top + input.offsetHeight + (doc.documentElement ? doc.documentElement.scrollTop : 0);
+        
+        containerStyle.top = top + "px";
+        containerStyle.left = inputRect.left + "px";
+        containerStyle.width = input.offsetWidth + "px";
+        containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
+        containerStyle.height = "auto";
+    }
+
+    updatePosition();
+
+    /**
      * Redraw the autocomplete div element with suggestions
      */
 
@@ -176,14 +192,8 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         }
 
         attach();
-        const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + (doc.documentElement ? doc.documentElement.scrollTop : 0);
-        
-        containerStyle.top = top + "px";
-        containerStyle.left = inputRect.left + "px";
-        containerStyle.width = input.offsetWidth + "px";
-        containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
-        containerStyle.height = "auto";
+        updatePosition();
+
         updateScroll();
     }
 
