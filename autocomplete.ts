@@ -60,17 +60,34 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
 
     input = settings.input;
 
-    doc.body.appendChild(container);
     container.className = "autocomplete " + (settings.className || "");
     containerStyle.position = "absolute";
-    containerStyle.display = "none";
+
+    /**
+     * Detach the container from DOM
+     */
+    function detach() {
+        const parent = container.parentNode;
+        if (parent) {
+            parent.removeChild(container);
+        }
+    }
+
+    /**
+     * Attach the container to DOM
+     */
+    function attach() {
+        if (!container.parentNode) {
+            doc.body.appendChild(container);
+        }
+    }
 
     /**
      * Check if container for autocomplete is displayed
      */
 
     function containerDisplayed(): boolean {
-        return containerStyle.display !== "none";
+        return !!container.parentNode;
     }
 
     /**
@@ -82,7 +99,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         items = [];
         inputValue = "";
         selected = undefined;
-        containerStyle.display = "none";
+        detach();
     }
 
     /**
@@ -155,15 +172,16 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
                 return;
             }
         }
+
+        attach();
         const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + doc.documentElement.scrollTop;
+        const top = inputRect.top + input.offsetHeight + (doc.documentElement ? doc.documentElement.scrollTop : 0);
         
         containerStyle.top = top + "px";
         containerStyle.left = inputRect.left + "px";
         containerStyle.width = input.offsetWidth + "px";
         containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
         containerStyle.height = "auto";
-        containerStyle.display = "block";
         updateScroll();
     }
 
@@ -351,12 +369,6 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         window.removeEventListener("resize", resizeEventHandler);
         document.removeEventListener("scroll", scrollEventHandler, true);
         clear();
-
-        // remove container from DOM
-        const parent = container.parentNode;
-        if (parent) {
-            parent.removeChild(container);
-        }
     }
 
     // setup event handlers
