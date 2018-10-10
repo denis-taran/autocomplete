@@ -112,13 +112,20 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
      * Update autocomplete position
      */
     function updatePosition() {
+        const docEl = doc.documentElement as HTMLElement;
+        const clientTop = docEl.clientTop || doc.body.clientTop || 0;
+        const clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
+        const scrollTop = window.pageYOffset || docEl.scrollTop;
+        const scrollLeft = window.pageXOffset || docEl.scrollLeft;
+
         const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + (doc.documentElement ? doc.documentElement.scrollTop : 0);
+        const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+        const left = inputRect.left + scrollLeft - clientLeft;
         
         containerStyle.top = top + "px";
-        containerStyle.left = inputRect.left + "px";
+        containerStyle.left = left + "px";
         containerStyle.width = input.offsetWidth + "px";
-        containerStyle.maxHeight = (window.innerHeight - (inputRect.top + input.offsetHeight)) + "px";
+        containerStyle.maxHeight = (window.innerHeight - top) + "px";
         containerStyle.height = "auto";
     }
 
