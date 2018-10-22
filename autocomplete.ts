@@ -18,6 +18,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
     fetch: (text: string, update: (items: Array<T>) => void) => void;
+    debounceWaitMs: number | undefined;
 }
 
 export interface AutocompleteResult {
@@ -49,6 +50,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
+    const debounceWaitMs = settings.debounceWaitMs || 0;
     
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
@@ -59,6 +61,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     let selected: T | undefined;
     let keypressCounter = 0;
     let unloaded: boolean;
+    let debounceTimer : number | undefined;
 
     if (!settings.input) {
         throw new Error("input undefined");
@@ -76,6 +79,15 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         const parent = container.parentNode;
         if (parent) {
             parent.removeChild(container);
+        }
+    }
+
+    /**
+     * Clear debouncing timer if assigned
+     */
+    function clearDebounceTimer() {
+        if (debounceTimer) {
+            window.clearTimeout(debounceTimer);
         }
     }
 
@@ -252,14 +264,17 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         const val = input.value;
 
         if (val.length >= minLen) {
-            settings.fetch(val, function(elements: Array<T>): void {
-                if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
-                    items = elements;
-                    inputValue = val;
-                    selected = items.length > 0 ? items[0] : undefined;
-                    update();
-                }
-            });
+            clearDebounceTimer();
+            debounceTimer = window.setTimeout(function() {
+                settings.fetch(val, function(elements: Array<T>): void {
+                    if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
+                        items = elements;
+                        inputValue = val;
+                        selected = items.length > 0 ? items[0] : undefined;
+                        update();
+                    }
+                });
+            }, debounceWaitMs);
         } else {
             clear();
         }
@@ -393,6 +408,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         input.removeEventListener("blur", blur);
         window.removeEventListener("resize", resizeEventHandler);
         document.removeEventListener("scroll", scrollEventHandler, true);
+        clearDebounceTimer();
         clear();
     }
 

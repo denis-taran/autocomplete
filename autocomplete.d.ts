@@ -11,6 +11,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
     fetch: (text: string, update: (items: Array<T>) => void) => void;
+    debounceWaitMs: number | undefined;
 }
 export interface AutocompleteResult {
     destroy: () => void;

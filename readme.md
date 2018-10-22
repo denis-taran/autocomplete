@@ -100,14 +100,15 @@ You can pass the following options to `autocomplete`:
 
 |Parameter|Description|Default|
 |---|---|---|
-|`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|-|
-|`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|-|
+|`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|`-`|
+|`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|`-`|
 |`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
 |`emptyMsg`|The message that will be showed when there are no suggestions that match the entered value.|`undefined`|
 |`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. The current input field value will be passed as second parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
 |`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. The current input field value will be passed as second parameter. This function must return a `DIV` element or `undefined` to skip rendering.|`undefined`|
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
-|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter.|-|
+|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter.|`-`|
+|`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
 
 ### Sample config using all options
 
@@ -134,7 +135,8 @@ autocomplete({
         text = text.toLowerCase();
         var suggestions = [{ label: "United States", value: "US" }];
         callback(suggestions);
-    }
+    },
+    debounceWaitMs: 200
 });
 ```
 
