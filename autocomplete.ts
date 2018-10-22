@@ -407,7 +407,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         input.removeEventListener(keyUpEventName, keyup);
         input.removeEventListener("blur", blur);
         window.removeEventListener("resize", resizeEventHandler);
-        document.removeEventListener("scroll", scrollEventHandler, true);
+        doc.removeEventListener("scroll", scrollEventHandler, true);
         clearDebounceTimer();
         clear();
     }
@@ -417,7 +417,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     input.addEventListener(keyUpEventName, keyup);
     input.addEventListener("blur", blur);
     window.addEventListener("resize", resizeEventHandler);
-    document.addEventListener("scroll", scrollEventHandler, true);
+    doc.addEventListener("scroll", scrollEventHandler, true);
 
     return {
         destroy
