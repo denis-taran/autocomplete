@@ -17,7 +17,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: Array<T>) => void) => void;
+    fetch: (text: string, update: (items: T[]) => void) => void;
     debounceWaitMs: number | undefined;
 }
 
@@ -55,7 +55,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
     
-    let items: Array<T> = [];
+    let items: T[] = [];
     let inputValue = "";
     const minLen = settings.minLength || 2;
     let selected: T | undefined;
@@ -75,7 +75,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     /**
      * Detach the container from DOM
      */
-    function detach() {
+    function detach(): void {
         const parent = container.parentNode;
         if (parent) {
             parent.removeChild(container);
@@ -85,7 +85,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     /**
      * Clear debouncing timer if assigned
      */
-    function clearDebounceTimer() {
+    function clearDebounceTimer(): void {
         if (debounceTimer) {
             window.clearTimeout(debounceTimer);
         }
@@ -94,7 +94,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     /**
      * Attach the container to DOM
      */
-    function attach() {
+    function attach(): void {
         if (!container.parentNode) {
             doc.body.appendChild(container);
         }
@@ -123,7 +123,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     /**
      * Update autocomplete position
      */
-    function updatePosition() {
+    function updatePosition(): void {
         const docEl = doc.documentElement as HTMLElement;
         const clientTop = docEl.clientTop || doc.body.clientTop || 0;
         const clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
@@ -179,7 +179,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
             renderGroup = settings.renderGroup;
         }
 
-        var fragment = doc.createDocumentFragment();
+        const fragment = doc.createDocumentFragment();
         items.forEach(function(item: T): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
@@ -222,17 +222,17 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         updateScroll();
     }
 
-    function updateIfDisplayed() {
+    function updateIfDisplayed(): void {
         if (containerDisplayed()) {
             update();
         }
     }
 
-    function resizeEventHandler() {
+    function resizeEventHandler(): void {
         updateIfDisplayed();
     }
 
-    function scrollEventHandler() {
+    function scrollEventHandler(): void {
         updateIfDisplayed();
     }
 
@@ -249,7 +249,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
         // saved and checked before redraw our autocomplete box.
         const savedKeypressCounter = ++keypressCounter;
 
-        var ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
+        const ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
         for (const key of ignore) {
             if (keyCode === key) {
                 return;
@@ -265,8 +265,8 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
 
         if (val.length >= minLen) {
             clearDebounceTimer();
-            debounceTimer = window.setTimeout(function() {
-                settings.fetch(val, function(elements: Array<T>): void {
+            debounceTimer = window.setTimeout(function(): void {
+                settings.fetch(val, function(elements: T[]): void {
                     if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
                         items = elements;
                         inputValue = val;
