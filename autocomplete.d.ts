@@ -10,11 +10,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: Array<T>) => void) => void;
+    fetch: (text: string, update: (items: T[]) => void) => void;
     debounceWaitMs: number | undefined;
 }
 export interface AutocompleteResult {
     destroy: () => void;
 }
-export declare function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
+declare function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
 export default autocomplete;

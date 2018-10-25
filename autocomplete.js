@@ -1,1 +1,346 @@
-!function(e){if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof module&&void 0!==module.exports){var t=e();Object.defineProperty(exports,"__esModule",{value:!0}),exports.autocomplete=t,exports.default=t}else window.autocomplete=e()}(function(){"use strict";function e(e){function t(){var e=L.parentNode;e&&e.removeChild(L)}function n(){x&&window.clearTimeout(x)}function o(){L.parentNode||C.body.appendChild(L)}function i(){return!!L.parentNode}function r(){D++,H=[],M="",E=void 0,t()}function f(){var e=C.documentElement,t=e.clientTop||C.body.clientTop||0,n=e.clientLeft||C.body.clientLeft||0,o=window.pageYOffset||e.scrollTop,i=window.pageXOffset||e.scrollLeft,r=w.getBoundingClientRect(),f=r.top+w.offsetHeight+o-t,l=r.left+i-n;b.top=f+"px",b.left=l+"px",b.width=w.offsetWidth+"px",b.maxHeight=window.innerHeight-f+"px",b.height="auto"}function l(){for(;L.firstChild;)L.removeChild(L.firstChild);var t=!1,n="#9?$";H.forEach(function(e){e.group&&(t=!0)});var i=function(e,t){var n=C.createElement("div");return n.textContent=e.label||"",n};e.render&&(i=e.render);var l=function(e,t){var n=C.createElement("div");return n.textContent=e,n};e.renderGroup&&(l=e.renderGroup);var d=C.createDocumentFragment();if(H.forEach(function(t){if(t.group&&t.group!==n){n=t.group;var o=l(t.group,M);o&&(o.className+=" group",d.appendChild(o))}var f=i(t,M);f&&(f.addEventListener("click",function(n){e.onSelect(t,w),r(),n.preventDefault(),n.stopPropagation()}),t===E&&(f.className+=" selected"),d.appendChild(f))}),L.appendChild(d),H.length<1){if(!e.emptyMsg)return void r();var a=C.createElement("div");a.className="empty",a.textContent=e.emptyMsg,L.appendChild(a)}o(),f(),c()}function d(){i()&&l()}function a(){d()}function u(){d()}function s(t){for(var o=t.which||t.keyCode||0,f=++D,d=[38,13,27,39,37,16,17,18,20,91,9],a=0,u=d;a<u.length;a++){if(o===u[a])return}if(40!==o||!i()){var s=w.value;s.length>=S?(n(),x=window.setTimeout(function(){e.fetch(s,function(e){D===f&&e&&!y&&(H=e,M=s,E=H.length>0?H[0]:void 0,l())})},k)):r()}}function c(){var e=L.getElementsByClassName("selected");if(e.length>0){var t=e[0],n=t.previousElementSibling;if(n&&-1!==n.className.indexOf("group")&&!n.previousElementSibling&&(t=n),t.offsetTop<L.scrollTop)L.scrollTop=t.offsetTop;else{var o=t.offsetTop+t.offsetHeight,i=L.scrollTop+L.offsetHeight;o>i&&(L.scrollTop+=o-i)}}}function p(){if(H.length<1)E=void 0;else if(E===H[0])E=H[H.length-1];else for(var e=H.length-1;e>0;e--)if(E===H[e]||1===e){E=H[e-1];break}}function v(){if(H.length<1&&(E=void 0),!E||E===H[H.length-1])return void(E=H[0]);for(var e=0;e<H.length-1;e++)if(E===H[e]){E=H[e+1];break}}function m(t){var n=t.which||t.keyCode||0;if(38===n||40===n||27===n){var o=i();if(27===n)r();else{if(!i||H.length<1)return;38===n?p():v(),l()}return t.preventDefault(),void(o&&t.stopPropagation())}13===n&&E&&(e.onSelect(E,w),r())}function g(){setTimeout(function(){C.activeElement!==w&&r()},200)}function h(){y=!0,w.removeEventListener("keydown",m),w.removeEventListener(O,s),w.removeEventListener("blur",g),window.removeEventListener("resize",a),C.removeEventListener("scroll",u,!0),n(),r()}var w,E,y,x,C=document,L=C.createElement("div"),b=L.style,T=navigator.userAgent,N=-1!==T.indexOf("Firefox")&&-1!==T.indexOf("Mobile"),k=e.debounceWaitMs||0,O=N?"input":"keyup",H=[],M="",S=e.minLength||2,D=0;if(!e.input)throw new Error("input undefined");return w=e.input,L.className="autocomplete "+(e.className||""),b.position="absolute",f(),w.addEventListener("keydown",m),w.addEventListener(O,s),w.addEventListener("blur",g),window.addEventListener("resize",a),C.addEventListener("scroll",u,!0),{destroy:h}}return e});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.autocomplete = factory());
+}(this, (function () { 'use strict';
+
+  /*
+   * https://github.com/kraaden/autocomplete
+   * Copyright (c) 2016 Denys Krasnoshchok
+   * MIT License
+   */
+  function autocomplete(settings) {
+      // just an alias to minimize JS file size
+      var doc = document;
+      var input;
+      var container = doc.createElement("div");
+      var containerStyle = container.style;
+      var userAgent = navigator.userAgent;
+      var mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
+      var debounceWaitMs = settings.debounceWaitMs || 0;
+      // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
+      var keyUpEventName = mobileFirefox ? "input" : "keyup";
+      var items = [];
+      var inputValue = "";
+      var minLen = settings.minLength || 2;
+      var selected;
+      var keypressCounter = 0;
+      var unloaded;
+      var debounceTimer;
+      if (!settings.input) {
+          throw new Error("input undefined");
+      }
+      input = settings.input;
+      container.className = "autocomplete " + (settings.className || "");
+      containerStyle.position = "absolute";
+      /**
+       * Detach the container from DOM
+       */
+      function detach() {
+          var parent = container.parentNode;
+          if (parent) {
+              parent.removeChild(container);
+          }
+      }
+      /**
+       * Clear debouncing timer if assigned
+       */
+      function clearDebounceTimer() {
+          if (debounceTimer) {
+              window.clearTimeout(debounceTimer);
+          }
+      }
+      /**
+       * Attach the container to DOM
+       */
+      function attach() {
+          if (!container.parentNode) {
+              doc.body.appendChild(container);
+          }
+      }
+      /**
+       * Check if container for autocomplete is displayed
+       */
+      function containerDisplayed() {
+          return !!container.parentNode;
+      }
+      /**
+       * Clear autocomplete state and hide container
+       */
+      function clear() {
+          keypressCounter++;
+          items = [];
+          inputValue = "";
+          selected = undefined;
+          detach();
+      }
+      /**
+       * Update autocomplete position
+       */
+      function updatePosition() {
+          var docEl = doc.documentElement;
+          var clientTop = docEl.clientTop || doc.body.clientTop || 0;
+          var clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
+          var scrollTop = window.pageYOffset || docEl.scrollTop;
+          var scrollLeft = window.pageXOffset || docEl.scrollLeft;
+          var inputRect = input.getBoundingClientRect();
+          var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+          var left = inputRect.left + scrollLeft - clientLeft;
+          containerStyle.top = top + "px";
+          containerStyle.left = left + "px";
+          containerStyle.width = input.offsetWidth + "px";
+          containerStyle.maxHeight = (window.innerHeight - top) + "px";
+          containerStyle.height = "auto";
+      }
+      updatePosition();
+      /**
+       * Redraw the autocomplete div element with suggestions
+       */
+      function update() {
+          // delete all children from autocomplete DOM container
+          while (container.firstChild) {
+              container.removeChild(container.firstChild);
+          }
+          var prevGroup = "#9?$";
+          items.forEach(function (item) { if (item.group) ; });
+          // function for rendering autocomplete suggestions
+          var render = function (item, currentValue) {
+              var itemElement = doc.createElement("div");
+              itemElement.textContent = item.label || "";
+              return itemElement;
+          };
+          if (settings.render) {
+              render = settings.render;
+          }
+          // function to render autocomplete groups
+          var renderGroup = function (groupName, currentValue) {
+              var groupDiv = doc.createElement("div");
+              groupDiv.textContent = groupName;
+              return groupDiv;
+          };
+          if (settings.renderGroup) {
+              renderGroup = settings.renderGroup;
+          }
+          var fragment = doc.createDocumentFragment();
+          items.forEach(function (item) {
+              if (item.group && item.group !== prevGroup) {
+                  prevGroup = item.group;
+                  var groupDiv = renderGroup(item.group, inputValue);
+                  if (groupDiv) {
+                      groupDiv.className += " group";
+                      fragment.appendChild(groupDiv);
+                  }
+              }
+              var div = render(item, inputValue);
+              if (div) {
+                  div.addEventListener("click", function (ev) {
+                      settings.onSelect(item, input);
+                      clear();
+                      ev.preventDefault();
+                      ev.stopPropagation();
+                  });
+                  if (item === selected) {
+                      div.className += " selected";
+                  }
+                  fragment.appendChild(div);
+              }
+          });
+          container.appendChild(fragment);
+          if (items.length < 1) {
+              if (settings.emptyMsg) {
+                  var empty = doc.createElement("div");
+                  empty.className = "empty";
+                  empty.textContent = settings.emptyMsg;
+                  container.appendChild(empty);
+              }
+              else {
+                  clear();
+                  return;
+              }
+          }
+          attach();
+          updatePosition();
+          updateScroll();
+      }
+      function updateIfDisplayed() {
+          if (containerDisplayed()) {
+              update();
+          }
+      }
+      function resizeEventHandler() {
+          updateIfDisplayed();
+      }
+      function scrollEventHandler() {
+          updateIfDisplayed();
+      }
+      /**
+       * Event handler for keyup event
+       */
+      function keyup(ev) {
+          var keyCode = ev.which || ev.keyCode || 0;
+          // if multiple keys were pressed, before we get update from server,
+          // this may cause redrawing our autocomplete multiple times after the last key press.
+          // to avoid this, the number of times keyboard was pressed will be
+          // saved and checked before redraw our autocomplete box.
+          var savedKeypressCounter = ++keypressCounter;
+          var ignore = [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
+          for (var _i = 0, ignore_1 = ignore; _i < ignore_1.length; _i++) {
+              var key = ignore_1[_i];
+              if (keyCode === key) {
+                  return;
+              }
+          }
+          // the down key is used to open autocomplete
+          if (keyCode === 40 /* Down */ && containerDisplayed()) {
+              return;
+          }
+          var val = input.value;
+          if (val.length >= minLen) {
+              clearDebounceTimer();
+              debounceTimer = window.setTimeout(function () {
+                  settings.fetch(val, function (elements) {
+                      if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
+                          items = elements;
+                          inputValue = val;
+                          selected = items.length > 0 ? items[0] : undefined;
+                          update();
+                      }
+                  });
+              }, debounceWaitMs);
+          }
+          else {
+              clear();
+          }
+      }
+      /**
+       * Automatically move scroll bar if selected item is not visible
+       */
+      function updateScroll() {
+          var elements = container.getElementsByClassName("selected");
+          if (elements.length > 0) {
+              var element = elements[0];
+              // make group visible
+              var previous = element.previousElementSibling;
+              if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
+                  element = previous;
+              }
+              if (element.offsetTop < container.scrollTop) {
+                  container.scrollTop = element.offsetTop;
+              }
+              else {
+                  var selectBottom = element.offsetTop + element.offsetHeight;
+                  var containerBottom = container.scrollTop + container.offsetHeight;
+                  if (selectBottom > containerBottom) {
+                      container.scrollTop += selectBottom - containerBottom;
+                  }
+              }
+          }
+      }
+      /**
+       * Select the previous item in suggestions
+       */
+      function selectPrev() {
+          if (items.length < 1) {
+              selected = undefined;
+          }
+          else {
+              if (selected === items[0]) {
+                  selected = items[items.length - 1];
+              }
+              else {
+                  for (var i = items.length - 1; i > 0; i--) {
+                      if (selected === items[i] || i === 1) {
+                          selected = items[i - 1];
+                          break;
+                      }
+                  }
+              }
+          }
+      }
+      /**
+       * Select the next item in suggestions
+       */
+      function selectNext() {
+          if (items.length < 1) {
+              selected = undefined;
+          }
+          if (!selected || selected === items[items.length - 1]) {
+              selected = items[0];
+              return;
+          }
+          for (var i = 0; i < (items.length - 1); i++) {
+              if (selected === items[i]) {
+                  selected = items[i + 1];
+                  break;
+              }
+          }
+      }
+      /**
+       * keydown keyboard event handler
+       */
+      function keydown(ev) {
+          var keyCode = ev.which || ev.keyCode || 0;
+          if (keyCode === 38 /* Up */ || keyCode === 40 /* Down */ || keyCode === 27 /* Esc */) {
+              var containerIsDisplayed = containerDisplayed();
+              if (keyCode === 27 /* Esc */) {
+                  clear();
+              }
+              else {
+                  if (!containerDisplayed || items.length < 1) {
+                      return;
+                  }
+                  keyCode === 38 /* Up */
+                      ? selectPrev()
+                      : selectNext();
+                  update();
+              }
+              ev.preventDefault();
+              if (containerIsDisplayed) {
+                  ev.stopPropagation();
+              }
+              return;
+          }
+          if (keyCode === 13 /* Enter */ && selected) {
+              settings.onSelect(selected, input);
+              clear();
+          }
+      }
+      /**
+       * Blur keyboard event handler
+       */
+      function blur() {
+          // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
+          setTimeout(function () {
+              if (doc.activeElement !== input) {
+                  clear();
+              }
+          }, 200);
+      }
+      /**
+       * This function will remove DOM elements and clear event handlers
+       */
+      function destroy() {
+          unloaded = true;
+          input.removeEventListener("keydown", keydown);
+          input.removeEventListener(keyUpEventName, keyup);
+          input.removeEventListener("blur", blur);
+          window.removeEventListener("resize", resizeEventHandler);
+          doc.removeEventListener("scroll", scrollEventHandler, true);
+          clearDebounceTimer();
+          clear();
+      }
+      // setup event handlers
+      input.addEventListener("keydown", keydown);
+      input.addEventListener(keyUpEventName, keyup);
+      input.addEventListener("blur", blur);
+      window.addEventListener("resize", resizeEventHandler);
+      doc.addEventListener("scroll", scrollEventHandler, true);
+      return {
+          destroy: destroy
+      };
+  }
+
+  return autocomplete;
+
+})));
+//# sourceMappingURL=autocomplete.js.map

@@ -40,7 +40,7 @@ const enum Keys {
     Tab = 9
 }
 
-export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
+function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
     const doc = document;
@@ -404,7 +404,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
     function destroy(): void {
         unloaded = true;
         input.removeEventListener("keydown", keydown);
-        input.removeEventListener(keyUpEventName, keyup);
+        input.removeEventListener(keyUpEventName, keyup as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blur);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
@@ -414,7 +414,7 @@ export function autocomplete<T extends AutocompleteItem>(settings: AutocompleteS
 
     // setup event handlers
     input.addEventListener("keydown", keydown);
-    input.addEventListener(keyUpEventName, keyup);
+    input.addEventListener(keyUpEventName, keyup as EventListenerOrEventListenerObject);
     input.addEventListener("blur", blur);
     window.addEventListener("resize", resizeEventHandler);
     doc.addEventListener("scroll", scrollEventHandler, true);
