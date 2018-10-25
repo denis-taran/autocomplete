@@ -5,3 +5,5 @@ index.html
 npm-debug.log
 debug.log
 favicon.ico
+tslint.json
+rollup.config.js
