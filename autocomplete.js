@@ -12,7 +12,6 @@
   function autocomplete(settings) {
       // just an alias to minimize JS file size
       var doc = document;
-      var input;
       var container = doc.createElement("div");
       var containerStyle = container.style;
       var userAgent = navigator.userAgent;
@@ -25,12 +24,11 @@
       var minLen = settings.minLength || 2;
       var selected;
       var keypressCounter = 0;
-      var unloaded;
       var debounceTimer;
       if (!settings.input) {
           throw new Error("input undefined");
       }
-      input = settings.input;
+      var input = settings.input;
       container.className = "autocomplete " + (settings.className || "");
       containerStyle.position = "absolute";
       /**
@@ -199,7 +197,7 @@
               clearDebounceTimer();
               debounceTimer = window.setTimeout(function () {
                   settings.fetch(val, function (elements) {
-                      if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
+                      if (keypressCounter === savedKeypressCounter && elements) {
                           items = elements;
                           inputValue = val;
                           selected = items.length > 0 ? items[0] : undefined;
@@ -320,7 +318,6 @@
        * This function will remove DOM elements and clear event handlers
        */
       function destroy() {
-          unloaded = true;
           input.removeEventListener("keydown", keydown);
           input.removeEventListener(keyUpEventName, keyup);
           input.removeEventListener("blur", blur);
@@ -328,6 +325,8 @@
           doc.removeEventListener("scroll", scrollEventHandler, true);
           clearDebounceTimer();
           clear();
+          // prevent the update call if there are pending AJAX requests
+          keypressCounter++;
       }
       // setup event handlers
       input.addEventListener("keydown", keydown);

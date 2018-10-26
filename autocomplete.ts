@@ -45,7 +45,6 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
     // just an alias to minimize JS file size
     const doc = document;
 
-    let input: HTMLInputElement;
     const container: HTMLDivElement = doc.createElement("div");
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
@@ -60,14 +59,13 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
     const minLen = settings.minLength || 2;
     let selected: T | undefined;
     let keypressCounter = 0;
-    let unloaded: boolean;
     let debounceTimer : number | undefined;
 
     if (!settings.input) {
         throw new Error("input undefined");
     }
 
-    input = settings.input;
+    const input: HTMLInputElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
     containerStyle.position = "absolute";
@@ -267,7 +265,7 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
             clearDebounceTimer();
             debounceTimer = window.setTimeout(function(): void {
                 settings.fetch(val, function(elements: T[]): void {
-                    if (keypressCounter === savedKeypressCounter && elements && !unloaded) {
+                    if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
                         inputValue = val;
                         selected = items.length > 0 ? items[0] : undefined;
@@ -402,7 +400,6 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
      */
 
     function destroy(): void {
-        unloaded = true;
         input.removeEventListener("keydown", keydown);
         input.removeEventListener(keyUpEventName, keyup as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blur);
@@ -410,6 +407,9 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
         doc.removeEventListener("scroll", scrollEventHandler, true);
         clearDebounceTimer();
         clear();
+
+        // prevent the update call if there are pending AJAX requests
+        keypressCounter++;
     }
 
     // setup event handlers
