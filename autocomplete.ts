@@ -152,11 +152,6 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
             container.removeChild(container.firstChild);
         }
 
-        // check if groups are specified
-        let grouping = false;
-        let prevGroup = "#9?$";
-        items.forEach(function(item: T): void { if (item.group) { grouping = true; }});
-
         // function for rendering autocomplete suggestions
         let render = function(item: T, currentValue: string): HTMLDivElement | undefined {
             const itemElement = doc.createElement("div");
@@ -178,6 +173,8 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
         }
 
         const fragment = doc.createDocumentFragment();
+        let prevGroup = "#9?$";
+
         items.forEach(function(item: T): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;

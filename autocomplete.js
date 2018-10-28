@@ -99,8 +99,6 @@
           while (container.firstChild) {
               container.removeChild(container.firstChild);
           }
-          var prevGroup = "#9?$";
-          items.forEach(function (item) { if (item.group) ; });
           // function for rendering autocomplete suggestions
           var render = function (item, currentValue) {
               var itemElement = doc.createElement("div");
@@ -120,6 +118,7 @@
               renderGroup = settings.renderGroup;
           }
           var fragment = doc.createDocumentFragment();
+          var prevGroup = "#9?$";
           items.forEach(function (item) {
               if (item.group && item.group !== prevGroup) {
                   prevGroup = item.group;
