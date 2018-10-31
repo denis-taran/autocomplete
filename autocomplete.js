@@ -167,8 +167,13 @@
       function resizeEventHandler() {
           updateIfDisplayed();
       }
-      function scrollEventHandler() {
-          updateIfDisplayed();
+      function scrollEventHandler(e) {
+          if (e.target !== container) {
+              updateIfDisplayed();
+          }
+          else {
+              e.preventDefault();
+          }
       }
       /**
        * Event handler for keyup event

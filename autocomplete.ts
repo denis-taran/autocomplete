@@ -227,8 +227,12 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
         updateIfDisplayed();
     }
 
-    function scrollEventHandler(): void {
-        updateIfDisplayed();
+    function scrollEventHandler(e: Event): void {
+        if (e.target !== container) {
+            updateIfDisplayed();
+        } else {
+            e.preventDefault();
+        }
     }
 
     /**
