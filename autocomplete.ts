@@ -19,6 +19,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     onSelect: (item: T, input: HTMLInputElement) => void;
     fetch: (text: string, update: (items: T[]) => void) => void;
     debounceWaitMs?: number;
+    selectOnTab?: boolean;
 }
 
 export interface AutocompleteResult {
@@ -50,6 +51,7 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
     const userAgent = navigator.userAgent;
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
     const debounceWaitMs = settings.debounceWaitMs || 0;
+    const selectOnTab = settings.selectOnTab || false;
     
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
@@ -377,7 +379,7 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
             return;
         }
 
-        if (keyCode === Keys.Enter && selected) {
+        if ((keyCode === Keys.Enter) || (keyCode === Keys.Tab && selectOnTab) && selected) {
             settings.onSelect(selected, input);
             clear();
         }
