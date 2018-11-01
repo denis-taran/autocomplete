@@ -17,6 +17,7 @@
       var userAgent = navigator.userAgent;
       var mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
       var debounceWaitMs = settings.debounceWaitMs || 0;
+      var selectOnTab = settings.selectOnTab || false;
       // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
       var keyUpEventName = mobileFirefox ? "input" : "keyup";
       var items = [];
@@ -302,7 +303,7 @@
               }
               return;
           }
-          if (keyCode === 13 /* Enter */ && selected) {
+          if ((keyCode === 13 /* Enter */) || (keyCode === 9 /* Tab */ && selectOnTab) && selected) {
               settings.onSelect(selected, input);
               clear();
           }
