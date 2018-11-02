@@ -40,7 +40,8 @@ const enum Keys {
     Tab = 9
 }
 
-function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
+// tslint:disable-next-line:no-default-export
+export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
     const doc = document;
@@ -424,6 +425,3 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
         destroy
     };
 }
-
-// tslint:disable-next-line:no-default-export
-export default autocomplete;

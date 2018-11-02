@@ -9,6 +9,7 @@
    * Copyright (c) 2016 Denys Krasnoshchok
    * MIT License
    */
+  // tslint:disable-next-line:no-default-export
   function autocomplete(settings) {
       // just an alias to minimize JS file size
       var doc = document;
@@ -180,11 +181,6 @@
        */
       function keyup(ev) {
           var keyCode = ev.which || ev.keyCode || 0;
-          // if multiple keys were pressed, before we get update from server,
-          // this may cause redrawing our autocomplete multiple times after the last key press.
-          // to avoid this, the number of times keyboard was pressed will be
-          // saved and checked before redraw our autocomplete box.
-          var savedKeypressCounter = ++keypressCounter;
           var ignore = [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
           for (var _i = 0, ignore_1 = ignore; _i < ignore_1.length; _i++) {
               var key = ignore_1[_i];
@@ -196,6 +192,11 @@
           if (keyCode === 40 /* Down */ && containerDisplayed()) {
               return;
           }
+          // if multiple keys were pressed, before we get update from server,
+          // this may cause redrawing our autocomplete multiple times after the last key press.
+          // to avoid this, the number of times keyboard was pressed will be
+          // saved and checked before redraw our autocomplete box.
+          var savedKeypressCounter = ++keypressCounter;
           var val = input.value;
           if (val.length >= minLen) {
               clearDebounceTimer();
