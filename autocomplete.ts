@@ -242,12 +242,6 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
     function keyup(ev: KeyboardEvent): void {
         const keyCode = ev.which || ev.keyCode || 0;
 
-        // if multiple keys were pressed, before we get update from server,
-        // this may cause redrawing our autocomplete multiple times after the last key press.
-        // to avoid this, the number of times keyboard was pressed will be
-        // saved and checked before redraw our autocomplete box.
-        const savedKeypressCounter = ++keypressCounter;
-
         const ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
         for (const key of ignore) {
             if (keyCode === key) {
@@ -259,6 +253,12 @@ function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings
         if (keyCode === Keys.Down && containerDisplayed()) {
             return;
         }
+
+        // if multiple keys were pressed, before we get update from server,
+        // this may cause redrawing our autocomplete multiple times after the last key press.
+        // to avoid this, the number of times keyboard was pressed will be
+        // saved and checked before redraw our autocomplete box.
+        const savedKeypressCounter = ++keypressCounter;
 
         const val = input.value;
 
