@@ -109,6 +109,7 @@ You can pass the following options to `autocomplete`:
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
 |`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter.|`-`|
 |`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
+|`selectOnTab`|Pressing the Tab key will trigger the `onSelect` function on the currently highlighted suggestion (this is in addition to the standard behaviour of triggering `onSelect` by pressing Enter or clicking on a suggestion).|`false`|
 
 ### Sample config using all options
 
