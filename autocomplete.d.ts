@@ -17,5 +17,4 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
 export interface AutocompleteResult {
     destroy: () => void;
 }
-declare function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
-export default autocomplete;
+export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
