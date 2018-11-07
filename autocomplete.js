@@ -9,7 +9,6 @@
    * Copyright (c) 2016 Denys Krasnoshchok
    * MIT License
    */
-  // tslint:disable-next-line:no-default-export
   function autocomplete(settings) {
       // just an alias to minimize JS file size
       var doc = document;
@@ -77,21 +76,28 @@
        * Update autocomplete position
        */
       function updatePosition() {
+          if (!containerDisplayed()) {
+              return;
+          }
+          containerStyle.height = "auto";
+          containerStyle.width = input.offsetWidth + "px";
           var docEl = doc.documentElement;
           var clientTop = docEl.clientTop || doc.body.clientTop || 0;
           var clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
           var scrollTop = window.pageYOffset || docEl.scrollTop;
           var scrollLeft = window.pageXOffset || docEl.scrollLeft;
-          var inputRect = input.getBoundingClientRect();
-          var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-          var left = inputRect.left + scrollLeft - clientLeft;
-          containerStyle.top = top + "px";
-          containerStyle.left = left + "px";
-          containerStyle.width = input.offsetWidth + "px";
-          containerStyle.maxHeight = (window.innerHeight - top) + "px";
-          containerStyle.height = "auto";
+          function calc() {
+              var inputRect = input.getBoundingClientRect();
+              var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+              var left = inputRect.left + scrollLeft - clientLeft;
+              containerStyle.top = top + "px";
+              containerStyle.left = left + "px";
+              containerStyle.maxHeight = (window.innerHeight - top) + "px";
+          }
+          // we need to recalculate layout twice, because sometimes it will return an invalid value for `inputRect.left` on the first call
+          calc();
+          calc();
       }
-      updatePosition();
       /**
        * Redraw the autocomplete div element with suggestions
        */

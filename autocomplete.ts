@@ -40,7 +40,6 @@ const enum Keys {
     Tab = 9
 }
 
-// tslint:disable-next-line:no-default-export
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
@@ -123,24 +122,33 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Update autocomplete position
      */
     function updatePosition(): void {
+        if (!containerDisplayed()) {
+            return;
+        }
+
+        containerStyle.height = "auto";
+        containerStyle.width = input.offsetWidth + "px";
+
         const docEl = doc.documentElement as HTMLElement;
         const clientTop = docEl.clientTop || doc.body.clientTop || 0;
         const clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
         const scrollTop = window.pageYOffset || docEl.scrollTop;
         const scrollLeft = window.pageXOffset || docEl.scrollLeft;
 
-        const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-        const left = inputRect.left + scrollLeft - clientLeft;
-        
-        containerStyle.top = top + "px";
-        containerStyle.left = left + "px";
-        containerStyle.width = input.offsetWidth + "px";
-        containerStyle.maxHeight = (window.innerHeight - top) + "px";
-        containerStyle.height = "auto";
-    }
+        function calc(): void {
+            const inputRect = input.getBoundingClientRect();
+            const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+            const left = inputRect.left + scrollLeft - clientLeft;
 
-    updatePosition();
+            containerStyle.top = top + "px";
+            containerStyle.left = left + "px";
+            containerStyle.maxHeight = (window.innerHeight - top) + "px";
+        }
+
+        // we need to recalculate layout twice, because sometimes it will return an invalid value for `inputRect.left` on the first call
+        calc();
+        calc();
+    }
 
     /**
      * Redraw the autocomplete div element with suggestions
