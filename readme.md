@@ -155,9 +155,9 @@ You can display suggestions separated into one or multiple groups/categories:
 
 ```javascript
 var countries = [
-    { label: 'United Kingdom', value: 'UK', group: "North America" },
-    { label: 'United States', value: 'US', group: "North America" },
-    { label: 'Uzbekistan', value: 'UZ', group: "Asia" },
+    { label: 'Canada', value: 'CA', group: 'North America' },
+    { label: 'United States', value: 'US', group: 'North America' },
+    { label: 'Uzbekistan', value: 'UZ', group: 'Asia' },
 ];
 
 autocomplete({
