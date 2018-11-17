@@ -17,7 +17,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: T[]) => void) => void;
+    fetch: (text: string, update: (items: T[] | false) => void) => void;
     debounceWaitMs?: number;
 }
 
@@ -274,7 +274,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         if (val.length >= minLen) {
             clearDebounceTimer();
             debounceTimer = window.setTimeout(function(): void {
-                settings.fetch(val, function(elements: T[]): void {
+                settings.fetch(val, function(elements: T[] | false): void {
                     if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
                         inputValue = val;

@@ -107,7 +107,7 @@ You can pass the following options to `autocomplete`:
 |`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. The current input field value will be passed as second parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
 |`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. The current input field value will be passed as second parameter. This function must return a `DIV` element or `undefined` to skip rendering.|`undefined`|
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
-|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter.|`-`|
+|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. If you pass `false` to the callback function, autocomplete will show previous suggestions and will not re-render.|`-`|
 |`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
 
 ### Sample config using all options
