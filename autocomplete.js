@@ -30,7 +30,7 @@
       }
       var input = settings.input;
       container.className = "autocomplete " + (settings.className || "");
-      containerStyle.position = "absolute";
+      containerStyle.position = "fixed";
       /**
        * Detach the container from DOM
        */
@@ -86,17 +86,12 @@
           var clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
           var scrollTop = window.pageYOffset || docEl.scrollTop;
           var scrollLeft = window.pageXOffset || docEl.scrollLeft;
-          function calc() {
-              var inputRect = input.getBoundingClientRect();
-              var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-              var left = inputRect.left + scrollLeft - clientLeft;
-              containerStyle.top = top + "px";
-              containerStyle.left = left + "px";
-              containerStyle.maxHeight = (window.innerHeight - top) + "px";
-          }
-          // we need to recalculate layout twice, because sometimes it will return an invalid value for `inputRect.left` on the first call
-          calc();
-          calc();
+          var inputRect = input.getBoundingClientRect();
+          var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+          var left = inputRect.left + scrollLeft - clientLeft;
+          containerStyle.top = top + "px";
+          containerStyle.left = left + "px";
+          containerStyle.maxHeight = (window.innerHeight - top) + "px";
       }
       /**
        * Redraw the autocomplete div element with suggestions

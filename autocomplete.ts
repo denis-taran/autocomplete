@@ -68,7 +68,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const input: HTMLInputElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
-    containerStyle.position = "absolute";
+    containerStyle.position = "fixed";
 
     /**
      * Detach the container from DOM
@@ -135,19 +135,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const scrollTop = window.pageYOffset || docEl.scrollTop;
         const scrollLeft = window.pageXOffset || docEl.scrollLeft;
 
-        function calc(): void {
-            const inputRect = input.getBoundingClientRect();
-            const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-            const left = inputRect.left + scrollLeft - clientLeft;
+        const inputRect = input.getBoundingClientRect();
+        const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+        const left = inputRect.left + scrollLeft - clientLeft;
 
-            containerStyle.top = top + "px";
-            containerStyle.left = left + "px";
-            containerStyle.maxHeight = (window.innerHeight - top) + "px";
-        }
-
-        // we need to recalculate layout twice, because sometimes it will return an invalid value for `inputRect.left` on the first call
-        calc();
-        calc();
+        containerStyle.top = top + "px";
+        containerStyle.left = left + "px";
+        containerStyle.maxHeight = (window.innerHeight - top) + "px";
     }
 
     /**
