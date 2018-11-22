@@ -138,7 +138,7 @@ autocomplete({
         callback(suggestions);
     },
     debounceWaitMs: 200,
-    customize: function(input, inputRect, container) {
+    customize: function(input, inputRect, container, maxHeight) {
         ...
     }
 });
