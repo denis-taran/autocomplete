@@ -12,6 +12,14 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     onSelect: (item: T, input: HTMLInputElement) => void;
     fetch: (text: string, update: (items: T[] | false) => void) => void;
     debounceWaitMs?: number;
+    /**
+     * Callback for additional autocomplete customization
+     * @param {HTMLInputElement} input - input box associated with autocomplete
+     * @param {ClientRect | DOMRect} inputRect - size of the input box and its position relative to the viewport
+     * @param {HTMLDivElement} container - container with suggestions
+     * @param {number} maxHeight - max height that can be used by autocomplete
+     */
+    customize?: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
 }
 export interface AutocompleteResult {
     destroy: () => void;

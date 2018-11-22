@@ -83,10 +83,14 @@
           containerStyle.width = input.offsetWidth + "px";
           var inputRect = input.getBoundingClientRect();
           var top = inputRect.top + input.offsetHeight;
-          var left = inputRect.left;
+          var maxHeight = window.innerHeight - top;
           containerStyle.top = top + "px";
-          containerStyle.left = left + "px";
-          containerStyle.maxHeight = (window.innerHeight - top) + "px";
+          containerStyle.bottom = "";
+          containerStyle.left = inputRect.left + "px";
+          containerStyle.maxHeight = maxHeight + "px";
+          if (settings.customize) {
+              settings.customize(input, inputRect, container, maxHeight);
+          }
       }
       /**
        * Redraw the autocomplete div element with suggestions

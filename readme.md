@@ -98,8 +98,8 @@ If your class doesn't have a `label` property, you also have to provide a custom
 
 You can pass the following options to `autocomplete`:
 
-|Parameter|Description|Default|
-|---|---|---|
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
 |`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|`-`|
 |`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|`-`|
 |`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
@@ -109,6 +109,8 @@ You can pass the following options to `autocomplete`:
 |`className`|The autocomplete container will have this class name if specified.|`undefined`|
 |`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. If you pass `false` to the callback function, autocomplete will show previous suggestions and will not re-render.|`-`|
 |`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
+|`customize`|Callback for additional autocomplete customization after rendering is finished. Use this function if you want to change autocomplete default position.|`undefined`|
+||||
 
 ### Sample config using all options
 
@@ -136,8 +138,45 @@ autocomplete({
         var suggestions = [{ label: "United States", value: "US" }];
         callback(suggestions);
     },
-    debounceWaitMs: 200
+    debounceWaitMs: 200,
+    customize: function(input, inputRect, container) {
+        ...
+    }
 });
+```
+
+### Display autocomplete above the input field
+
+You can use the following snippet to display autocomplete above the input field if there is not enough space for it.
+
+```typescript
+autocomplete({
+    ...,
+    customize: function(input, inputRect, container, maxHeight) {
+        if (maxHeight < 100) {
+            container.style.top = "";
+            container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+            container.style.maxHeight = "200px";
+        }
+    }
+});
+```
+
+If you don't want to pass this function every time, you can also use spread operator to create your own autocomplete version with default implementation:
+
+```typescript
+export default function autocompleteCustomized<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
+    return autocomplete({
+        ...settings,
+        customize: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number): void => {
+            if (maxHeight < 100) {
+                container.style.top = "";
+                container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+                container.style.maxHeight = "200px";
+            }
+        }
+    });
+}
 ```
 
 ### Unload autocomplete
