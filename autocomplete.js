@@ -81,14 +81,9 @@
           }
           containerStyle.height = "auto";
           containerStyle.width = input.offsetWidth + "px";
-          var docEl = doc.documentElement;
-          var clientTop = docEl.clientTop || doc.body.clientTop || 0;
-          var clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
-          var scrollTop = window.pageYOffset || docEl.scrollTop;
-          var scrollLeft = window.pageXOffset || docEl.scrollLeft;
           var inputRect = input.getBoundingClientRect();
-          var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-          var left = inputRect.left + scrollLeft - clientLeft;
+          var top = inputRect.top + input.offsetHeight;
+          var left = inputRect.left;
           containerStyle.top = top + "px";
           containerStyle.left = left + "px";
           containerStyle.maxHeight = (window.innerHeight - top) + "px";

@@ -129,15 +129,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         containerStyle.height = "auto";
         containerStyle.width = input.offsetWidth + "px";
 
-        const docEl = doc.documentElement as HTMLElement;
-        const clientTop = docEl.clientTop || doc.body.clientTop || 0;
-        const clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
-        const scrollTop = window.pageYOffset || docEl.scrollTop;
-        const scrollLeft = window.pageXOffset || docEl.scrollLeft;
-
         const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
-        const left = inputRect.left + scrollLeft - clientLeft;
+        const top = inputRect.top + input.offsetHeight;
+        const left = inputRect.left;
 
         containerStyle.top = top + "px";
         containerStyle.left = left + "px";
