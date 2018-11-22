@@ -84,6 +84,9 @@
           var inputRect = input.getBoundingClientRect();
           var top = inputRect.top + input.offsetHeight;
           var maxHeight = window.innerHeight - top;
+          if (maxHeight < 0) {
+              maxHeight = 0;
+          }
           containerStyle.top = top + "px";
           containerStyle.bottom = "";
           containerStyle.left = inputRect.left + "px";

@@ -139,7 +139,11 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         const inputRect = input.getBoundingClientRect();
         const top = inputRect.top + input.offsetHeight;
-        const maxHeight = window.innerHeight - top;
+        let maxHeight = window.innerHeight - top;
+
+        if (maxHeight < 0) {
+            maxHeight = 0;
+        }
 
         containerStyle.top = top + "px";
         containerStyle.bottom = "";
