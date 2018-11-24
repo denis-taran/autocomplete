@@ -7,3 +7,6 @@ debug.log
 favicon.ico
 tslint.json
 rollup.config.js
+.vs
+.git
+.rpt2_cache
