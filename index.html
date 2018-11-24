@@ -347,7 +347,14 @@
 				}
 				return itemElement;
 			},
-			emptyMsg: "No countries found"
+			emptyMsg: "No countries found",
+			customize: function(input, inputRect, container, maxHeight) {
+				if (maxHeight < 100) {
+					container.style.top = "";
+					container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+					container.style.maxHeight = "140px";
+				}
+			}
 		})
 
 		document.querySelector("input").focus();
