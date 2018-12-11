@@ -52,7 +52,7 @@ Simply import the autocompleter in your typescript file:
 and call the `autocomplete` function as showed below:
 
 ```javascript
-    // replace the `Client` class with the class you want to use with autocompleter
+    // replace the `Client` interface with the interface you want to use with autocomplete
     autocomplete<Client>({
         input: document.getElementById("myinputfield"),
         emptyMsg: "No items found",
@@ -66,7 +66,7 @@ and call the `autocomplete` function as showed below:
     });
 ```
 
-If your custom class doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
+If your custom interface doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
 
 ```javascript
     import autocomplete, { AutocompleteItem } from "autocompleter";
@@ -92,7 +92,7 @@ If your custom class doesn't have the `label` property, you might get a compilat
     });
 ```
 
-If your class doesn't have a `label` property, you also have to provide a custom render function.
+If your interface doesn't have a `label` property, you also have to provide a custom render function.
 
 ## Options
 
