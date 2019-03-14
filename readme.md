@@ -9,13 +9,17 @@ If you want to use the library in browser, just include the `autocomplete.js` an
 
 For `node.js`:
 
-    npm install autocompleter
+```console
+npm install autocompleter
+```
 
 Then import it into your javascript code:
 
-    import autocomplete from 'autocompleter';
-    // or
-    var autocomplete = require('autocompleter');
+```javascript
+import autocomplete from 'autocompleter';
+// or
+var autocomplete = require('autocompleter');
+```
 
 ## Getting Started
 
@@ -52,44 +56,44 @@ Simply import the autocompleter in your typescript file:
 and call the `autocomplete` function as showed below:
 
 ```javascript
-    // replace the `Client` interface with the interface you want to use with autocomplete
-    autocomplete<Client>({
-        input: document.getElementById("myinputfield"),
-        emptyMsg: "No items found",
-        minLength: 1,
-        fetch: (text: string, update: (items: Client[]) => void) => {
+// replace the `Client` interface with the interface you want to use with autocomplete
+autocomplete<Client>({
+    input: document.getElementById("myinputfield"),
+    emptyMsg: "No items found",
+    minLength: 1,
+    fetch: (text: string, update: (items: Client[]) => void) => {
 	...
-        },
-        onSelect: (item: Client) => {
+    },
+    onSelect: (item: Client) => {
 	...
-        }
-    });
+    }
+});
 ```
 
 If your custom interface doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
 
 ```javascript
-    import autocomplete, { AutocompleteItem } from "autocompleter";
-    
-    // this type will prevent typescript warnings
-    type AutocompleteClient = Client & AutocompleteItem;
+import autocomplete, { AutocompleteItem } from "autocompleter";
 
-    autocomplete<AutocompleteClient>({
-        input: document.getElementById("myinputfield"),
-        emptyMsg: "No items found",
-        minLength: 1,
-        fetch: (text: string, update: (items: Client[]) => void) => {
+// this type will prevent typescript warnings
+type AutocompleteClient = Client & AutocompleteItem;
+
+autocomplete<AutocompleteClient>({
+    input: document.getElementById("myinputfield"),
+    emptyMsg: "No items found",
+    minLength: 1,
+    fetch: (text: string, update: (items: Client[]) => void) => {
 	...
-        },
-        onSelect: (item: Client) => {
+    },
+    onSelect: (item: Client) => {
 	...
-        },
-        render: function(item: Client, currentValue: string): HTMLDivElement | undefined {
-            const itemElement = document.createElement("div");
-            itemElement.textContent = item.FirstName;
-            return itemElement;
-        }
-    });
+    },
+    render: function(item: Client, currentValue: string): HTMLDivElement | undefined {
+        const itemElement = document.createElement("div");
+        itemElement.textContent = item.FirstName;
+        return itemElement;
+    }
+});
 ```
 
 If your interface doesn't have a `label` property, you also have to provide a custom render function.
