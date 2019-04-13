@@ -29,8 +29,10 @@ var countries = [
     { label: 'United States', value: 'US' }
 ];
 
+var input = document.getElementById("country");
+
 autocomplete({
-    input: document.getElementById("country"),
+    input: input,
     fetch: function(text, update) {
         text = text.toLowerCase();
         // you can also use AJAX requests instead of preloaded data
@@ -38,12 +40,12 @@ autocomplete({
         update(suggestions);
     },
     onSelect: function(item) {
-        alert(item.value); // will display 'US' or 'UK'
+        input.value = item.label;
     }
 });
 ```
 
-[Try online](http://jsbin.com/hawehudabi/1/edit?html,js,output)
+[Try online](https://jsbin.com/gocayupedo/edit?html,js,output)
 
 ## Use with Typescript and Webpack
 
