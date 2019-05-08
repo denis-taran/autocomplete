@@ -21,10 +21,14 @@
       var keyUpEventName = mobileFirefox ? "input" : "keyup";
       var items = [];
       var inputValue = "";
-      var minLen = settings.minLength || 2;
+      var minLen = 2;
+      var showOnFocus = settings.showOnFocus;
       var selected;
       var keypressCounter = 0;
       var debounceTimer;
+      if (settings.minLength !== undefined) {
+          minLen = settings.minLength;
+      }
       if (!settings.input) {
           throw new Error("input undefined");
       }
@@ -179,10 +183,7 @@
               e.preventDefault();
           }
       }
-      /**
-       * Event handler for keyup event
-       */
-      function keyup(ev) {
+      function keyupEventHandler(ev) {
           var keyCode = ev.which || ev.keyCode || 0;
           var ignore = [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
           for (var _i = 0, ignore_1 = ignore; _i < ignore_1.length; _i++) {
@@ -195,28 +196,7 @@
           if (keyCode === 40 /* Down */ && containerDisplayed()) {
               return;
           }
-          // if multiple keys were pressed, before we get update from server,
-          // this may cause redrawing our autocomplete multiple times after the last key press.
-          // to avoid this, the number of times keyboard was pressed will be
-          // saved and checked before redraw our autocomplete box.
-          var savedKeypressCounter = ++keypressCounter;
-          var val = input.value;
-          if (val.length >= minLen) {
-              clearDebounceTimer();
-              debounceTimer = window.setTimeout(function () {
-                  settings.fetch(val, function (elements) {
-                      if (keypressCounter === savedKeypressCounter && elements) {
-                          items = elements;
-                          inputValue = val;
-                          selected = items.length > 0 ? items[0] : undefined;
-                          update();
-                      }
-                  });
-              }, debounceWaitMs);
-          }
-          else {
-              clear();
-          }
+          startFetch(0 /* Keyboard */);
       }
       /**
        * Automatically move scroll bar if selected item is not visible
@@ -281,10 +261,7 @@
               }
           }
       }
-      /**
-       * keydown keyboard event handler
-       */
-      function keydown(ev) {
+      function keydownEventHandler(ev) {
           var keyCode = ev.which || ev.keyCode || 0;
           if (keyCode === 38 /* Up */ || keyCode === 40 /* Down */ || keyCode === 27 /* Esc */) {
               var containerIsDisplayed = containerDisplayed();
@@ -311,10 +288,36 @@
               clear();
           }
       }
-      /**
-       * Blur keyboard event handler
-       */
-      function blur() {
+      function focusEventHandler() {
+          if (showOnFocus) {
+              startFetch(1 /* Focus */);
+          }
+      }
+      function startFetch(trigger) {
+          // if multiple keys were pressed, before we get update from server,
+          // this may cause redrawing our autocomplete multiple times after the last key press.
+          // to avoid this, the number of times keyboard was pressed will be
+          // saved and checked before redraw our autocomplete box.
+          var savedKeypressCounter = ++keypressCounter;
+          var val = input.value;
+          if (val.length >= minLen || trigger === 1 /* Focus */) {
+              clearDebounceTimer();
+              debounceTimer = window.setTimeout(function () {
+                  settings.fetch(val, function (elements) {
+                      if (keypressCounter === savedKeypressCounter && elements) {
+                          items = elements;
+                          inputValue = val;
+                          selected = items.length > 0 ? items[0] : undefined;
+                          update();
+                      }
+                  }, 0 /* Keyboard */);
+              }, trigger === 0 /* Keyboard */ ? debounceWaitMs : 0);
+          }
+          else {
+              clear();
+          }
+      }
+      function blurEventHandler() {
           // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
           setTimeout(function () {
               if (doc.activeElement !== input) {
@@ -326,9 +329,10 @@
        * This function will remove DOM elements and clear event handlers
        */
       function destroy() {
-          input.removeEventListener("keydown", keydown);
-          input.removeEventListener(keyUpEventName, keyup);
-          input.removeEventListener("blur", blur);
+          input.removeEventListener("focus", focusEventHandler);
+          input.removeEventListener("keydown", keydownEventHandler);
+          input.removeEventListener(keyUpEventName, keyupEventHandler);
+          input.removeEventListener("blur", blurEventHandler);
           window.removeEventListener("resize", resizeEventHandler);
           doc.removeEventListener("scroll", scrollEventHandler, true);
           clearDebounceTimer();
@@ -337,9 +341,10 @@
           keypressCounter++;
       }
       // setup event handlers
-      input.addEventListener("keydown", keydown);
-      input.addEventListener(keyUpEventName, keyup);
-      input.addEventListener("blur", blur);
+      input.addEventListener("keydown", keydownEventHandler);
+      input.addEventListener(keyUpEventName, keyupEventHandler);
+      input.addEventListener("blur", blurEventHandler);
+      input.addEventListener("focus", focusEventHandler);
       window.addEventListener("resize", resizeEventHandler);
       doc.addEventListener("scroll", scrollEventHandler, true);
       return {

@@ -4,6 +4,11 @@
   * MIT License
   */
 
+export const enum EventTrigger {
+    Keyboard = 0,
+    Focus = 1
+}
+
 export interface AutocompleteItem {
     label?: string;
     group?: string;
@@ -17,7 +22,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: T[] | false) => void) => void;
+    /**
+     * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
+     */
+    showOnFocus?: boolean;
+    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger) => void;
     debounceWaitMs?: number;
     /**
      * Callback for additional autocomplete customization
@@ -64,10 +73,15 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     
     let items: T[] = [];
     let inputValue = "";
-    const minLen = settings.minLength || 2;
+    let minLen = 2;
+    const showOnFocus = settings.showOnFocus;
     let selected: T | undefined;
     let keypressCounter = 0;
     let debounceTimer : number | undefined;
+
+    if (settings.minLength !== undefined) {
+        minLen = settings.minLength;
+    }
 
     if (!settings.input) {
         throw new Error("input undefined");
@@ -109,7 +123,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Check if container for autocomplete is displayed
      */
-
     function containerDisplayed(): boolean {
         return !!container.parentNode;
     }
@@ -117,7 +130,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Clear autocomplete state and hide container
      */
-
     function clear(): void {
         keypressCounter++;
         items = [];
@@ -158,7 +170,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Redraw the autocomplete div element with suggestions
      */
-
     function update(): void {
         
         // delete all children from autocomplete DOM container
@@ -249,11 +260,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    /**
-     * Event handler for keyup event
-     */
-
-    function keyup(ev: KeyboardEvent): void {
+    function keyupEventHandler(ev: KeyboardEvent): void {
         const keyCode = ev.which || ev.keyCode || 0;
 
         const ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
@@ -268,35 +275,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             return;
         }
 
-        // if multiple keys were pressed, before we get update from server,
-        // this may cause redrawing our autocomplete multiple times after the last key press.
-        // to avoid this, the number of times keyboard was pressed will be
-        // saved and checked before redraw our autocomplete box.
-        const savedKeypressCounter = ++keypressCounter;
-
-        const val = input.value;
-
-        if (val.length >= minLen) {
-            clearDebounceTimer();
-            debounceTimer = window.setTimeout(function(): void {
-                settings.fetch(val, function(elements: T[] | false): void {
-                    if (keypressCounter === savedKeypressCounter && elements) {
-                        items = elements;
-                        inputValue = val;
-                        selected = items.length > 0 ? items[0] : undefined;
-                        update();
-                    }
-                });
-            }, debounceWaitMs);
-        } else {
-            clear();
-        }
+        startFetch(EventTrigger.Keyboard);
     }
 
     /**
      * Automatically move scroll bar if selected item is not visible
      */
-
     function updateScroll(): void {
         const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
@@ -323,7 +307,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Select the previous item in suggestions
      */
-
     function selectPrev(): void {
         if (items.length < 1) {
             selected = undefined;
@@ -344,7 +327,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Select the next item in suggestions
      */
-
     function selectNext(): void {
         if (items.length < 1) {
             selected = undefined;
@@ -361,11 +343,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    /**
-     * keydown keyboard event handler
-     */
-
-    function keydown(ev: KeyboardEvent): void {
+    function keydownEventHandler(ev: KeyboardEvent): void {
         const keyCode = ev.which || ev.keyCode || 0;
 
         if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
@@ -397,11 +375,38 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    /**
-     * Blur keyboard event handler
-     */
+    function focusEventHandler(): void {
+        if (showOnFocus) {
+            startFetch(EventTrigger.Focus);
+        }
+    }
 
-    function blur(): void {
+    function startFetch(trigger: EventTrigger) {
+        // if multiple keys were pressed, before we get update from server,
+        // this may cause redrawing our autocomplete multiple times after the last key press.
+        // to avoid this, the number of times keyboard was pressed will be
+        // saved and checked before redraw our autocomplete box.
+        const savedKeypressCounter = ++keypressCounter;
+
+        const val = input.value;
+        if (val.length >= minLen || trigger === EventTrigger.Focus) {
+            clearDebounceTimer();
+            debounceTimer = window.setTimeout(function(): void {
+                settings.fetch(val, function(elements: T[] | false): void {
+                    if (keypressCounter === savedKeypressCounter && elements) {
+                        items = elements;
+                        inputValue = val;
+                        selected = items.length > 0 ? items[0] : undefined;
+                        update();
+                    }
+                }, EventTrigger.Keyboard);
+            }, trigger === EventTrigger.Keyboard ? debounceWaitMs : 0);
+        } else {
+            clear();
+        }
+    }
+
+    function blurEventHandler(): void {
         // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
         setTimeout(() => {
             if (doc.activeElement !== input) {
@@ -413,11 +418,11 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * This function will remove DOM elements and clear event handlers
      */
-
     function destroy(): void {
-        input.removeEventListener("keydown", keydown);
-        input.removeEventListener(keyUpEventName, keyup as EventListenerOrEventListenerObject);
-        input.removeEventListener("blur", blur);
+        input.removeEventListener("focus", focusEventHandler);
+        input.removeEventListener("keydown", keydownEventHandler);
+        input.removeEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
+        input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
         clearDebounceTimer();
@@ -428,9 +433,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     // setup event handlers
-    input.addEventListener("keydown", keydown);
-    input.addEventListener(keyUpEventName, keyup as EventListenerOrEventListenerObject);
-    input.addEventListener("blur", blur);
+    input.addEventListener("keydown", keydownEventHandler);
+    input.addEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener("blur", blurEventHandler);
+    input.addEventListener("focus", focusEventHandler);
     window.addEventListener("resize", resizeEventHandler);
     doc.addEventListener("scroll", scrollEventHandler, true);
 

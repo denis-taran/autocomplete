@@ -1,3 +1,7 @@
+export declare const enum EventTrigger {
+    Keyboard = 0,
+    Focus = 1
+}
 export interface AutocompleteItem {
     label?: string;
     group?: string;
@@ -10,7 +14,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     minLength?: number;
     emptyMsg?: string;
     onSelect: (item: T, input: HTMLInputElement) => void;
-    fetch: (text: string, update: (items: T[] | false) => void) => void;
+    /**
+     * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
+     */
+    showOnFocus?: boolean;
+    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger) => void;
     debounceWaitMs?: number;
     /**
      * Callback for additional autocomplete customization
