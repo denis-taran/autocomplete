@@ -325,6 +325,10 @@
               }
           }, 200);
       }
+      container.addEventListener("mousedown", function (evt) {
+          evt.stopPropagation();
+          evt.preventDefault();
+      });
       /**
        * This function will remove DOM elements and clear event handlers
        */

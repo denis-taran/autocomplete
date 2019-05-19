@@ -416,6 +416,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     /**
+     * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
+     */
+    container.addEventListener("mousedown", function(evt: Event) {
+        evt.stopPropagation();
+        evt.preventDefault();
+    });
+
+    /**
      * This function will remove DOM elements and clear event handlers
      */
     function destroy(): void {
