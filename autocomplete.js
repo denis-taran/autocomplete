@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.autocomplete = factory());
-}(this, (function () { 'use strict';
+  (global = global || self, global.autocomplete = factory());
+}(this, function () { 'use strict';
 
   /*
    * https://github.com/kraaden/autocomplete
@@ -325,6 +325,9 @@
               }
           }, 200);
       }
+      /**
+       * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
+       */
       container.addEventListener("mousedown", function (evt) {
           evt.stopPropagation();
           evt.preventDefault();
@@ -358,5 +361,5 @@
 
   return autocomplete;
 
-})));
+}));
 //# sourceMappingURL=autocomplete.js.map
