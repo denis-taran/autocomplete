@@ -28,6 +28,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * @param {number} maxHeight - max height that can be used by autocomplete
      */
     customize?: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
+    /**
+     * Prevents automatic form submit when ENTER is pressed
+     */
+    preventSubmit?: boolean;
 }
 export interface AutocompleteResult {
     destroy: () => void;

@@ -36,6 +36,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * @param {number} maxHeight - max height that can be used by autocomplete
      */
     customize?: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
+    /**
+     * Prevents automatic form submit when ENTER is pressed
+     */
+    preventSubmit?: boolean;
 }
 
 export interface AutocompleteResult {
@@ -67,6 +71,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const userAgent = navigator.userAgent;
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
     const debounceWaitMs = settings.debounceWaitMs || 0;
+    const preventSubmit = settings.preventSubmit || false;
     
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
@@ -369,9 +374,15 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             return;
         }
 
-        if (keyCode === Keys.Enter && selected) {
-            settings.onSelect(selected, input);
-            clear();
+        if (keyCode === Keys.Enter) {
+            if (selected) {
+                settings.onSelect(selected, input);
+                clear();
+            }
+    
+            if (preventSubmit) {
+                ev.preventDefault();
+            }
         }
     }
 
