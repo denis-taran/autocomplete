@@ -97,7 +97,7 @@
               ? inputRect.top + window.pageYOffset // a fix for buggy getBoundingClientRect on IOS
               : inputRect.top;
           top = top + input.offsetHeight;
-          var maxHeight = window.innerHeight - top;
+          var maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
           if (maxHeight < 0) {
               maxHeight = 0;
           }

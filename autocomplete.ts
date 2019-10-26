@@ -168,7 +168,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         
         top = top + input.offsetHeight;
 
-        let maxHeight = window.innerHeight - top;
+        let maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
 
         if (maxHeight < 0) {
             maxHeight = 0;
