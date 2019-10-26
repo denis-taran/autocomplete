@@ -108,6 +108,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     /**
+     * Detect if the script is running on IOS
+     */
+    function isIOS() {
+        return /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !(window as any).MSStream;
+    }
+
+    /**
      * Clear debouncing timer if assigned
      */
     function clearDebounceTimer(): void {
@@ -155,7 +162,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         containerStyle.width = input.offsetWidth + "px";
 
         const inputRect = input.getBoundingClientRect();
-        const top = inputRect.top + input.offsetHeight;
+        let top = isIOS()
+            ? inputRect.top + window.pageYOffset // a fix for buggy getBoundingClientRect on IOS
+            : inputRect.top;
+        
+        top = top + input.offsetHeight;
+
         let maxHeight = window.innerHeight - top;
 
         if (maxHeight < 0) {
