@@ -1,5 +1,6 @@
 import typescript from 'rollup-plugin-typescript2'
 import sourceMaps from 'rollup-plugin-sourcemaps'
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json'
 
 export default {
@@ -10,12 +11,23 @@ export default {
             format: 'umd',
             sourcemap: true,
             name: 'autocomplete'
+        }, {
+            file: pkg.main.replace('.js', '.min.js'),
+            format: 'umd',
+            sourcemap: true,
+            name: 'autocomplete'
         }
     ],
     plugins: [
         typescript({
             typescript: require('typescript'),
         }),
-        sourceMaps()
+        sourceMaps(),
+        terser({
+            sourcemap: true,
+            include: [/^.+\.min\.js$/],
+            compress: true,
+            mangle: true
+        })
     ]
 }
