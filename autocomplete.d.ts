@@ -32,6 +32,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
+    /**
+     * Prevents automatic selection of first entry when ENTER is pressed
+     */
+    disableAutoSelect?: boolean;
 }
 export interface AutocompleteResult {
     destroy: () => void;

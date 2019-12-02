@@ -40,6 +40,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
+    /**
+     * Prevents automatic selection of first entry when ENTER is pressed
+     */
+    disableAutoSelect?: boolean;
 }
 
 export interface AutocompleteResult {
@@ -327,15 +331,15 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function selectPrev(): void {
         if (items.length < 1) {
             selected = undefined;
+        } else if (!selected) {
+            selected = items[items.length - 1];
+        } else if (selected === items[0]) {
+            selected = settings.disableAutoSelect ? undefined : items[items.length - 1];
         } else {
-            if (selected === items[0]) {
-                selected = items[items.length - 1];
-            } else {
-                for (let i = items.length - 1; i > 0; i--) {
-                    if (selected === items[i] || i === 1) {
-                        selected = items[i - 1];
-                        break;
-                    }
+            for (let i = items.length - 1; i > 0; i--) {
+                if (selected === items[i] || i === 1) {
+                    selected = items[i - 1];
+                    break;
                 }
             }
         }
@@ -347,15 +351,16 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function selectNext(): void {
         if (items.length < 1) {
             selected = undefined;
-        }
-        if (!selected || selected === items[items.length - 1]) {
+        } else if (!selected) {
             selected = items[0];
-            return;
-        }
-        for (let i = 0; i < (items.length - 1); i++) {
-            if (selected === items[i]) {
-                selected = items[i + 1];
-                break;
+        } else if (selected === items[items.length - 1]) {
+            selected = settings.disableAutoSelect ? undefined : items[0];
+        } else {
+            for (let i = 0; i < (items.length - 1); i++) {
+                if (selected === items[i]) {
+                    selected = items[i + 1];
+                    break;
+                }
             }
         }
     }
@@ -419,7 +424,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                     if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
                         inputValue = val;
-                        selected = items.length > 0 ? items[0] : undefined;
+                        selected = (items.length < 1 || settings.disableAutoSelect) ? undefined : items[0];
                         update();
                     }
                 }, EventTrigger.Keyboard);
