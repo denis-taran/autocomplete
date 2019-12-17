@@ -46,12 +46,6 @@
           }
       }
       /**
-       * Detect if the script is running on IOS
-       */
-      function isIOS() {
-          return /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
-      }
-      /**
        * Clear debouncing timer if assigned
        */
       function clearDebounceTimer() {
@@ -93,9 +87,7 @@
           containerStyle.height = "auto";
           containerStyle.width = input.offsetWidth + "px";
           var inputRect = input.getBoundingClientRect();
-          var top = isIOS()
-              ? inputRect.top + window.pageYOffset // a fix for buggy getBoundingClientRect on IOS
-              : inputRect.top;
+          var top = inputRect.top;
           top = top + input.offsetHeight;
           var maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
           if (maxHeight < 0) {

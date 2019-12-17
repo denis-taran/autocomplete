@@ -72,10 +72,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
-    
+
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
-    
+
     let items: T[] = [];
     let inputValue = "";
     let minLen = 2;
@@ -105,13 +105,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         if (parent) {
             parent.removeChild(container);
         }
-    }
-
-    /**
-     * Detect if the script is running on IOS
-     */
-    function isIOS() {
-        return /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !(window as any).MSStream;
     }
 
     /**
@@ -162,10 +155,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         containerStyle.width = input.offsetWidth + "px";
 
         const inputRect = input.getBoundingClientRect();
-        let top = isIOS()
-            ? inputRect.top + window.pageYOffset // a fix for buggy getBoundingClientRect on IOS
-            : inputRect.top;
-        
+        let top = inputRect.top;
+
         top = top + input.offsetHeight;
 
         let maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
@@ -188,7 +179,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Redraw the autocomplete div element with suggestions
      */
     function update(): void {
-        
+
         // delete all children from autocomplete DOM container
         while (container.firstChild) {
             container.removeChild(container.firstChild);
@@ -302,7 +293,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
-            
+
             // make group visible
             const previous = element.previousElementSibling as HTMLDivElement;
             if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
@@ -391,7 +382,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 settings.onSelect(selected, input);
                 clear();
             }
-    
+
             if (preventSubmit) {
                 ev.preventDefault();
             }
