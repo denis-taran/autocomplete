@@ -95,6 +95,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const input: HTMLInputElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
+
+    // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
     containerStyle.position = "absolute";
 
     /**
@@ -177,8 +179,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             if (maxHeight < 0) {
                 maxHeight = 0;
             }
-
-            console.log(top);
     
             containerStyle.top = top + "px";
             containerStyle.bottom = "";
