@@ -35,7 +35,7 @@
       }
       var input = settings.input;
       container.className = "autocomplete " + (settings.className || "");
-      containerStyle.position = "fixed";
+      containerStyle.position = "absolute";
       /**
        * Detach the container from DOM
        */
@@ -44,12 +44,6 @@
           if (parent) {
               parent.removeChild(container);
           }
-      }
-      /**
-       * Detect if the script is running on IOS
-       */
-      function isIOS() {
-          return /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
       }
       /**
        * Clear debouncing timer if assigned
@@ -92,20 +86,33 @@
           }
           containerStyle.height = "auto";
           containerStyle.width = input.offsetWidth + "px";
-          var inputRect = input.getBoundingClientRect();
-          var top = isIOS()
-              ? inputRect.top + window.pageYOffset // a fix for buggy getBoundingClientRect on IOS
-              : inputRect.top;
-          top = top + input.offsetHeight;
-          var maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
-          if (maxHeight < 0) {
-              maxHeight = 0;
+          var maxHeight = 0;
+          var inputRect;
+          function calc() {
+              var docEl = doc.documentElement;
+              var clientTop = docEl.clientTop || doc.body.clientTop || 0;
+              var clientLeft = docEl.clientLeft || doc.body.clientLeft || 0;
+              var scrollTop = window.pageYOffset || docEl.scrollTop;
+              var scrollLeft = window.pageXOffset || docEl.scrollLeft;
+              inputRect = input.getBoundingClientRect();
+              var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
+              var left = inputRect.left + scrollLeft - clientLeft;
+              containerStyle.top = top + "px";
+              containerStyle.left = left + "px";
+              maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
+              if (maxHeight < 0) {
+                  maxHeight = 0;
+              }
+              console.log(top);
+              containerStyle.top = top + "px";
+              containerStyle.bottom = "";
+              containerStyle.left = left + "px";
+              containerStyle.maxHeight = maxHeight + "px";
           }
-          containerStyle.top = top + "px";
-          containerStyle.bottom = "";
-          containerStyle.left = inputRect.left + "px";
-          containerStyle.maxHeight = maxHeight + "px";
-          if (settings.customize) {
+          // the calc method must be called twice, otherwise the calculation may be wrong on resize event (chrome browser)
+          calc();
+          calc();
+          if (settings.customize && inputRect) {
               settings.customize(input, inputRect, container, maxHeight);
           }
       }
