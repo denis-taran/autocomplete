@@ -58,7 +58,9 @@ const enum Keys {
     Alt = 18,
     CapsLock = 20,
     WindowsKey = 91,
-    Tab = 9
+    Tab = 9,
+    F1 = 112,
+    F12 = 123
 }
 
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -296,6 +298,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             if (keyCode === key) {
                 return;
             }
+        }
+
+        if (keyCode >= Keys.F1 && keyCode <= Keys.F12) {
+            return;
         }
 
         // the down key is used to open autocomplete
