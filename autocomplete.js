@@ -72,6 +72,7 @@
        * Clear autocomplete state and hide container
        */
       function clear() {
+          // prevent the update call if there are pending AJAX requests
           keypressCounter++;
           items = [];
           inputValue = "";
@@ -358,6 +359,11 @@
           evt.preventDefault();
       });
       /**
+       * Fixes #30: autocomplete closes when scrollbar is clicked in IE
+       * See: https://stackoverflow.com/a/9210267/13172349
+       */
+      container.addEventListener("focus", function () { return input.focus(); });
+      /**
        * This function will remove DOM elements and clear event handlers
        */
       function destroy() {
@@ -369,8 +375,6 @@
           doc.removeEventListener("scroll", scrollEventHandler, true);
           clearDebounceTimer();
           clear();
-          // prevent the update call if there are pending AJAX requests
-          keypressCounter++;
       }
       // setup event handlers
       input.addEventListener("keydown", keydownEventHandler);
