@@ -464,6 +464,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     });
 
     /**
+     * Fixes #30: autocomplete closes when scrollbar is clicked in IE
+     * See: https://stackoverflow.com/a/9210267/13172349
+     */
+    container.addEventListener("focus", () => input.focus());
+
+    /**
      * This function will remove DOM elements and clear event handlers
      */
     function destroy(): void {
