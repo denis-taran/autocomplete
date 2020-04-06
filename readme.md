@@ -58,15 +58,15 @@ Simply import the autocompleter in your typescript file:
 and call the `autocomplete` function as showed below:
 
 ```javascript
-// replace the `Client` interface with the interface you want to use with autocomplete
-autocomplete<Client>({
+// replace the `MyInterface` interface with the interface you want to use with autocomplete
+autocomplete<MyInterface>({
     input: document.getElementById("myinputfield"),
     emptyMsg: "No items found",
     minLength: 1,
-    fetch: (text: string, update: (items: Client[]) => void) => {
+    fetch: (text: string, update: (items: MyInterface[]) => void) => {
 	...
     },
-    onSelect: (item: Client) => {
+    onSelect: (item: MyInterface) => {
 	...
     }
 });
@@ -78,19 +78,19 @@ If your custom interface doesn't have the `label` property, you might get a comp
 import autocomplete, { AutocompleteItem } from "autocompleter";
 
 // this type will prevent typescript warnings
-type AutocompleteClient = Client & AutocompleteItem;
+type MyItem = Item & AutocompleteItem;
 
-autocomplete<AutocompleteClient>({
+autocomplete<MyItem>({
     input: document.getElementById("myinputfield"),
     emptyMsg: "No items found",
     minLength: 1,
-    fetch: (text: string, update: (items: Client[]) => void) => {
+    fetch: (text: string, update: (items: Item[]) => void) => {
 	...
     },
-    onSelect: (item: Client) => {
+    onSelect: (item: Item) => {
 	...
     },
-    render: function(item: Client, currentValue: string): HTMLDivElement | undefined {
+    render: function(item: Item, currentValue: string): HTMLDivElement | undefined {
         const itemElement = document.createElement("div");
         itemElement.textContent = item.FirstName;
         return itemElement;
