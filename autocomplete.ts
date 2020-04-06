@@ -140,7 +140,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Clear autocomplete state and hide container
      */
     function clear(): void {
+        // prevent the update call if there are pending AJAX requests
         keypressCounter++;
+        
         items = [];
         inputValue = "";
         selected = undefined;
@@ -481,9 +483,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         doc.removeEventListener("scroll", scrollEventHandler, true);
         clearDebounceTimer();
         clear();
-
-        // prevent the update call if there are pending AJAX requests
-        keypressCounter++;
     }
 
     // setup event handlers
