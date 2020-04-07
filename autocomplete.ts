@@ -21,7 +21,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     className?: string;
     minLength?: number;
     emptyMsg?: string;
-    onSelect: (item: T, input: HTMLInputElement) => void;
+    onSelect: (event: MouseEvent | KeyboardEvent, item: T, input: HTMLInputElement) => void;
     /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
      */
@@ -244,7 +244,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const div = render(item, inputValue);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
-                    settings.onSelect(item, input);
+                    settings.onSelect(ev, item, input);
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -407,7 +407,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         if (keyCode === Keys.Enter) {
             if (selected) {
-                settings.onSelect(selected, input);
+                settings.onSelect(ev, selected, input);
                 clear();
             }
     
