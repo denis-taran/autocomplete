@@ -32,6 +32,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
+    allowSubmitOnTab?: boolean;
 }
 export interface AutocompleteResult {
     destroy: () => void;

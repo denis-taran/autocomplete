@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.autocomplete = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   /*
    * https://github.com/kraaden/autocomplete
@@ -18,6 +18,7 @@
       var mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
       var debounceWaitMs = settings.debounceWaitMs || 0;
       var preventSubmit = settings.preventSubmit || false;
+      var allowSubmitOnTab = settings.allowSubmitOnTab || false;
       // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
       var keyUpEventName = mobileFirefox ? "input" : "keyup";
       var items = [];
@@ -304,7 +305,7 @@
               }
               return;
           }
-          if (keyCode === 13 /* Enter */) {
+          if (keyCode === 13 /* Enter */ || (keyCode === 9 /* Tab */ && allowSubmitOnTab)) {
               if (selected) {
                   settings.onSelect(selected, input);
                   clear();
@@ -390,5 +391,5 @@
 
   return autocomplete;
 
-}));
+})));
 //# sourceMappingURL=autocomplete.js.map
