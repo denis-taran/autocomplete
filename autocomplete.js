@@ -336,7 +336,7 @@
                           selected = items.length > 0 ? items[0] : undefined;
                           update();
                       }
-                  }, 0 /* Keyboard */);
+                  }, trigger);
               }, trigger === 0 /* Keyboard */ ? debounceWaitMs : 0);
           }
           else {
