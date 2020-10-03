@@ -163,7 +163,7 @@ autocomplete({
     customize: function(input, inputRect, container, maxHeight) {
         if (maxHeight < 100) {
             container.style.top = "";
-            container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+            container.style.bottom = (window.innerHeight - inputRect.top - window.scrollY) + "px";
             container.style.maxHeight = "200px";
         }
     }
@@ -179,7 +179,7 @@ export default function autocompleteCustomized<T extends AutocompleteItem>(setti
         customize: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number): void => {
             if (maxHeight < 100) {
                 container.style.top = "";
-                container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+                container.style.bottom = (window.innerHeight - inputRect.top - window.scrollY) + "px";
                 container.style.maxHeight = "200px";
             }
         }
