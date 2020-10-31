@@ -441,7 +441,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                         selected = items.length > 0 ? items[0] : undefined;
                         update();
                     }
-                }, EventTrigger.Keyboard);
+                }, trigger);
             }, trigger === EventTrigger.Keyboard ? debounceWaitMs : 0);
         } else {
             clear();

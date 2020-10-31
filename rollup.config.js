@@ -15,17 +15,19 @@ export default {
             file: pkg.main.replace('.js', '.min.js'),
             format: 'umd',
             sourcemap: true,
-            name: 'autocomplete'
+            name: 'autocomplete',
+            plugins: [
+                terser({
+                    compress: true,
+                    mangle: true
+                })
+            ]
         }
     ],
     plugins: [
         typescript({
             typescript: require('typescript'),
         }),
-        sourceMaps(),
-        terser({
-            compress: true,
-            mangle: true
-        })
+        sourceMaps()
     ]
 }
