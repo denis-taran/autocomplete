@@ -290,7 +290,7 @@
                   clear();
               }
               else {
-                  if (!containerDisplayed || items.length < 1) {
+                  if (!containerIsDisplayed || items.length < 1) {
                       return;
                   }
                   keyCode === 38 /* Up */
