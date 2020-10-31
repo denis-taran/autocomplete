@@ -388,7 +388,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             if (keyCode === Keys.Esc) {
                 clear();
             } else {
-                if (!containerDisplayed || items.length < 1) {
+                if (!containerIsDisplayed || items.length < 1) {
                     return;
                 }
                 keyCode === Keys.Up

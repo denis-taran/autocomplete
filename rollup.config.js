@@ -24,8 +24,6 @@ export default {
         }),
         sourceMaps(),
         terser({
-            sourcemap: true,
-            include: [/^.+\.min\.js$/],
             compress: true,
             mangle: true
         })
