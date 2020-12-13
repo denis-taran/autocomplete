@@ -40,6 +40,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
+    /**
+     * Prevents the first item in the list from being selected automatically. This option allows you
+     * to submit a custom text by pressing ENTER even when autocomplete is displayed.
+     */
+    disableAutoSelect?: boolean;
 }
 
 export interface AutocompleteResult {
@@ -74,6 +79,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
+    const disableAutoSelect = settings.disableAutoSelect || false;
     
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
@@ -424,10 +430,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function startFetch(trigger: EventTrigger) {
-        // if multiple keys were pressed, before we get update from server,
-        // this may cause redrawing our autocomplete multiple times after the last key press.
-        // to avoid this, the number of times keyboard was pressed will be
-        // saved and checked before redraw our autocomplete box.
+        // If multiple keys were pressed, before we get an update from server,
+        // this may cause redrawing autocomplete multiple times after the last key was pressed.
+        // To avoid this, the number of times keyboard was pressed will be saved and checked before redraw.
         const savedKeypressCounter = ++keypressCounter;
 
         const val = input.value;
@@ -438,7 +443,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                     if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
                         inputValue = val;
-                        selected = items.length > 0 ? items[0] : undefined;
+                        selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
                         update();
                     }
                 }, trigger);
