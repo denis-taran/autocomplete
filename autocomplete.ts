@@ -110,7 +110,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     // just an alias to minimize JS file size
     const doc = document;
 
-    const container: HTMLDivElement = settings.container ? settings.container : doc.createElement("div");
+    const container: HTMLDivElement = settings.container || doc.createElement("div");
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
