@@ -19,6 +19,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Autocomplete will be attached to this element.
      */
     input: HTMLInputElement;
+    /**
+     * Provide your own container for the widget.
+     * If not specified, a new DIV element will be created.
+     */
     container?: HTMLDivElement;
     /**
      * This method allows you to override the default rendering function for items.
