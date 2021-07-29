@@ -152,7 +152,8 @@ autocomplete({
         ...
     },
     preventSubmit: true,
-    disableAutoSelect: true
+    disableAutoSelect: true,
+    container: document.createElement("div")
 });
 ```
 
