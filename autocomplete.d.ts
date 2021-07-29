@@ -11,6 +11,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Autocomplete will be attached to this element.
      */
     input: HTMLInputElement;
+    container?: HTMLDivElement;
     /**
      * This method allows you to override the default rendering function for items.
      * It must return a DIV element or undefined to skip rendering.

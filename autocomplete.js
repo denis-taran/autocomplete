@@ -12,7 +12,7 @@
   function autocomplete(settings) {
       // just an alias to minimize JS file size
       var doc = document;
-      var container = doc.createElement("div");
+      var container = settings.container ? settings.container : doc.createElement("div");
       var containerStyle = container.style;
       var userAgent = navigator.userAgent;
       var mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;

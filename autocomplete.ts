@@ -19,6 +19,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Autocomplete will be attached to this element.
      */
     input: HTMLInputElement;
+    container?: HTMLDivElement;
     /**
      * This method allows you to override the default rendering function for items.
      * It must return a DIV element or undefined to skip rendering.
@@ -105,7 +106,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     // just an alias to minimize JS file size
     const doc = document;
 
-    const container: HTMLDivElement = doc.createElement("div");
+    const container: HTMLDivElement = settings.container ? settings.container : doc.createElement("div");
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
