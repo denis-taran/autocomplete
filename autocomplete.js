@@ -160,6 +160,7 @@
                   div.addEventListener("click", function (ev) {
                       settings.onSelect(item, input);
                       clear();
+                      settings.postSelect(item, startFetch);
                       ev.preventDefault();
                       ev.stopPropagation();
                   });
