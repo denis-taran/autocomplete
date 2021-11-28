@@ -67,8 +67,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * This method will be called to prepare suggestions and then pass them to autocomplete.
      * @param {string} text - text in the input field
      * @param {(items: T[] | false) => void} update - a callback function that must be called after suggestions are prepared
+     * @param {EventTrigger} trigger - type of the event that triggered the fetch
+     * @param {number} cursorPos - position of the cursor in the input field
      */
-    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger) => void;
+    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger, cursorPos: number) => void;
 
     /**
      * Enforces that the fetch function will only be called once within the specified time frame (in milliseconds) and
@@ -95,13 +97,18 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
      */
     disableAutoSelect?: boolean;
+
+    /**
+     * Keys that will be ignored and not trigger the fetch callback.
+     */
+    keysToIgnore?: Keys[];
 }
 
 export interface AutocompleteResult {
     destroy: () => void;
 }
 
-const enum Keys {
+export const enum Keys {
     Enter = 13,
     Esc = 27,
     Up = 38,
@@ -351,14 +358,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function keyupEventHandler(ev: KeyboardEvent): void {
         const keyCode = ev.which || ev.keyCode || 0;
 
-        const ignore = [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
+        const ignore = settings.keysToIgnore || [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
         for (const key of ignore) {
             if (keyCode === key) {
                 return;
             }
         }
 
-        if (keyCode >= Keys.F1 && keyCode <= Keys.F12) {
+        if (keyCode >= Keys.F1 && keyCode <= Keys.F12 && !settings.keysToIgnore) {
             return;
         }
 
@@ -485,18 +492,20 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         // To avoid this, the number of times keyboard was pressed will be saved and checked before redraw.
         const savedKeypressCounter = ++keypressCounter;
 
-        const val = input.value;
-        if (val.length >= minLen || trigger === EventTrigger.Focus) {
+        const inputText = input.value;
+        const cursorPos = input.selectionStart || 0;
+
+        if (inputText.length >= minLen || trigger === EventTrigger.Focus) {
             clearDebounceTimer();
             debounceTimer = window.setTimeout(function(): void {
-                settings.fetch(val, function(elements: T[] | false): void {
+                settings.fetch(inputText, function(elements: T[] | false): void {
                     if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
-                        inputValue = val;
+                        inputValue = inputText;
                         selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
                         update();
                     }
-                }, trigger);
+                }, trigger, cursorPos);
             }, trigger === EventTrigger.Keyboard ? debounceWaitMs : 0);
         } else {
             clear();

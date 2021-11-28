@@ -15,7 +15,7 @@
       var container = settings.container || doc.createElement("div");
       var containerStyle = container.style;
       var userAgent = navigator.userAgent;
-      var mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
+      var mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
       var debounceWaitMs = settings.debounceWaitMs || 0;
       var preventSubmit = settings.preventSubmit || false;
       var disableAutoSelect = settings.disableAutoSelect || false;
@@ -204,14 +204,14 @@
       }
       function keyupEventHandler(ev) {
           var keyCode = ev.which || ev.keyCode || 0;
-          var ignore = [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
+          var ignore = settings.keysToIgnore || [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
           for (var _i = 0, ignore_1 = ignore; _i < ignore_1.length; _i++) {
               var key = ignore_1[_i];
               if (keyCode === key) {
                   return;
               }
           }
-          if (keyCode >= 112 /* F1 */ && keyCode <= 123 /* F12 */) {
+          if (keyCode >= 112 /* F1 */ && keyCode <= 123 /* F12 */ && !settings.keysToIgnore) {
               return;
           }
           // the down key is used to open autocomplete
@@ -325,18 +325,19 @@
           // this may cause redrawing autocomplete multiple times after the last key was pressed.
           // To avoid this, the number of times keyboard was pressed will be saved and checked before redraw.
           var savedKeypressCounter = ++keypressCounter;
-          var val = input.value;
-          if (val.length >= minLen || trigger === 1 /* Focus */) {
+          var inputText = input.value;
+          var cursorPos = input.selectionStart || 0;
+          if (inputText.length >= minLen || trigger === 1 /* Focus */) {
               clearDebounceTimer();
               debounceTimer = window.setTimeout(function () {
-                  settings.fetch(val, function (elements) {
+                  settings.fetch(inputText, function (elements) {
                       if (keypressCounter === savedKeypressCounter && elements) {
                           items = elements;
-                          inputValue = val;
+                          inputValue = inputText;
                           selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
                           update();
                       }
-                  }, trigger);
+                  }, trigger, cursorPos);
               }, trigger === 0 /* Keyboard */ ? debounceWaitMs : 0);
           }
           else {

@@ -50,8 +50,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * This method will be called to prepare suggestions and then pass them to autocomplete.
      * @param {string} text - text in the input field
      * @param {(items: T[] | false) => void} update - a callback function that must be called after suggestions are prepared
+     * @param {EventTrigger} trigger - type of the event that triggered the fetch
+     * @param {number} cursorPos - position of the cursor in the input field
      */
-    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger) => void;
+    fetch: (text: string, update: (items: T[] | false) => void, trigger: EventTrigger, cursorPos: number) => void;
     /**
      * Enforces that the fetch function will only be called once within the specified time frame (in milliseconds) and
      * delays execution. This prevents flooding your server with AJAX requests.
@@ -74,8 +76,28 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
      */
     disableAutoSelect?: boolean;
+    /**
+     * Keys that will be ignored and not trigger the fetch callback.
+     */
+    keysToIgnore?: Keys[];
 }
 export interface AutocompleteResult {
     destroy: () => void;
+}
+export declare const enum Keys {
+    Enter = 13,
+    Esc = 27,
+    Up = 38,
+    Down = 40,
+    Left = 37,
+    Right = 39,
+    Shift = 16,
+    Ctrl = 17,
+    Alt = 18,
+    CapsLock = 20,
+    WindowsKey = 91,
+    Tab = 9,
+    F1 = 112,
+    F12 = 123
 }
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
