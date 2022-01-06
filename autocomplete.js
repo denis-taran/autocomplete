@@ -130,6 +130,10 @@
           var render = function (item, currentValue) {
               var itemElement = doc.createElement("div");
               itemElement.textContent = item.label || "";
+              //If class has added, add it to the created div
+              if (Object.keys(item).includes('class')) {
+                itemElement.classList.add(item.class);
+              }
               return itemElement;
           };
           if (settings.render) {
