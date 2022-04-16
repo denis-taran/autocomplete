@@ -470,12 +470,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         if (keyCode === Keys.Enter) {
             if (selected) {
+                if (preventSubmit) {
+                    ev.preventDefault();
+                }
+                
                 settings.onSelect(selected, input);
                 clear();
-            }
-    
-            if (preventSubmit) {
-                ev.preventDefault();
             }
         }
     }
