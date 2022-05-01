@@ -10,7 +10,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
      * Autocomplete will be attached to this element.
      */
-    input: HTMLInputElement;
+    input: HTMLInputElement | HTMLTextAreaElement;
     /**
      * Provide your own container for the widget.
      * If not specified, a new DIV element will be created.
@@ -41,7 +41,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
      * This method will be called when user choose an item in autocomplete. The selected item will be passed as the first parameter.
      */
-    onSelect: (item: T, input: HTMLInputElement) => void;
+    onSelect: (item: T, input: HTMLInputElement | HTMLTextAreaElement) => void;
     /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
      */
@@ -61,12 +61,12 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     debounceWaitMs?: number;
     /**
      * Callback for additional autocomplete customization
-     * @param {HTMLInputElement} input - input box associated with autocomplete
+     * @param {HTMLInputElement | HTMLTextAreaElement} input - input box associated with autocomplete
      * @param {ClientRect | DOMRect} inputRect - size of the input box and its position relative to the viewport
      * @param {HTMLDivElement} container - container with suggestions
      * @param {number} maxHeight - max height that can be used by autocomplete
      */
-    customize?: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
+    customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
     /**
      * Prevents automatic form submit when ENTER is pressed
      */
