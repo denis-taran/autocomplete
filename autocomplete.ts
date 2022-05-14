@@ -18,7 +18,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
      * Autocomplete will be attached to this element.
      */
-    input: HTMLInputElement;
+    input: HTMLInputElement | HTMLTextAreaElement;
 
     /**
      * Provide your own container for the widget.
@@ -56,7 +56,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
      * This method will be called when user choose an item in autocomplete. The selected item will be passed as the first parameter.
      */
-    onSelect: (item: T, input: HTMLInputElement) => void;
+    onSelect: (item: T, input: HTMLInputElement | HTMLTextAreaElement) => void;
 
     /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
@@ -80,12 +80,12 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
 
     /**
      * Callback for additional autocomplete customization
-     * @param {HTMLInputElement} input - input box associated with autocomplete
+     * @param {HTMLInputElement | HTMLTextAreaElement} input - input box associated with autocomplete
      * @param {ClientRect | DOMRect} inputRect - size of the input box and its position relative to the viewport
      * @param {HTMLDivElement} container - container with suggestions
      * @param {number} maxHeight - max height that can be used by autocomplete
      */
-    customize?: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
+    customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
 
     /**
      * Prevents automatic form submit when ENTER is pressed
@@ -157,7 +157,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         throw new Error("input undefined");
     }
 
-    const input: HTMLInputElement = settings.input;
+    const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
 
@@ -540,7 +540,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function destroy(): void {
         input.removeEventListener("focus", focusEventHandler);
-        input.removeEventListener("keydown", keydownEventHandler);
+        input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
@@ -550,7 +550,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     // setup event handlers
-    input.addEventListener("keydown", keydownEventHandler);
+    input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("blur", blurEventHandler);
     input.addEventListener("focus", focusEventHandler);

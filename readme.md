@@ -124,7 +124,7 @@ You can pass the following options to `autocomplete`:
 
 By default, the widget will ignore the following keys:
 
-    Up, Enter, Esc, Right, Left, Shift, Ctrl, Alt, CapsLock, WindowsKey, Tab
+    Up, Enter, Esc, Right, Left, Shift, Ctrl, Alt, Caps Lock, Windows Key, Tab, F1 - F12
 
 ### Sample config using all options
 
