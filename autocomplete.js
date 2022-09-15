@@ -344,10 +344,13 @@
               clear();
           }
       }
-      function blurEventHandler() {
+      function blurEventHandler(e) {
           // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
           setTimeout(function () {
               if (doc.activeElement !== input) {
+                  if (typeof settings.onBlur !== 'undefined') {
+                      settings.onBlur(e);
+                  }
                   clear();
               }
           }, 200);

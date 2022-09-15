@@ -59,6 +59,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     onSelect: (item: T, input: HTMLInputElement | HTMLTextAreaElement) => void;
 
     /**
+     * This method will be called when input blur event is fired
+     */
+    onBlur?: (e: FocusEvent) => void;
+
+    /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
      */
     showOnFocus?: boolean;
@@ -91,7 +96,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
-    
+
     /**
      * Prevents the first item in the list from being selected automatically. This option allows you
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
@@ -137,10 +142,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
-    
+
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
-    
+
     let items: T[] = [];
     let inputValue = "";
     let minLen = 2;
@@ -205,7 +210,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function clear(): void {
         // prevent the update call if there are pending AJAX requests
         keypressCounter++;
-        
+
         items = [];
         inputValue = "";
         selected = undefined;
@@ -234,19 +239,19 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const scrollLeft = window.pageXOffset || docEl.scrollLeft;
 
             inputRect = input.getBoundingClientRect();
-        
+
             const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
             const left = inputRect.left + scrollLeft - clientLeft;
-    
+
             containerStyle.top = top + "px";
             containerStyle.left = left + "px";
-    
+
             maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
-    
+
             if (maxHeight < 0) {
                 maxHeight = 0;
             }
-    
+
             containerStyle.top = top + "px";
             containerStyle.bottom = "";
             containerStyle.left = left + "px";
@@ -266,7 +271,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Redraw the autocomplete div element with suggestions
      */
     function update(): void {
-        
+
         // delete all children from autocomplete DOM container
         while (container.firstChild) {
             container.removeChild(container.firstChild);
@@ -384,7 +389,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
-            
+
             // make group visible
             const previous = element.previousElementSibling as HTMLDivElement;
             if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
@@ -473,7 +478,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 settings.onSelect(selected, input);
                 clear();
             }
-    
+
             if (preventSubmit) {
                 ev.preventDefault();
             }
@@ -512,10 +517,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    function blurEventHandler(): void {
+    function blurEventHandler(e: FocusEvent): void {
         // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
         setTimeout(() => {
             if (doc.activeElement !== input) {
+                if (typeof settings.onBlur !== 'undefined') {
+                    settings.onBlur(e);
+                }
                 clear();
             }
         }, 200);
@@ -542,7 +550,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeEventListener("focus", focusEventHandler);
         input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener("blur", blurEventHandler);
+        input.removeEventListener("blur", blurEventHandler as EventListenerOrEventListenerObject);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
         clearDebounceTimer();
@@ -552,7 +560,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     // setup event handlers
     input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("blur", blurEventHandler);
+    input.addEventListener("blur", blurEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("focus", focusEventHandler);
     window.addEventListener("resize", resizeEventHandler);
     doc.addEventListener("scroll", scrollEventHandler, true);

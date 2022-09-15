@@ -43,6 +43,10 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      */
     onSelect: (item: T, input: HTMLInputElement | HTMLTextAreaElement) => void;
     /**
+     * This method will be called when input blur event is fired
+     */
+    onBlur?: (e: FocusEvent) => void;
+    /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
      */
     showOnFocus?: boolean;

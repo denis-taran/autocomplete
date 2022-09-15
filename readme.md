@@ -107,6 +107,7 @@ You can pass the following options to `autocomplete`:
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 |`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|`-`|
+| `onBlur`|This method will be called when input blur event is fired.|`-`|
 |`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|`-`|
 |`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
 |`emptyMsg`|The message that will be showed when there are no suggestions that match the entered value.|`undefined`|
@@ -132,6 +133,9 @@ By default, the widget will ignore the following keys:
 autocomplete({
     onSelect: function(item, input) {
         alert(item.value);
+    },
+    onBlur: function(e) {
+        console.log(e);  
     },
     input: document.getElementById('myinput'),
     minLength: 2,
