@@ -4,7 +4,7 @@
   * MIT License
   */
 
- export const enum EventTrigger {
+export const enum EventTrigger {
     Keyboard = 0,
     Focus = 1
 }
