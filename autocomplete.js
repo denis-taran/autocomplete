@@ -13,6 +13,14 @@
       // just an alias to minimize JS file size
       var doc = document;
       var container = settings.container || doc.createElement("div");
+      var containerId = container.id;
+      if (!containerId || !containerId.length) {
+          var index = 0;
+          do {
+              containerId = "autocomplete-" + index++;
+          } while (doc.getElementById(containerId) != null && index < 100000);
+          container.id = containerId;
+      }
       var containerStyle = container.style;
       var userAgent = navigator.userAgent;
       var mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
@@ -36,6 +44,12 @@
       }
       var input = settings.input;
       container.className = "autocomplete " + (settings.className || "");
+      input.setAttribute("aria-role", "combobox");
+      input.setAttribute("aria-expanded", "false");
+      input.setAttribute("aria-autocomplete", "list");
+      input.setAttribute("aria-controls", containerId);
+      input.setAttribute("aria-activedescendant", "");
+      container.setAttribute("aria-role", "listbox");
       // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
       containerStyle.position = "absolute";
       /**
@@ -78,6 +92,8 @@
           items = [];
           inputValue = "";
           selected = undefined;
+          input.setAttribute("aria-activedescendant", "");
+          input.setAttribute("aria-expanded", "false");
           detach();
       }
       /**
@@ -87,6 +103,7 @@
           if (!containerDisplayed()) {
               return;
           }
+          input.setAttribute("aria-expanded", "true");
           containerStyle.height = "auto";
           containerStyle.width = input.offsetWidth + "px";
           var maxHeight = 0;
@@ -146,7 +163,7 @@
           }
           var fragment = doc.createDocumentFragment();
           var prevGroup = "#9?$";
-          items.forEach(function (item) {
+          items.forEach(function (item, index) {
               if (item.group && item.group !== prevGroup) {
                   prevGroup = item.group;
                   var groupDiv = renderGroup(item.group, inputValue);
@@ -157,6 +174,8 @@
               }
               var div = render(item, inputValue);
               if (div) {
+                  div.id = containerId + "_" + index;
+                  div.setAttribute("aria-role", "option");
                   div.addEventListener("click", function (ev) {
                       settings.onSelect(item, input);
                       clear();
@@ -165,6 +184,8 @@
                   });
                   if (item === selected) {
                       div.className += " selected";
+                      div.setAttribute("aria-selected", "true");
+                      input.setAttribute("aria-activedescendant", div.id);
                   }
                   fragment.appendChild(div);
               }
@@ -374,6 +395,11 @@
           input.removeEventListener("blur", blurEventHandler);
           window.removeEventListener("resize", resizeEventHandler);
           doc.removeEventListener("scroll", scrollEventHandler, true);
+          input.removeAttribute("aria-role");
+          input.removeAttribute("aria-expanded");
+          input.removeAttribute("aria-autocomplete");
+          input.removeAttribute("aria-controls");
+          input.removeAttribute("aria-activedescendant");
           clearDebounceTimer();
           clear();
       }
