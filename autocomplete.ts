@@ -131,6 +131,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const doc = document;
 
     const container: HTMLDivElement = settings.container || doc.createElement("div");
+    let containerId = container.id;
+    if(!containerId || !containerId.length) {
+        let index = 0;
+        do {
+            containerId = "autocomplete-" + index++;
+        } while (doc.getElementById(containerId) != null && index < 100000);
+        container.id = containerId;
+    }
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
     const mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
@@ -160,6 +168,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
+    input.setAttribute("aria-role", "combobox");
+    input.setAttribute("aria-expanded", "false");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-controls", containerId);
+    input.setAttribute("aria-activedescendant", "");
+    container.setAttribute("aria-role", "listbox");
 
     // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
     containerStyle.position = "absolute";
@@ -209,6 +223,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         items = [];
         inputValue = "";
         selected = undefined;
+        input.setAttribute("aria-activedescendant", "");
+        input.setAttribute("aria-expanded", "false");
         detach();
     }
 
@@ -219,6 +235,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         if (!containerDisplayed()) {
             return;
         }
+        
+        input.setAttribute("aria-expanded", "true");
 
         containerStyle.height = "auto";
         containerStyle.width = input.offsetWidth + "px";
@@ -295,7 +313,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const fragment = doc.createDocumentFragment();
         let prevGroup = "#9?$";
 
-        items.forEach(function(item: T): void {
+        items.forEach(function(item: T, index: number): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
                 const groupDiv = renderGroup(item.group, inputValue);
@@ -306,6 +324,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             }
             const div = render(item, inputValue);
             if (div) {
+                div.id = `${containerId}_${index}`;
+                div.setAttribute("aria-role", "option");
                 div.addEventListener("click", function(ev: MouseEvent): void {
                     settings.onSelect(item, input);
                     clear();
@@ -314,6 +334,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 });
                 if (item === selected) {
                     div.className += " selected";
+                    div.setAttribute("aria-selected", "true");
+                    input.setAttribute("aria-activedescendant", div.id);
                 }
                 fragment.appendChild(div);
             }
@@ -545,6 +567,11 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
+        input.removeAttribute("aria-role");
+        input.removeAttribute("aria-expanded");
+        input.removeAttribute("aria-autocomplete");
+        input.removeAttribute("aria-controls");
+        input.removeAttribute("aria-activedescendant");
         clearDebounceTimer();
         clear();
     }
