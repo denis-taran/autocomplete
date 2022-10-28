@@ -20,7 +20,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * This method allows you to override the default rendering function for items.
      * It must return a DIV element or undefined to skip rendering.
      */
-    render?: (item: T, currentValue: string) => HTMLDivElement | undefined;
+    render?: (item: T, currentValue: string, index: number) => HTMLDivElement | undefined;
     /**
      * This method allows you to override the default rendering function for item groups.
      * It must return a DIV element or undefined to skip rendering.

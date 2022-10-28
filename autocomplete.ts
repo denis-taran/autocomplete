@@ -1,8 +1,8 @@
- /*
-  * https://github.com/kraaden/autocomplete
-  * Copyright (c) 2016 Denys Krasnoshchok
-  * MIT License
-  */
+/*
+ * https://github.com/kraaden/autocomplete
+ * Copyright (c) 2016 Denys Krasnoshchok
+ * MIT License
+ */
 
 export const enum EventTrigger {
     Keyboard = 0,
@@ -30,7 +30,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * This method allows you to override the default rendering function for items.
      * It must return a DIV element or undefined to skip rendering.
      */
-    render?: (item: T, currentValue: string) => HTMLDivElement | undefined;
+    render?: (item: T, currentValue: string, index: number) => HTMLDivElement | undefined;
 
     /**
      * This method allows you to override the default rendering function for item groups.
@@ -91,7 +91,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * Prevents automatic form submit when ENTER is pressed
      */
     preventSubmit?: boolean;
-    
+
     /**
      * Prevents the first item in the list from being selected automatically. This option allows you
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
@@ -131,31 +131,24 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const doc = document;
 
     const container: HTMLDivElement = settings.container || doc.createElement("div");
-    let containerId = container.id;
-    if(!containerId || !containerId.length) {
-        let index = 0;
-        do {
-            containerId = "autocomplete-" + index++;
-        } while (doc.getElementById(containerId) != null && index < 100000);
-        container.id = containerId;
-    }
+    container.id = container.id || "autocomplete-" + uid();
     const containerStyle = container.style;
     const userAgent = navigator.userAgent;
     const mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
-    
+
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
-    
+
     let items: T[] = [];
     let inputValue = "";
     let minLen = 2;
     const showOnFocus = settings.showOnFocus;
     let selected: T | undefined;
     let keypressCounter = 0;
-    let debounceTimer : number | undefined;
+    let debounceTimer: number | undefined;
 
     if (settings.minLength !== undefined) {
         minLen = settings.minLength;
@@ -168,15 +161,23 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
+    container.setAttribute("aria-role", "listbox");
+
     input.setAttribute("aria-role", "combobox");
     input.setAttribute("aria-expanded", "false");
     input.setAttribute("aria-autocomplete", "list");
-    input.setAttribute("aria-controls", containerId);
+    input.setAttribute("aria-controls", container.id);
     input.setAttribute("aria-activedescendant", "");
-    container.setAttribute("aria-role", "listbox");
 
     // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
     containerStyle.position = "absolute";
+
+    /**
+     * Generate a unique ID
+     */
+    function uid(): string {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
 
     /**
      * Detach the container from DOM
@@ -219,7 +220,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function clear(): void {
         // prevent the update call if there are pending AJAX requests
         keypressCounter++;
-        
+
         items = [];
         inputValue = "";
         selected = undefined;
@@ -235,7 +236,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         if (!containerDisplayed()) {
             return;
         }
-        
+
         input.setAttribute("aria-expanded", "true");
 
         containerStyle.height = "auto";
@@ -252,19 +253,19 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const scrollLeft = window.pageXOffset || docEl.scrollLeft;
 
             inputRect = input.getBoundingClientRect();
-        
+
             const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
             const left = inputRect.left + scrollLeft - clientLeft;
-    
+
             containerStyle.top = top + "px";
             containerStyle.left = left + "px";
-    
+
             maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
-    
+
             if (maxHeight < 0) {
                 maxHeight = 0;
             }
-    
+
             containerStyle.top = top + "px";
             containerStyle.bottom = "";
             containerStyle.left = left + "px";
@@ -284,14 +285,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Redraw the autocomplete div element with suggestions
      */
     function update(): void {
-        
+
         // delete all children from autocomplete DOM container
         while (container.firstChild) {
             container.removeChild(container.firstChild);
         }
 
         // function for rendering autocomplete suggestions
-        let render = function(item: T, currentValue: string): HTMLDivElement | undefined {
+        let render = function (item: T, _: string, __: number): HTMLDivElement | undefined {
             const itemElement = doc.createElement("div");
             itemElement.textContent = item.label || "";
             return itemElement;
@@ -301,7 +302,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
 
         // function to render autocomplete groups
-        let renderGroup = function(groupName: string, currentValue: string): HTMLDivElement | undefined {
+        let renderGroup = function (groupName: string, _: string): HTMLDivElement | undefined {
             const groupDiv = doc.createElement("div");
             groupDiv.textContent = groupName;
             return groupDiv;
@@ -313,7 +314,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const fragment = doc.createDocumentFragment();
         let prevGroup = "#9?$";
 
-        items.forEach(function(item: T, index: number): void {
+        items.forEach(function (item: T, index: number): void {
             if (item.group && item.group !== prevGroup) {
                 prevGroup = item.group;
                 const groupDiv = renderGroup(item.group, inputValue);
@@ -322,11 +323,11 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                     fragment.appendChild(groupDiv);
                 }
             }
-            const div = render(item, inputValue);
+            const div = render(item, inputValue, index);
             if (div) {
-                div.id = `${containerId}_${index}`;
+                div.id = `${container.id}_${index}`;
                 div.setAttribute("aria-role", "option");
-                div.addEventListener("click", function(ev: MouseEvent): void {
+                div.addEventListener("click", function (ev: MouseEvent): void {
                     settings.onSelect(item, input);
                     clear();
                     ev.preventDefault();
@@ -406,7 +407,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
-            
+
             // make group visible
             const previous = element.previousElementSibling as HTMLDivElement;
             if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
@@ -495,7 +496,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 settings.onSelect(selected, input);
                 clear();
             }
-    
+
             if (preventSubmit) {
                 ev.preventDefault();
             }
@@ -519,8 +520,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         if (inputText.length >= minLen || trigger === EventTrigger.Focus) {
             clearDebounceTimer();
-            debounceTimer = window.setTimeout(function(): void {
-                settings.fetch(inputText, function(elements: T[] | false): void {
+            debounceTimer = window.setTimeout(function (): void {
+                settings.fetch(inputText, function (elements: T[] | false): void {
                     if (keypressCounter === savedKeypressCounter && elements) {
                         items = elements;
                         inputValue = inputText;
@@ -546,7 +547,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
      */
-    container.addEventListener("mousedown", function(evt: Event) {
+    container.addEventListener("mousedown", function (evt: Event) {
         evt.stopPropagation();
         evt.preventDefault();
     });
