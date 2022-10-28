@@ -1,60 +1,60 @@
 {
-  "name": "autocompleter",
-  "version": "6.1.3",
-  "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
-  "main": "autocomplete.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:js": "rollup -c",
-    "build:css": "node ./node_modules/clean-css-cli/bin/cleancss ./autocomplete.css -o ./autocomplete.min.css",
-    "build": "npm run build:js && npm run build:css"
-  },
-  "author": "Denys Krasnoshchok",
-  "license": "MIT",
-  "devDependencies": {
-    "clean-css-cli": "4.3.0",
-    "rollup": "2.32.1",
-    "rollup-plugin-sourcemaps": "0.6.3",
-    "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-typescript2": "0.29.0",
-    "tslint": "6.1.3",
-    "typescript": "4.0.5"
-  },
-  "homepage": "https://kraaden.github.io/autocomplete/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kraaden/autocomplete.git"
-  },
-  "bugs": {
-    "url": "https://github.com/kraaden/autocomplete/issues"
-  },
-  "types": "./autocomplete.d.ts",
-  "keywords": [
-    "autocomplete",
-    "autocompleter",
-    "lightweight",
-    "javascript",
-    "auto-complete",
-    "vanilla",
-    "vanilla-js",
-    "input",
-    "ui",
-    "complete",
-    "ajax",
-    "form",
-    "component",
-    "collapse",
-    "dropdown",
-    "suggester",
-    "fast",
-    "tiny",
-    "small",
-    "typescript",
-    "widget",
-    "grouping",
-    "group",
-    "groups",
-    "categories",
-    "category"
-  ]
+    "name": "autocompleter",
+    "version": "7.0.0-alpha.0",
+    "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
+    "main": "autocomplete.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:js": "rollup -c",
+        "build:css": "node ./node_modules/clean-css-cli/bin/cleancss ./autocomplete.css -o ./autocomplete.min.css",
+        "build": "npm run build:js && npm run build:css"
+    },
+    "author": "Denys Krasnoshchok",
+    "license": "MIT",
+    "devDependencies": {
+        "clean-css-cli": "4.3.0",
+        "rollup": "2.32.1",
+        "rollup-plugin-sourcemaps": "0.6.3",
+        "rollup-plugin-terser": "7.0.2",
+        "rollup-plugin-typescript2": "0.29.0",
+        "tslint": "6.1.3",
+        "typescript": "4.0.5"
+    },
+    "homepage": "https://kraaden.github.io/autocomplete/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kraaden/autocomplete.git"
+    },
+    "bugs": {
+        "url": "https://github.com/kraaden/autocomplete/issues"
+    },
+    "types": "./autocomplete.d.ts",
+    "keywords": [
+        "autocomplete",
+        "autocompleter",
+        "lightweight",
+        "javascript",
+        "auto-complete",
+        "vanilla",
+        "vanilla-js",
+        "input",
+        "ui",
+        "complete",
+        "ajax",
+        "form",
+        "component",
+        "collapse",
+        "dropdown",
+        "suggester",
+        "fast",
+        "tiny",
+        "small",
+        "typescript",
+        "widget",
+        "grouping",
+        "group",
+        "groups",
+        "categories",
+        "category"
+    ]
 }
