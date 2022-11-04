@@ -282,6 +282,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     /**
+     * Simple query string hash to ensure unique IDs for the option divs for every query
+     */
+    function stringHash(s: string): number {
+        return s.length + (s.at(-1)?.charCodeAt(0) || -1) + (s.at(-2)?.charCodeAt(0) || -1) + (s.at(-3)?.charCodeAt(0) || -1);
+    }
+
+    /**
      * Redraw the autocomplete div element with suggestions
      */
     function update(): void {
@@ -326,7 +333,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             }
             const div = render(item, inputValue, index);
             if (div) {
-                div.id = `${container.id}_${index}`;
+                div.id = `${container.id}_${index}_${stringHash(inputValue)}`;
                 div.setAttribute("role", "option");
                 div.addEventListener("click", function (ev: MouseEvent): void {
                     settings.onSelect(item, input);
