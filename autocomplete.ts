@@ -290,6 +290,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         while (container.firstChild) {
             container.removeChild(container.firstChild);
         }
+        input.setAttribute("aria-activedescendant", "");
 
         // function for rendering autocomplete suggestions
         let render = function (item: T, _: string, __: number): HTMLDivElement | undefined {
