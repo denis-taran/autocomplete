@@ -167,7 +167,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     input.setAttribute("aria-expanded", "false");
     input.setAttribute("aria-autocomplete", "list");
     input.setAttribute("aria-controls", container.id);
+    input.setAttribute("aria-owns", container.id);
     input.setAttribute("aria-activedescendant", "");
+    input.setAttribute("aria-haspopup", "listbox");
 
     // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
     containerStyle.position = "absolute";
@@ -582,7 +584,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeAttribute("aria-expanded");
         input.removeAttribute("aria-autocomplete");
         input.removeAttribute("aria-controls");
+        input.removeAttribute("aria-owns");
         input.removeAttribute("aria-activedescendant");
+        input.removeAttribute("aria-haspopup");
         clearDebounceTimer();
         clear();
     }
