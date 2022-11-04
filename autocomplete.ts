@@ -161,9 +161,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
     container.className = "autocomplete " + (settings.className || "");
-    container.setAttribute("aria-role", "listbox");
+    container.setAttribute("role", "listbox");
 
-    input.setAttribute("aria-role", "combobox");
+    input.setAttribute("role", "combobox");
     input.setAttribute("aria-expanded", "false");
     input.setAttribute("aria-autocomplete", "list");
     input.setAttribute("aria-controls", container.id);
@@ -326,7 +326,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const div = render(item, inputValue, index);
             if (div) {
                 div.id = `${container.id}_${index}`;
-                div.setAttribute("aria-role", "option");
+                div.setAttribute("role", "option");
                 div.addEventListener("click", function (ev: MouseEvent): void {
                     settings.onSelect(item, input);
                     clear();
@@ -568,7 +568,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
-        input.removeAttribute("aria-role");
+        input.removeAttribute("role");
         input.removeAttribute("aria-expanded");
         input.removeAttribute("aria-autocomplete");
         input.removeAttribute("aria-controls");
