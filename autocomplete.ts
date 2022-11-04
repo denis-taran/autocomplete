@@ -351,11 +351,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         });
         container.appendChild(fragment);
         if (items.length < 1) {
-            if (settings.emptyMsg) {
+            if (settings.emptyMsg && inputValue) {
                 const empty = doc.createElement("div");
+                empty.id = `${container.id}_e_${stringHash(inputValue)}`;
                 empty.className = "empty";
                 empty.textContent = settings.emptyMsg;
                 container.appendChild(empty);
+                input.setAttribute("aria-activedescendant", empty.id);
             } else {
                 clear();
                 return;
