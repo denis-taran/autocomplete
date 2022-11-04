@@ -37,12 +37,14 @@
         }
         var input = settings.input;
         container.className = "autocomplete " + (settings.className || "");
-        container.setAttribute("aria-role", "listbox");
-        input.setAttribute("aria-role", "combobox");
+        container.setAttribute("role", "listbox");
+        input.setAttribute("role", "combobox");
         input.setAttribute("aria-expanded", "false");
         input.setAttribute("aria-autocomplete", "list");
         input.setAttribute("aria-controls", container.id);
+        input.setAttribute("aria-owns", container.id);
         input.setAttribute("aria-activedescendant", "");
+        input.setAttribute("aria-haspopup", "listbox");
         // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
         containerStyle.position = "absolute";
         /**
@@ -135,6 +137,13 @@
             }
         }
         /**
+         * Simple query string hash to ensure unique IDs for the option divs for every query
+         */
+        function stringHash(s) {
+            var _a, _b, _c;
+            return s.length + (((_a = s.at(-1)) === null || _a === void 0 ? void 0 : _a.charCodeAt(0)) || -1) + (((_b = s.at(-2)) === null || _b === void 0 ? void 0 : _b.charCodeAt(0)) || -1) + (((_c = s.at(-3)) === null || _c === void 0 ? void 0 : _c.charCodeAt(0)) || -1);
+        }
+        /**
          * Redraw the autocomplete div element with suggestions
          */
         function update() {
@@ -142,6 +151,7 @@
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
+            input.setAttribute("aria-activedescendant", "");
             // function for rendering autocomplete suggestions
             var render = function (item, _, __) {
                 var itemElement = doc.createElement("div");
@@ -173,8 +183,8 @@
                 }
                 var div = render(item, inputValue, index);
                 if (div) {
-                    div.id = container.id + "_" + index;
-                    div.setAttribute("aria-role", "option");
+                    div.id = container.id + "_" + index + "_" + stringHash(inputValue);
+                    div.setAttribute("role", "option");
                     div.addEventListener("click", function (ev) {
                         settings.onSelect(item, input);
                         clear();
@@ -191,11 +201,13 @@
             });
             container.appendChild(fragment);
             if (items.length < 1) {
-                if (settings.emptyMsg) {
+                if (settings.emptyMsg && inputValue) {
                     var empty = doc.createElement("div");
+                    empty.id = container.id + "_e_" + stringHash(inputValue);
                     empty.className = "empty";
                     empty.textContent = settings.emptyMsg;
                     container.appendChild(empty);
+                    input.setAttribute("aria-activedescendant", empty.id);
                 }
                 else {
                     clear();
@@ -394,11 +406,13 @@
             input.removeEventListener("blur", blurEventHandler);
             window.removeEventListener("resize", resizeEventHandler);
             doc.removeEventListener("scroll", scrollEventHandler, true);
-            input.removeAttribute("aria-role");
+            input.removeAttribute("role");
             input.removeAttribute("aria-expanded");
             input.removeAttribute("aria-autocomplete");
             input.removeAttribute("aria-controls");
+            input.removeAttribute("aria-owns");
             input.removeAttribute("aria-activedescendant");
+            input.removeAttribute("aria-haspopup");
             clearDebounceTimer();
             clear();
         }
