@@ -37,12 +37,14 @@
         }
         var input = settings.input;
         container.className = "autocomplete " + (settings.className || "");
-        container.setAttribute("aria-role", "listbox");
-        input.setAttribute("aria-role", "combobox");
+        container.setAttribute("role", "listbox");
+        input.setAttribute("role", "combobox");
         input.setAttribute("aria-expanded", "false");
         input.setAttribute("aria-autocomplete", "list");
         input.setAttribute("aria-controls", container.id);
+        input.setAttribute("aria-owns", container.id);
         input.setAttribute("aria-activedescendant", "");
+        input.setAttribute("aria-haspopup", "listbox");
         // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
         containerStyle.position = "absolute";
         /**
@@ -142,6 +144,7 @@
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
+            input.setAttribute("aria-activedescendant", "");
             // function for rendering autocomplete suggestions
             var render = function (item, _, __) {
                 var itemElement = doc.createElement("div");
@@ -174,7 +177,7 @@
                 var div = render(item, inputValue, index);
                 if (div) {
                     div.id = container.id + "_" + index;
-                    div.setAttribute("aria-role", "option");
+                    div.setAttribute("role", "option");
                     div.addEventListener("click", function (ev) {
                         settings.onSelect(item, input);
                         clear();
@@ -193,9 +196,11 @@
             if (items.length < 1) {
                 if (settings.emptyMsg) {
                     var empty = doc.createElement("div");
+                    empty.id = container.id + "_" + uid();
                     empty.className = "empty";
                     empty.textContent = settings.emptyMsg;
                     container.appendChild(empty);
+                    input.setAttribute("aria-activedescendant", empty.id);
                 }
                 else {
                     clear();
@@ -394,11 +399,13 @@
             input.removeEventListener("blur", blurEventHandler);
             window.removeEventListener("resize", resizeEventHandler);
             doc.removeEventListener("scroll", scrollEventHandler, true);
-            input.removeAttribute("aria-role");
+            input.removeAttribute("role");
             input.removeAttribute("aria-expanded");
             input.removeAttribute("aria-autocomplete");
             input.removeAttribute("aria-controls");
             input.removeAttribute("aria-activedescendant");
+            input.removeAttribute("aria-owns");
+            input.removeAttribute("aria-haspopup");
             clearDebounceTimer();
             clear();
         }
