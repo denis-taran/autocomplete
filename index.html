@@ -1,362 +1,371 @@
-
 <!doctype html>
+
 <head>
-	<meta charset="utf-8">
-	<title>Autocomplete - lightweight open-source autocomplete library</title>
-	<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
-	<script src="./autocomplete.js"></script>
-	<link rel="stylesheet" type="text/css" href="./autocomplete.css">
-	<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
-	<style>
-		html {
-			height: 100%;
-			box-sizing: border-box;
-			overflow: auto;
-			padding: 0;
-			margin: 0;
-		}
+    <meta charset="utf-8">
+    <title>Autocomplete - lightweight open-source autocomplete library</title>
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
+    <script src="./autocomplete.js"></script>
+    <link rel="stylesheet" type="text/css" href="./autocomplete.css">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <style>
+        html {
+            height: 100%;
+            box-sizing: border-box;
+            overflow: auto;
+            padding: 0;
+            margin: 0;
+        }
 
-		body {
-			height: 100%;
-			background: linear-gradient(-77deg, transparent 95%, rgba(255, 255, 255, 0.23) 15%),
-			            linear-gradient(-77deg, transparent 90%, rgba(255, 255, 255, 0.18) 10%),
-						linear-gradient(-77deg, transparent 85%, rgba(255, 255, 255, 0.1) 10%),
-						#1789c7;
-			background-size: cover;
-			box-sizing: border-box;
-			overflow-x: hidden;
-    		overflow-y: auto;
-			padding: 0;
-			margin: 0;
-			font: 14px/18px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
-		}
+        body {
+            height: 100%;
+            background: linear-gradient(-77deg, transparent 95%, rgba(255, 255, 255, 0.23) 15%),
+                linear-gradient(-77deg, transparent 90%, rgba(255, 255, 255, 0.18) 10%),
+                linear-gradient(-77deg, transparent 85%, rgba(255, 255, 255, 0.1) 10%),
+                #1789c7;
+            background-size: cover;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            font: 14px/18px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
+        }
 
-		body * {
-			font: inherit;
-			max-width: 100%;
-		}
+        body * {
+            font: inherit;
+            max-width: 100%;
+        }
 
-		@media (max-width: 800px) {
-			body {
-				background: #1789c7;
-				padding-left: 20px;
-				padding-right: 20px;
-			}
-		}
+        @media (max-width: 800px) {
+            body {
+                background: #1789c7;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
 
-		::-webkit-input-placeholder {
-			color: #888;
-		}
-		:-moz-placeholder {
-			color: #888;
-		}
-		::-moz-placeholder {
-			color: #888;
-		}
-		:-ms-input-placeholder {
-			color: #888;
-		}
+        ::-webkit-input-placeholder {
+            color: #888;
+        }
 
-		input[type="text"] {
-			display: block;
-			float: left;
-			width: 100%;
-			box-sizing: border-box;
-			font: 13px/20px 'Lucida Sans Unicode', sans-serif;
-			color: black;
-			padding: 5px 9px 4px 9px;
-			outline: none;
-			border: 1px solid #2da5da;
-			position: relative;
-			border-radius: 4px;
-			-webkit-appearance: none;
-		}
+        :-moz-placeholder {
+            color: #888;
+        }
 
-		input[type="text"]:focus {
-			border-color: #2da5da;
-		}
+        ::-moz-placeholder {
+            color: #888;
+        }
 
-		body > .main {
-			padding-top: 35px;
-			width: 600px;
-			margin: 0 auto;
-		}
+        :-ms-input-placeholder {
+            color: #888;
+        }
 
-		@media (max-width: 600px) {
-			body > .main {
-				padding-top: 25px;
-			}
-		}
+        input[type="text"] {
+            display: block;
+            float: left;
+            width: 100%;
+            box-sizing: border-box;
+            font: 13px/20px 'Lucida Sans Unicode', sans-serif;
+            color: black;
+            padding: 5px 9px 4px 9px;
+            outline: none;
+            border: 1px solid #2da5da;
+            position: relative;
+            border-radius: 4px;
+            -webkit-appearance: none;
+        }
 
-		h1 {
-			font: bold 38px/38px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-			color: white;
-			padding: 0 0 20px 0;
-			margin: 0;
-		}
+        input[type="text"]:focus {
+            border-color: #2da5da;
+        }
 
-		h2 {
-			font: 15px/24px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-			color: white;
-			padding: 0 0 20px 0;
-			margin: 0;
-			position: relative;
-			top: -20px;
-		}
+        body>.main {
+            padding-top: 35px;
+            width: 600px;
+            margin: 0 auto;
+        }
 
-		@media (max-width: 600px) {
-			h2 {
-				padding-top: 15px;
-				font-size: 14px;
-				line-height: 20px;
-				padding-bottom: 0;
-			}
-		}
+        @media (max-width: 600px) {
+            body>.main {
+                padding-top: 25px;
+            }
+        }
 
-		.autocomplete {
-			border-color: #2da5da;
-			border-radius: 4px;
-		}
+        h1 {
+            font: bold 38px/38px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: white;
+            padding: 0 0 20px 0;
+            margin: 0;
+        }
 
-		.autocomplete > div {
-			padding: 0 9px;
-			font-size: 12px;
-			line-height: 21px;
-			padding-bottom: 2px;
-		}
+        h2 {
+            font: 15px/24px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: white;
+            padding: 0 0 20px 0;
+            margin: 0;
+            position: relative;
+            top: -20px;
+        }
 
-		.label {
-			color: white;
-			font: 11px/17px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-		}
+        @media (max-width: 600px) {
+            h2 {
+                padding-top: 15px;
+                font-size: 14px;
+                line-height: 20px;
+                padding-bottom: 0;
+            }
+        }
 
-		.box {
-			width: 190px;
-			box-sizing: border-box;
-			border: 1px solid rgba(255, 255, 255, 0.8);
-			border-radius: 4px;
-			float: left;
-			margin: 0;
-			padding: 0;
-			background: white;
-			text-align:center;
-			display: table;
-			font-size: 17px;
-			line-height: 26px;
-			box-shadow: rgba(0,0,0,0.3) 0 0 2px;
-		}
+        .autocomplete {
+            border-color: #2da5da;
+            border-radius: 4px;
+        }
 
-		.box > div {
-			display: table-cell;
-			vertical-align: middle;
-			font-size: 14px;
-		}
+        .autocomplete>div {
+            padding: 0 9px;
+            font-size: 12px;
+            line-height: 21px;
+            padding-bottom: 2px;
+        }
 
-		@media (max-width: 600px) {
-			.box {
-				color: white;
-				background: none;
-				border: none;
-				text-align: left;
-				box-shadow: none;
-			}
-			.box > div {
-				line-height: 14px;
-			}
-		}
+        .label {
+            color: white;
+            font: 11px/17px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
 
-		.text-shadow {
-			text-shadow: 0 1px 1px rgba(0,0,0,0.4)
-		}
+        .box {
+            width: 190px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            float: left;
+            margin: 0;
+            padding: 0;
+            background: white;
+            text-align: center;
+            display: table;
+            font-size: 17px;
+            line-height: 26px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0 0 2px;
+        }
 
-		.box + .box {
-			margin-left: 15px;
-		}
+        .box>div {
+            display: table-cell;
+            vertical-align: middle;
+            font-size: 14px;
+        }
 
-		@media (max-width: 600px) {
+        @media (max-width: 600px) {
+            .box {
+                color: white;
+                background: none;
+                border: none;
+                text-align: left;
+                box-shadow: none;
+            }
 
-			.box {
-				width: 100%;
-			}
-			.box + .box {
-				margin-top: 20px;
-				margin-left: 0;
-			}
-		}
+            .box>div {
+                line-height: 14px;
+            }
+        }
 
-		.boxes {
-			margin-top: 20px;
-		}
+        .text-shadow {
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4)
+        }
 
-		.boxes:after {
-			content: '';
-			display: table;
-			clear: both;
-		}
+        .box+.box {
+            margin-left: 15px;
+        }
 
-		.boxes + .boxes {
-			margin-top: 18px;
-		}
+        @media (max-width: 600px) {
 
-		.headline {
-			width: 100%;
-			margin: 60px 0 0 0;
-			padding: 0;
-			color: white;
-			font: 18px/30px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-			border-bottom: 1px dotted white;
-		}
+            .box {
+                width: 100%;
+            }
 
-		.headline.links {
-			margin-top: 30px;
-		}
+            .box+.box {
+                margin-top: 20px;
+                margin-left: 0;
+            }
+        }
 
-		.link {
-			color: white;
-			text-decoration: none;
-			font: 15px/30px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-		}
+        .boxes {
+            margin-top: 20px;
+        }
 
-		.link:hover {
-			text-decoration: underline;
-		}
+        .boxes:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
 
-		.link + .link {
-			margin-left: 15px;
-		}
+        .boxes+.boxes {
+            margin-top: 18px;
+        }
 
-		strong {
-			font-weight: bold!important;
-		}
+        .headline {
+            width: 100%;
+            margin: 60px 0 0 0;
+            padding: 0;
+            color: white;
+            font: 18px/30px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            border-bottom: 1px dotted white;
+        }
 
-		@media (max-width: 600px) {
-			.headline + .link {
-				margin-top: 10px;
-			}
+        .headline.links {
+            margin-top: 30px;
+        }
 
-			.link {
-				width: 100%;
-				display: block;
-				font-size: 14px;
-			}
+        .link {
+            color: white;
+            text-decoration: none;
+            font: 15px/30px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
 
-			.link + .link {
-				margin-left: 0;
-			}
-		}
-	</style>
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .link+.link {
+            margin-left: 15px;
+        }
+
+        strong {
+            font-weight: bold !important;
+        }
+
+        @media (max-width: 600px) {
+            .headline+.link {
+                margin-top: 10px;
+            }
+
+            .link {
+                width: 100%;
+                display: block;
+                font-size: 14px;
+            }
+
+            .link+.link {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div class="main">
-		<h1 class="text-shadow">Autocomplete</h1>
-		<h2 class="text-shadow">Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.</h2>
+        <h1 class="text-shadow">Autocomplete</h1>
+        <h2 class="text-shadow">Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.
+        </h2>
 
-		<span class="label">Demo</span>
+        <span class="label">Demo</span>
         <input type="text" id="testinput" placeholder="Type 'a'" />
 
-		<div class="headline text-shadow">Features</div>
-		
-		<div class="boxes">
-			<div class="box">
-				<div>
-					Only 1KB gzipped	
-				</div>
-			</div>
-			<div class="box">
-				<div>Load data with AJAX</div>
-			</div>
-			<div class="box">
-				<div>
-					Suggestion Groups
-				</div>
-			</div>
-		</div>
+        <div class="headline text-shadow">Features</div>
 
-		<div class="boxes">
-			<div class="box">
-				<div>
-					Custom Rendering
-				</div>
-			</div>
-			<div class="box">
-				<div>
-					Made with Typescript
-				</div>
-			</div>
-			<div class="box small">
-				<div>Open-Source &amp; Free</div>
-			</div>
-		</div>
+        <div class="boxes">
+            <div class="box">
+                <div>
+                    Only 1KB gzipped
+                </div>
+            </div>
+            <div class="box">
+                <div>Load data with AJAX</div>
+            </div>
+            <div class="box">
+                <div>
+                    Suggestion Groups
+                </div>
+            </div>
+        </div>
 
-		<div class="boxes">
-			<div class="box">
-				<div>
-					Debouncing
-				</div>
-			</div>
-			<div class="box">
-				<div>
-					No Dependencies
-				</div>
-			</div>
-			<div class="box small">
-				<div>Easy-to-Use</div>
-			</div>
-		</div>
+        <div class="boxes">
+            <div class="box">
+                <div>
+                    Custom Rendering
+                </div>
+            </div>
+            <div class="box">
+                <div>
+                    Made with Typescript
+                </div>
+            </div>
+            <div class="box small">
+                <div>Open-Source &amp; Free</div>
+            </div>
+        </div>
 
-		<div class="headline links text-shadow"></div>
+        <div class="boxes">
+            <div class="box">
+                <div>
+                    Debouncing
+                </div>
+            </div>
+            <div class="box">
+                <div>
+                    No Dependencies
+                </div>
+            </div>
+            <div class="box small">
+                <div>Easy-to-Use</div>
+            </div>
+        </div>
 
-		<a class="link" href="https://github.com/kraaden/autocomplete">Getting Started</a>
-		<a class="link" href="https://github.com/kraaden/autocomplete">Download</a>
-		<a class="link" href="https://github.com/kraaden/autocomplete/issues">Issue Tracker</a>
-		<a class="link" href="https://www.npmjs.com/package/autocompleter">NPM Package</a>
+        <div class="headline links text-shadow"></div>
 
-		
+        <a class="link" href="https://github.com/kraaden/autocomplete">Getting Started</a>
+        <a class="link" href="https://github.com/kraaden/autocomplete">Download</a>
+        <a class="link" href="https://github.com/kraaden/autocomplete/issues">Issue Tracker</a>
+        <a class="link" href="https://www.npmjs.com/package/autocompleter">NPM Package</a>
+
+
     </div>
-	<script>
-		var countries = ['Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bangladesh', 'Belarus', 'Belgium', 'Bolivia', 'Brazil', 'Bulgaria', 'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Denmark', 'Dominica', 'Dominican Republic', 'Ecuador', 'Finland', 'France', 'Georgia', 'Germany', 'Gibraltar', 'Greece', 'Greenland', 'Guadeloupe', 'Guatemala', 'Guyana', 'Haiti', 'Iceland', 'India', 'Indonesia', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jersey', 'Jordan', 'Kazakhstan', 'Kenya', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Mauritius', 'Mayotte', 'Mexico', 'Moldova', 'Norway', 'Palau', 'Paraguay', 'Poland', 'Portugal', 'Romania', 'Saint Helena', 'Saint Pierre and Miquelon', 'South Africa', 'South Georgia', 'South Korea', 'Spain', 'Sweden', 'Swaziland', 'Switzerland', 'United Kingdom', 'United States'];
+    <script>
+        const countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia (Plurinational State of)", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cabo Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Congo, Democratic Republic of the", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea (Democratic People's Republic of)", "Korea, Republic of", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia (Federated States of)", "Morocco", "Moldova, Republic of", "Monaco", "Mongolia", "Montenegro", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Eswatini", "Sweden", "Switzerland", "Syrian Arab Republic", "Tajikistan", "Tanzania, United Republic of", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Türkiye", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom of Great Britain and Northern Ireland", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela (Bolivarian Republic of)", "Viet Nam", "Yemen", "Zambia", "Zimbabwe"];
+        const continents = ["Africa", "Europe", "America", "Australia", "Asia", "Antarctica"];
 
-		var continents = ["Africa", "Europe", "America", "Australia", "Asia", "Antarctica"];
-		var conts = continents.map(function(n) { return { label: n, group: "Continents" }});
+        const items = [
+            continents.map((n) => ({ label: n, group: "Continents" })),
+            countries.map((n) => ({ label: n, group: "Countries" }))
+        ].flat();
 
-		var items = countries.map(function (n) { return { label: n, group: "Countries" }}).concat(conts);
-		var allowedChars = new RegExp(/^[a-zA-Z\s]+$/)
+        const allowedChars = new RegExp(/^[a-zA-Z\s]+$/)
 
-		function charsAllowed(value) {
-			return allowedChars.test(value);
-		}
+        function charsAllowed(value) {
+            return allowedChars.test(value);
+        }
 
-		autocomplete({
-			input: document.getElementById('testinput'),
-			minLength: 1,
-			onSelect: function (item, inputfield) {
-				inputfield.value = item.label
-			},
-			fetch: function (text, callback) {
-				var match = text.toLowerCase();
-				callback(items.filter(function(n) { return n.label.toLowerCase().indexOf(match) !== -1; }));
-			},
-			render: function(item, value) {
-				var itemElement = document.createElement("div");
-				if (charsAllowed(value)) {
-					var regex = new RegExp(value, 'gi');
-					var inner = item.label.replace(regex, function(match) { return "<strong>" + match + "</strong>" });
-					itemElement.innerHTML = inner;
-				} else {
-					itemElement.textContent = item.label;
-				}
-				return itemElement;
-			},
-			emptyMsg: "No countries found",
-			customize: function(input, inputRect, container, maxHeight) {
-				if (maxHeight < 100) {
-					container.style.top = "";
-					container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
-					container.style.maxHeight = "140px";
-				}
-			}
-		})
+        autocomplete({
+            input: document.getElementById('testinput'),
+            minLength: 1,
+            onSelect: function (item, inputfield) {
+                inputfield.value = item.label
+            },
+            fetch: function (text, callback) {
+                text = text.toLowerCase();
+                callback(items.filter((candidate) => candidate.label.toLowerCase().indexOf(text) !== -1));
+            },
+            render: function (item, value) {
+                const itemElement = document.createElement("div");
+                if (charsAllowed(value)) {
+                    const regex = new RegExp(value, 'gi');
+                    const inner = item.label.replace(regex, (match) => `<strong>${match}</strong>`);
+                    itemElement.innerHTML = inner;
+                } else {
+                    itemElement.textContent = item.label;
+                }
+                return itemElement;
+            },
+            emptyMsg: "No countries found",
+            customize: function (input, inputRect, container, maxHeight) {
+                if (maxHeight < 100) {
+                    container.style.top = "";
+                    container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
+                    container.style.maxHeight = "140px";
+                }
+            }
+        })
 
-		document.querySelector("input").focus();
-	</script>
+        document.querySelector("input").focus();
+    </script>
 </body>
