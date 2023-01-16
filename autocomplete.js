@@ -15,13 +15,9 @@
         var container = settings.container || doc.createElement("div");
         container.id = container.id || "autocomplete-" + uid();
         var containerStyle = container.style;
-        var userAgent = navigator.userAgent;
-        var mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
         var debounceWaitMs = settings.debounceWaitMs || 0;
         var preventSubmit = settings.preventSubmit || false;
         var disableAutoSelect = settings.disableAutoSelect || false;
-        // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
-        var keyUpEventName = mobileFirefox ? "input" : "keyup";
         var items = [];
         var inputValue = "";
         var minLen = 2;
@@ -395,7 +391,7 @@
         function destroy() {
             input.removeEventListener("focus", focusEventHandler);
             input.removeEventListener("keydown", keydownEventHandler);
-            input.removeEventListener(keyUpEventName, keyupEventHandler);
+            input.removeEventListener("keyup", keyupEventHandler);
             input.removeEventListener("blur", blurEventHandler);
             window.removeEventListener("resize", resizeEventHandler);
             doc.removeEventListener("scroll", scrollEventHandler, true);
@@ -411,7 +407,7 @@
         }
         // setup event handlers
         input.addEventListener("keydown", keydownEventHandler);
-        input.addEventListener(keyUpEventName, keyupEventHandler);
+        input.addEventListener("keyup", keyupEventHandler);
         input.addEventListener("blur", blurEventHandler);
         input.addEventListener("focus", focusEventHandler);
         window.addEventListener("resize", resizeEventHandler);

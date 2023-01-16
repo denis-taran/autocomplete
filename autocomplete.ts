@@ -133,14 +133,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const container: HTMLDivElement = settings.container || doc.createElement("div");
     container.id = container.id || "autocomplete-" + uid();
     const containerStyle = container.style;
-    const userAgent = navigator.userAgent;
-    const mobileFirefox = ~userAgent.indexOf("Firefox") && ~userAgent.indexOf("Mobile");
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
-
-    // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
-    const keyUpEventName = mobileFirefox ? "input" : "keyup";
 
     let items: T[] = [];
     let inputValue = "";
@@ -570,7 +565,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function destroy(): void {
         input.removeEventListener("focus", focusEventHandler);
         input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
+        input.removeEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
@@ -587,7 +582,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     // setup event handlers
     input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener(keyUpEventName, keyupEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("blur", blurEventHandler);
     input.addEventListener("focus", focusEventHandler);
     window.addEventListener("resize", resizeEventHandler);
