@@ -379,25 +379,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    function keyupEventHandler(ev: KeyboardEvent): void {
-        const keyCode = ev.which || ev.keyCode || 0;
-
-        const ignore = settings.keysToIgnore || [Keys.Up, Keys.Enter, Keys.Esc, Keys.Right, Keys.Left, Keys.Shift, Keys.Ctrl, Keys.Alt, Keys.CapsLock, Keys.WindowsKey, Keys.Tab];
-        for (const key of ignore) {
-            if (keyCode === key) {
-                return;
-            }
-        }
-
-        if (keyCode >= Keys.F1 && keyCode <= Keys.F12 && !settings.keysToIgnore) {
-            return;
-        }
-
-        // the down key is used to open autocomplete
-        if (keyCode === Keys.Down && containerDisplayed()) {
-            return;
-        }
-
+    function inputEventHandler(): void {
         startFetch(EventTrigger.Keyboard);
     }
 
@@ -565,7 +547,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function destroy(): void {
         input.removeEventListener("focus", focusEventHandler);
         input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
+        input.removeEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blurEventHandler);
         window.removeEventListener("resize", resizeEventHandler);
         doc.removeEventListener("scroll", scrollEventHandler, true);
@@ -582,7 +564,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     // setup event handlers
     input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("blur", blurEventHandler);
     input.addEventListener("focus", focusEventHandler);
     window.addEventListener("resize", resizeEventHandler);
