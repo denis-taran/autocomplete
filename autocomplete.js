@@ -223,22 +223,7 @@
                 e.preventDefault();
             }
         }
-        function keyupEventHandler(ev) {
-            var keyCode = ev.which || ev.keyCode || 0;
-            var ignore = settings.keysToIgnore || [38 /* Up */, 13 /* Enter */, 27 /* Esc */, 39 /* Right */, 37 /* Left */, 16 /* Shift */, 17 /* Ctrl */, 18 /* Alt */, 20 /* CapsLock */, 91 /* WindowsKey */, 9 /* Tab */];
-            for (var _i = 0, ignore_1 = ignore; _i < ignore_1.length; _i++) {
-                var key = ignore_1[_i];
-                if (keyCode === key) {
-                    return;
-                }
-            }
-            if (keyCode >= 112 /* F1 */ && keyCode <= 123 /* F12 */ && !settings.keysToIgnore) {
-                return;
-            }
-            // the down key is used to open autocomplete
-            if (keyCode === 40 /* Down */ && containerDisplayed()) {
-                return;
-            }
+        function inputEventHandler() {
             startFetch(0 /* Keyboard */);
         }
         /**
@@ -391,7 +376,7 @@
         function destroy() {
             input.removeEventListener("focus", focusEventHandler);
             input.removeEventListener("keydown", keydownEventHandler);
-            input.removeEventListener("keyup", keyupEventHandler);
+            input.removeEventListener("input", inputEventHandler);
             input.removeEventListener("blur", blurEventHandler);
             window.removeEventListener("resize", resizeEventHandler);
             doc.removeEventListener("scroll", scrollEventHandler, true);
@@ -407,7 +392,7 @@
         }
         // setup event handlers
         input.addEventListener("keydown", keydownEventHandler);
-        input.addEventListener("keyup", keyupEventHandler);
+        input.addEventListener("input", inputEventHandler);
         input.addEventListener("blur", blurEventHandler);
         input.addEventListener("focus", focusEventHandler);
         window.addEventListener("resize", resizeEventHandler);

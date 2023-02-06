@@ -120,11 +120,6 @@ You can pass the following options to `autocomplete`:
 |`showOnFocus`|Displays suggestions on focus of the input element. Note that if `true`, the minLength property will be ignored and it will always call `fetch`.|`false`|
 |`disableAutoSelect`|Prevents the first item in the list from being selected automatically. This option allows you to submit a custom text by pressing `ENTER` even when autocomplete is displayed.|`false`|
 |`container`|Provide your own container for the widget. If not specified, a new DIV element will be created.|`undefined`|
-|`keysToIgnore`|Keys that will be ignored and not trigger the fetch callback.|see the notice below|
-
-By default, the widget will ignore the following keys:
-
-    Up, Enter, Esc, Right, Left, Shift, Ctrl, Alt, Caps Lock, Windows Key, Tab, F1 - F12
 
 ### Sample config using all options
 
@@ -158,8 +153,7 @@ autocomplete({
     },
     preventSubmit: true,
     disableAutoSelect: true,
-    container: document.createElement("div"),
-    keysToIgnore: [...]
+    container: document.createElement("div")
 });
 ```
 

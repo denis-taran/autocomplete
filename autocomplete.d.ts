@@ -76,10 +76,6 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
      */
     disableAutoSelect?: boolean;
-    /**
-     * Keys that will be ignored and not trigger the fetch callback.
-     */
-    keysToIgnore?: Keys[];
 }
 export interface AutocompleteResult {
     destroy: () => void;
