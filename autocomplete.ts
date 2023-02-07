@@ -6,12 +6,18 @@
 
 export const enum EventTrigger {
     Keyboard = 0,
-    Focus = 1
+    Focus = 1,
+    Mouse = 2
 }
 
 export interface AutocompleteItem {
     label?: string;
     group?: string;
+}
+
+export interface AutocompleteEvent<T extends Event> {
+    event: T;
+    fetch: () => void;
 }
 
 export interface AutocompleteSettings<T extends AutocompleteItem> {
@@ -97,27 +103,20 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
      */
     disableAutoSelect?: boolean;
+
+    /**
+     * Provide your keyup event handler to display autocomplete when a key is pressed that doesn't modify the content. You can also perform some additional actions.
+     */
+    keyup?: (e: AutocompleteEvent<KeyboardEvent>) => void;
+
+    /**
+     * Allows to display autocomplete on mouse clicks or perform some additional actions.
+     */
+    click?: (e: AutocompleteEvent<MouseEvent>) => void;
 }
 
 export interface AutocompleteResult {
     destroy: () => void;
-}
-
-export const enum Keys {
-    Enter = 13,
-    Esc = 27,
-    Up = 38,
-    Down = 40,
-    Left = 37,
-    Right = 39,
-    Shift = 16,
-    Ctrl = 17,
-    Alt = 18,
-    CapsLock = 20,
-    WindowsKey = 91,
-    Tab = 9,
-    F1 = 112,
-    F12 = 123
 }
 
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -444,18 +443,18 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function keydownEventHandler(ev: KeyboardEvent): void {
-        const keyCode = ev.which || ev.keyCode || 0;
+        const key = ev.key;
 
-        if (keyCode === Keys.Up || keyCode === Keys.Down || keyCode === Keys.Esc) {
+        if (key === "ArrowUp" || key === "ArrowDown" || key === "Escape") {
             const containerIsDisplayed = containerDisplayed();
 
-            if (keyCode === Keys.Esc) {
+            if (key === "Escape") {
                 clear();
             } else {
                 if (!containerIsDisplayed || items.length < 1) {
                     return;
                 }
-                keyCode === Keys.Up
+                key === "ArrowUp"
                     ? selectPrev()
                     : selectNext();
                 update();
@@ -469,7 +468,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             return;
         }
 
-        if (keyCode === Keys.Enter) {
+        if (key === 'Enter') {
             if (selected) {
                 settings.onSelect(selected, input);
                 clear();
@@ -507,13 +506,27 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                         update();
                     }
                 }, trigger, cursorPos);
-            }, trigger === EventTrigger.Keyboard ? debounceWaitMs : 0);
+            }, trigger === EventTrigger.Keyboard || trigger === EventTrigger.Mouse ? debounceWaitMs : 0);
         } else {
             clear();
         }
     }
 
-    function blurEventHandler(): void {
+    function keyupEventHandler(e: KeyboardEvent) {
+        settings.keyup && settings.keyup({
+            event: e,
+            fetch: () => startFetch(EventTrigger.Keyboard)
+        });
+    }
+
+    function clickEventHandler(e: MouseEvent) {
+        settings.click && settings.click({
+            event: e,
+            fetch: () => startFetch(EventTrigger.Mouse)
+        });
+    }
+
+    function blurEventHandler() {
         // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
         setTimeout(() => {
             if (doc.activeElement !== input) {
@@ -541,6 +554,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function destroy(): void {
         input.removeEventListener("focus", focusEventHandler);
+        input.removeEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject)
+        input.removeEventListener("click", clickEventHandler as EventListenerOrEventListenerObject)
         input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener("blur", blurEventHandler);
@@ -558,6 +573,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     // setup event handlers
+    input.addEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener("click", clickEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener("blur", blurEventHandler);

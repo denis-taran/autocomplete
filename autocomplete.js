@@ -290,17 +290,17 @@
             }
         }
         function keydownEventHandler(ev) {
-            var keyCode = ev.which || ev.keyCode || 0;
-            if (keyCode === 38 /* Up */ || keyCode === 40 /* Down */ || keyCode === 27 /* Esc */) {
+            var key = ev.key;
+            if (key === "ArrowUp" || key === "ArrowDown" || key === "Escape") {
                 var containerIsDisplayed = containerDisplayed();
-                if (keyCode === 27 /* Esc */) {
+                if (key === "Escape") {
                     clear();
                 }
                 else {
                     if (!containerIsDisplayed || items.length < 1) {
                         return;
                     }
-                    keyCode === 38 /* Up */
+                    key === "ArrowUp"
                         ? selectPrev()
                         : selectNext();
                     update();
@@ -311,7 +311,7 @@
                 }
                 return;
             }
-            if (keyCode === 13 /* Enter */) {
+            if (key === 'Enter') {
                 if (selected) {
                     settings.onSelect(selected, input);
                     clear();
@@ -344,11 +344,23 @@
                             update();
                         }
                     }, trigger, cursorPos);
-                }, trigger === 0 /* Keyboard */ ? debounceWaitMs : 0);
+                }, trigger === 0 /* Keyboard */ || trigger === 2 /* Mouse */ ? debounceWaitMs : 0);
             }
             else {
                 clear();
             }
+        }
+        function keyupEventHandler(e) {
+            settings.keyup && settings.keyup({
+                event: e,
+                fetch: function () { return startFetch(0 /* Keyboard */); }
+            });
+        }
+        function clickEventHandler(e) {
+            settings.click && settings.click({
+                event: e,
+                fetch: function () { return startFetch(2 /* Mouse */); }
+            });
         }
         function blurEventHandler() {
             // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
@@ -375,6 +387,8 @@
          */
         function destroy() {
             input.removeEventListener("focus", focusEventHandler);
+            input.removeEventListener("keyup", keyupEventHandler);
+            input.removeEventListener("click", clickEventHandler);
             input.removeEventListener("keydown", keydownEventHandler);
             input.removeEventListener("input", inputEventHandler);
             input.removeEventListener("blur", blurEventHandler);
@@ -391,6 +405,8 @@
             clear();
         }
         // setup event handlers
+        input.addEventListener("keyup", keyupEventHandler);
+        input.addEventListener("click", clickEventHandler);
         input.addEventListener("keydown", keydownEventHandler);
         input.addEventListener("input", inputEventHandler);
         input.addEventListener("blur", blurEventHandler);

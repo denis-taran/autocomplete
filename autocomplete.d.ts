@@ -1,10 +1,15 @@
 export declare const enum EventTrigger {
     Keyboard = 0,
-    Focus = 1
+    Focus = 1,
+    Mouse = 2
 }
 export interface AutocompleteItem {
     label?: string;
     group?: string;
+}
+export interface AutocompleteEvent<T extends Event> {
+    event: T;
+    fetch: () => void;
 }
 export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
@@ -76,24 +81,16 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.
      */
     disableAutoSelect?: boolean;
+    /**
+     * Provide your keyup event handler to display autocomplete when a key is pressed that doesn't modify the content. You can also perform some additional actions.
+     */
+    keyup?: (e: AutocompleteEvent<KeyboardEvent>) => void;
+    /**
+     * Allows to display autocomplete on mouse clicks or perform some additional actions.
+     */
+    click?: (e: AutocompleteEvent<MouseEvent>) => void;
 }
 export interface AutocompleteResult {
     destroy: () => void;
-}
-export declare const enum Keys {
-    Enter = 13,
-    Esc = 27,
-    Up = 38,
-    Down = 40,
-    Left = 37,
-    Right = 39,
-    Shift = 16,
-    Ctrl = 17,
-    Alt = 18,
-    CapsLock = 20,
-    WindowsKey = 91,
-    Tab = 9,
-    F1 = 112,
-    F12 = 123
 }
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;
