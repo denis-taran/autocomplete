@@ -247,19 +247,13 @@
                 }
             }
         }
-        /**
-         * Select the previous item in suggestions
-         */
-        function selectPrev() {
+        function selectPreviousSuggestion() {
             var index = items.indexOf(selected);
             selected = index === -1
                 ? undefined
                 : items[(index + items.length - 1) % items.length];
         }
-        /**
-         * Select the next item in suggestions
-         */
-        function selectNext() {
+        function selectNextSuggestion() {
             var index = items.indexOf(selected);
             selected = items.length < 1
                 ? undefined
@@ -277,8 +271,8 @@
                     return;
                 }
                 key === 'ArrowUp'
-                    ? selectPrev()
-                    : selectNext();
+                    ? selectPreviousSuggestion()
+                    : selectNextSuggestion();
                 update();
             }
             ev.preventDefault();

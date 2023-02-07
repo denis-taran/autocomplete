@@ -408,10 +408,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    /**
-     * Select the previous item in suggestions
-     */
-    function selectPrev() {
+    function selectPreviousSuggestion() {
         const index = items.indexOf(selected!);
 
         selected = index === -1
@@ -419,10 +416,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             : items[(index + items.length - 1) % items.length];
     }
 
-    /**
-     * Select the next item in suggestions
-     */
-    function selectNext() {
+    function selectNextSuggestion() {
         const index = items.indexOf(selected!);
 
         selected = items.length < 1
@@ -442,8 +436,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 return;
             }
             key === 'ArrowUp'
-                ? selectPrev()
-                : selectNext();
+                ? selectPreviousSuggestion()
+                : selectNextSuggestion();
             update();
         }
 
