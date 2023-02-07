@@ -173,7 +173,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     containerStyle.position = "absolute";
 
     /**
-     * Generate a unique ID
+     * Generate a very complex textual ID that greatly reduces the chance of a collision with another ID or text.
      */
     function uid(): string {
         return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -182,7 +182,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Detach the container from DOM
      */
-    function detach(): void {
+    function detach() {
         const parent = container.parentNode;
         if (parent) {
             parent.removeChild(container);
@@ -192,7 +192,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Clear debouncing timer if assigned
      */
-    function clearDebounceTimer(): void {
+    function clearDebounceTimer() {
         if (debounceTimer) {
             window.clearTimeout(debounceTimer);
         }
@@ -201,7 +201,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Attach the container to DOM
      */
-    function attach(): void {
+    function attach() {
         if (!container.parentNode) {
             doc.body.appendChild(container);
         }
@@ -217,7 +217,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Clear autocomplete state and hide container
      */
-    function clear(): void {
+    function clear() {
         // prevent the update call if there are pending AJAX requests
         keypressCounter++;
 
@@ -232,7 +232,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Update autocomplete position
      */
-    function updatePosition(): void {
+    function updatePosition() {
         if (!containerDisplayed()) {
             return;
         }
@@ -284,7 +284,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Redraw the autocomplete div element with suggestions
      */
-    function update(): void {
+    function update() {
 
         // delete all children from autocomplete DOM container
         while (container.firstChild) {
@@ -364,17 +364,17 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         updateScroll();
     }
 
-    function updateIfDisplayed(): void {
+    function updateIfDisplayed() {
         if (containerDisplayed()) {
             update();
         }
     }
 
-    function resizeEventHandler(): void {
+    function resizeEventHandler() {
         updateIfDisplayed();
     }
 
-    function scrollEventHandler(e: Event): void {
+    function scrollEventHandler(e: Event) {
         if (e.target !== container) {
             updateIfDisplayed();
         } else {
@@ -382,14 +382,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    function inputEventHandler(): void {
+    function inputEventHandler() {
         startFetch(EventTrigger.Keyboard);
     }
 
     /**
      * Automatically move scroll bar if selected item is not visible
      */
-    function updateScroll(): void {
+    function updateScroll() {
         const elements = container.getElementsByClassName("selected");
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
@@ -415,7 +415,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Select the previous item in suggestions
      */
-    function selectPrev(): void {
+    function selectPrev() {
         if (items.length < 1) {
             selected = undefined;
         } else {
@@ -435,7 +435,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Select the next item in suggestions
      */
-    function selectNext(): void {
+    function selectNext() {
         if (items.length < 1) {
             selected = undefined;
         }
@@ -451,7 +451,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    function keydownEventHandler(ev: KeyboardEvent): void {
+    function keydownEventHandler(ev: KeyboardEvent) {
         const key = ev.key;
 
         if (key === "ArrowUp" || key === "ArrowDown" || key === "Escape") {
@@ -489,7 +489,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         }
     }
 
-    function focusEventHandler(): void {
+    function focusEventHandler() {
         if (showOnFocus) {
             startFetch(EventTrigger.Focus);
         }
@@ -568,7 +568,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * This function will remove DOM elements and clear event handlers
      */
-    function destroy(): void {
+    function destroy() {
         input.removeEventListener("focus", focusEventHandler);
         input.removeEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject)
         input.removeEventListener("click", clickEventHandler as EventListenerOrEventListenerObject)

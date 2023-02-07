@@ -44,7 +44,7 @@
         // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
         containerStyle.position = "absolute";
         /**
-         * Generate a unique ID
+         * Generate a very complex textual ID that greatly reduces the chance of a collision with another ID or text.
          */
         function uid() {
             return Date.now().toString(36) + Math.random().toString(36).substring(2);
