@@ -342,7 +342,7 @@
                 inputfield.value = item.label
             },
             fetch: function (text, callback) {
-                text = text.toLowerCase();
+                text = text.toLowerCase().trim();
                 callback(items.filter((candidate) => candidate.label.toLowerCase().indexOf(text) !== -1));
             },
             render: function (item, value) {
