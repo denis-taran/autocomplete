@@ -351,10 +351,16 @@
             }
         }
         function keyupEventHandler(e) {
-            settings.keyup && settings.keyup({
-                event: e,
-                fetch: function () { return startFetch(0 /* Keyboard */); }
-            });
+            if (settings.keyup) {
+                settings.keyup({
+                    event: e,
+                    fetch: function () { return startFetch(0 /* Keyboard */); }
+                });
+                return;
+            }
+            if (!containerDisplayed() && e.key === "ArrowDown") {
+                startFetch(0 /* Keyboard */);
+            }
         }
         function clickEventHandler(e) {
             settings.click && settings.click({

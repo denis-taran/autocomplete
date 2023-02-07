@@ -513,10 +513,17 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function keyupEventHandler(e: KeyboardEvent) {
-        settings.keyup && settings.keyup({
-            event: e,
-            fetch: () => startFetch(EventTrigger.Keyboard)
-        });
+        if (settings.keyup) {
+            settings.keyup({
+                event: e,
+                fetch: () => startFetch(EventTrigger.Keyboard)
+            });
+            return;
+        }
+
+        if (!containerDisplayed() && e.key === "ArrowDown") {
+            startFetch(EventTrigger.Keyboard);
+        }
     }
 
     function clickEventHandler(e: MouseEvent) {
