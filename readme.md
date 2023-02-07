@@ -233,6 +233,30 @@ autocomplete({
 
 Note: Please make sure that all items are sorted by the group property.
 
+## Display autocomplete when textbox is clicked by a mouse
+
+The widget offers the ability to display an autocomplete when a user clicks on words or placeholders within a textbox:
+
+```typescript
+function getWord(s, pos) {
+    const n = s.substring(pos).match(/^[a-zA-Z0-9-_]+/)
+    const p = s.substring(0, pos).match(/[a-zA-Z0-9-_]+$/)
+    if (!p && !n) return ''
+    return (p || '') + (n || '')
+}
+autocomplete({
+    ...,
+    fetch: function(text, update) {
+        text = getWord(text, input.selectionStart).toLowerCase();
+        var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
+        update(suggestions);
+    },
+    click: e => e.fetch()
+});
+```
+
+[Try online](https://jsbin.com/cuyamokeki/edit?html,js,output)
+
 ## License
 
 Autocomplete is released under the MIT License.
