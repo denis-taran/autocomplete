@@ -120,6 +120,8 @@ You can pass the following options to `autocomplete`:
 |`showOnFocus`|Displays suggestions on focus of the input element. Note that if `true`, the minLength property will be ignored and it will always call `fetch`.|`false`|
 |`disableAutoSelect`|Prevents the first item in the list from being selected automatically. This option allows you to submit a custom text by pressing `ENTER` even when autocomplete is displayed.|`false`|
 |`container`|Provide your own container for the widget. If not specified, a new DIV element will be created.|`undefined`|
+|`click`|Allows to display autocomplete on mouse clicks or perform some additional actions.|`undefined`|
+|`keyup`|Allows to display autocomplete when a key is pressed that doesn't modify the content.|`undefined`|
 
 ### Sample config using all options
 
@@ -153,7 +155,9 @@ autocomplete({
     },
     preventSubmit: true,
     disableAutoSelect: true,
-    container: document.createElement("div")
+    container: document.createElement("div"),
+    click: (e) => e.fetch(),
+    keyup: (e) => e.fetch()
 });
 ```
 
