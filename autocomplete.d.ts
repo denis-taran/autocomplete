@@ -8,7 +8,13 @@ export interface AutocompleteItem {
     group?: string;
 }
 export interface AutocompleteEvent<T extends Event> {
+    /**
+     * Native event object passed by browser to the event handler
+     */
     event: T;
+    /**
+     * Fetch data and display autocomplete
+     */
     fetch: () => void;
 }
 export interface AutocompleteSettings<T extends AutocompleteItem> {
@@ -91,6 +97,9 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     click?: (e: AutocompleteEvent<MouseEvent>) => void;
 }
 export interface AutocompleteResult {
+    /**
+     * Remove event handlers, DOM elements and ARIA/accessibility attributes created by the widget.
+     */
     destroy: () => void;
 }
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;

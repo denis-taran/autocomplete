@@ -160,7 +160,7 @@
                 renderGroup = settings.renderGroup;
             }
             var fragment = doc.createDocumentFragment();
-            var prevGroup = "#9?$";
+            var prevGroup = uid();
             items.forEach(function (item, index) {
                 if (item.group && item.group !== prevGroup) {
                     prevGroup = item.group;
