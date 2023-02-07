@@ -133,19 +133,19 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     // just an alias to minimize JS file size
     const doc = document;
 
-    const container: HTMLDivElement = settings.container || doc.createElement("div");
-    container.id = container.id || "autocomplete-" + uid();
+    const container: HTMLDivElement = settings.container || doc.createElement('div');
+    container.id = container.id || 'autocomplete-' + uid();
     const containerStyle = container.style;
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
 
     let items: T[] = [];
-    let inputValue = "";
+    let inputValue = '';
     let minLen = 2;
     const showOnFocus = settings.showOnFocus;
     let selected: T | undefined;
-    let keypressCounter = 0;
+    let fetchCounter = 0;
     let debounceTimer: number | undefined;
 
     if (settings.minLength !== undefined) {
@@ -153,24 +153,24 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     if (!settings.input) {
-        throw new Error("input undefined");
+        throw new Error('input undefined');
     }
 
     const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
-    container.className = "autocomplete " + (settings.className || "");
-    container.setAttribute("role", "listbox");
+    container.className = 'autocomplete ' + (settings.className || '');
+    container.setAttribute('role', 'listbox');
 
-    input.setAttribute("role", "combobox");
-    input.setAttribute("aria-expanded", "false");
-    input.setAttribute("aria-autocomplete", "list");
-    input.setAttribute("aria-controls", container.id);
-    input.setAttribute("aria-owns", container.id);
-    input.setAttribute("aria-activedescendant", "");
-    input.setAttribute("aria-haspopup", "listbox");
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-expanded', 'false');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-controls', container.id);
+    input.setAttribute('aria-owns', container.id);
+    input.setAttribute('aria-activedescendant', '');
+    input.setAttribute('aria-haspopup', 'listbox');
 
     // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
-    containerStyle.position = "absolute";
+    containerStyle.position = 'absolute';
 
     /**
      * Generate a very complex textual ID that greatly reduces the chance of a collision with another ID or text.
@@ -219,13 +219,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function clear() {
         // prevent the update call if there are pending AJAX requests
-        keypressCounter++;
+        fetchCounter++;
 
         items = [];
-        inputValue = "";
+        inputValue = '';
         selected = undefined;
-        input.setAttribute("aria-activedescendant", "");
-        input.setAttribute("aria-expanded", "false");
+        input.setAttribute('aria-activedescendant', '');
+        input.setAttribute('aria-expanded', 'false');
         detach();
     }
 
@@ -237,13 +237,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             return;
         }
 
-        input.setAttribute("aria-expanded", "true");
+        input.setAttribute('aria-expanded', 'true');
 
-        containerStyle.height = "auto";
-        containerStyle.width = input.offsetWidth + "px";
+        containerStyle.height = 'auto';
+        containerStyle.width = input.offsetWidth + 'px';
 
         let maxHeight = 0;
-        let inputRect: ClientRect | DOMRect | undefined;
+        let inputRect: DOMRect | undefined;
 
         function calc() {
             const docEl = doc.documentElement as HTMLElement;
@@ -257,8 +257,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
             const left = inputRect.left + scrollLeft - clientLeft;
 
-            containerStyle.top = top + "px";
-            containerStyle.left = left + "px";
+            containerStyle.top = top + 'px';
+            containerStyle.left = left + 'px';
 
             maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
 
@@ -266,10 +266,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 maxHeight = 0;
             }
 
-            containerStyle.top = top + "px";
-            containerStyle.bottom = "";
-            containerStyle.left = left + "px";
-            containerStyle.maxHeight = maxHeight + "px";
+            containerStyle.top = top + 'px';
+            containerStyle.bottom = '';
+            containerStyle.left = left + 'px';
+            containerStyle.maxHeight = maxHeight + 'px';
         }
 
         // the calc method must be called twice, otherwise the calculation may be wrong on resize event (chrome browser)
@@ -286,17 +286,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function update() {
 
-        // delete all children from autocomplete DOM container
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
-
-        input.setAttribute("aria-activedescendant", "");
+        container.innerHTML = '';
+        input.setAttribute('aria-activedescendant', '');
 
         // function for rendering autocomplete suggestions
         let render = function (item: T, _: string, __: number): HTMLDivElement | undefined {
-            const itemElement = doc.createElement("div");
-            itemElement.textContent = item.label || "";
+            const itemElement = doc.createElement('div');
+            itemElement.textContent = item.label || '';
             return itemElement;
         };
         if (settings.render) {
@@ -305,7 +301,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         // function to render autocomplete groups
         let renderGroup = function (groupName: string, _: string): HTMLDivElement | undefined {
-            const groupDiv = doc.createElement("div");
+            const groupDiv = doc.createElement('div');
             groupDiv.textContent = groupName;
             return groupDiv;
         };
@@ -321,24 +317,24 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 prevGroup = item.group;
                 const groupDiv = renderGroup(item.group, inputValue);
                 if (groupDiv) {
-                    groupDiv.className += " group";
+                    groupDiv.className += ' group';
                     fragment.appendChild(groupDiv);
                 }
             }
             const div = render(item, inputValue, index);
             if (div) {
                 div.id = `${container.id}_${index}`;
-                div.setAttribute("role", "option");
-                div.addEventListener("click", function (ev: MouseEvent): void {
+                div.setAttribute('role', 'option');
+                div.addEventListener('click', function (ev: MouseEvent): void {
                     settings.onSelect(item, input);
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
                 });
                 if (item === selected) {
-                    div.className += " selected";
-                    div.setAttribute("aria-selected", "true");
-                    input.setAttribute("aria-activedescendant", div.id);
+                    div.className += ' selected';
+                    div.setAttribute('aria-selected', 'true');
+                    input.setAttribute('aria-activedescendant', div.id);
                 }
                 fragment.appendChild(div);
             }
@@ -346,12 +342,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         container.appendChild(fragment);
         if (items.length < 1) {
             if (settings.emptyMsg) {
-                const empty = doc.createElement("div");
+                const empty = doc.createElement('div');
                 empty.id = `${container.id}_${uid()}`;
-                empty.className = "empty";
+                empty.className = 'empty';
                 empty.textContent = settings.emptyMsg;
                 container.appendChild(empty);
-                input.setAttribute("aria-activedescendant", empty.id);
+                input.setAttribute('aria-activedescendant', empty.id);
             } else {
                 clear();
                 return;
@@ -390,13 +386,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Automatically move scroll bar if selected item is not visible
      */
     function updateScroll() {
-        const elements = container.getElementsByClassName("selected");
+        const elements = container.getElementsByClassName('selected');
         if (elements.length > 0) {
             let element = elements[0] as HTMLDivElement;
 
             // make group visible
             const previous = element.previousElementSibling as HTMLDivElement;
-            if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
+            if (previous && previous.className.indexOf('group') !== -1 && !previous.previousElementSibling) {
                 element = previous;
             }
 
@@ -416,76 +412,73 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Select the previous item in suggestions
      */
     function selectPrev() {
-        if (items.length < 1) {
-            selected = undefined;
-        } else {
-            if (selected === items[0]) {
-                selected = items[items.length - 1];
-            } else {
-                for (let i = items.length - 1; i > 0; i--) {
-                    if (selected === items[i] || i === 1) {
-                        selected = items[i - 1];
-                        break;
-                    }
-                }
-            }
-        }
+        const index = items.indexOf(selected!);
+
+        selected = index === -1
+            ? undefined
+            : items[(index + items.length - 1) % items.length];
     }
 
     /**
      * Select the next item in suggestions
      */
     function selectNext() {
-        if (items.length < 1) {
-            selected = undefined;
-        }
-        if (!selected || selected === items[items.length - 1]) {
-            selected = items[0];
-            return;
-        }
-        for (let i = 0; i < (items.length - 1); i++) {
-            if (selected === items[i]) {
-                selected = items[i + 1];
-                break;
+        const index = items.indexOf(selected!);
+
+        selected = items.length < 1
+            ? undefined
+            : index === -1
+                ? items[0]
+                : items[(index + 1) % items.length];
+    }
+
+    function handleArrowAndEscapeKeys(ev: KeyboardEvent, key: 'ArrowUp' | 'ArrowDown' | 'Escape') {
+        const containerIsDisplayed = containerDisplayed();
+
+        if (key === 'Escape') {
+            clear();
+        } else {
+            if (!containerIsDisplayed || items.length < 1) {
+                return;
             }
+            key === 'ArrowUp'
+                ? selectPrev()
+                : selectNext();
+            update();
+        }
+
+        ev.preventDefault();
+
+        if (containerIsDisplayed) {
+            ev.stopPropagation();
+        }
+    }
+
+    function handleEnterKey(ev: KeyboardEvent) {
+        if (selected) {
+            settings.onSelect(selected, input);
+            clear();
+        }
+
+        if (preventSubmit) {
+            ev.preventDefault();
         }
     }
 
     function keydownEventHandler(ev: KeyboardEvent) {
         const key = ev.key;
 
-        if (key === "ArrowUp" || key === "ArrowDown" || key === "Escape") {
-            const containerIsDisplayed = containerDisplayed();
-
-            if (key === "Escape") {
-                clear();
-            } else {
-                if (!containerIsDisplayed || items.length < 1) {
-                    return;
-                }
-                key === "ArrowUp"
-                    ? selectPrev()
-                    : selectNext();
-                update();
-            }
-
-            ev.preventDefault();
-            if (containerIsDisplayed) {
-                ev.stopPropagation();
-            }
-
-            return;
-        }
-
-        if (key === 'Enter') {
-            if (selected) {
-                settings.onSelect(selected, input);
-                clear();
-            }
-
-            if (preventSubmit) {
-                ev.preventDefault();
-            }
+        switch (key) {
+            case 'ArrowUp':
+            case 'ArrowDown':
+            case 'Escape':
+                handleArrowAndEscapeKeys(ev, key);
+                break;
+            case 'Enter':
+                handleEnterKey(ev);
+                break;
+            default:
+                break;
         }
     }
 
@@ -496,10 +489,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function startFetch(trigger: EventTrigger) {
-        // If multiple keys were pressed, before we get an update from server,
-        // this may cause redrawing autocomplete multiple times after the last key was pressed.
-        // To avoid this, the number of times keyboard was pressed will be saved and checked before redraw.
-        const savedKeypressCounter = ++keypressCounter;
+        // If multiple keys were pressed before suggestions received from server, the autocomplete will
+        // be redrawed multiple times, causing 'blinking'. To avoid this, the number of times fetch was
+        // called will be saved and checked before redraw, so only one redraw occurs.
+        const savedFetchCounter = ++fetchCounter;
 
         const inputText = input.value;
         const cursorPos = input.selectionStart || 0;
@@ -508,7 +501,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             clearDebounceTimer();
             debounceTimer = window.setTimeout(function (): void {
                 settings.fetch(inputText, function (elements: T[] | false): void {
-                    if (keypressCounter === savedKeypressCounter && elements) {
+                    if (fetchCounter === savedFetchCounter && elements) {
                         items = elements;
                         inputValue = inputText;
                         selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
@@ -530,7 +523,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             return;
         }
 
-        if (!containerDisplayed() && e.key === "ArrowDown") {
+        if (!containerDisplayed() && e.key === 'ArrowDown') {
             startFetch(EventTrigger.Keyboard);
         }
     }
@@ -543,7 +536,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function blurEventHandler() {
-        // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
+        // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
+        // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
         setTimeout(() => {
             if (doc.activeElement !== input) {
                 clear();
@@ -554,7 +548,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     /**
      * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
      */
-    container.addEventListener("mousedown", function (evt: Event) {
+    container.addEventListener('mousedown', function (evt: Event) {
         evt.stopPropagation();
         evt.preventDefault();
     });
@@ -563,40 +557,40 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      * Fixes #30: autocomplete closes when scrollbar is clicked in IE
      * See: https://stackoverflow.com/a/9210267/13172349
      */
-    container.addEventListener("focus", () => input.focus());
+    container.addEventListener('focus', () => input.focus());
 
     /**
      * This function will remove DOM elements and clear event handlers
      */
     function destroy() {
-        input.removeEventListener("focus", focusEventHandler);
-        input.removeEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject)
-        input.removeEventListener("click", clickEventHandler as EventListenerOrEventListenerObject)
-        input.removeEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener("blur", blurEventHandler);
-        window.removeEventListener("resize", resizeEventHandler);
-        doc.removeEventListener("scroll", scrollEventHandler, true);
-        input.removeAttribute("role");
-        input.removeAttribute("aria-expanded");
-        input.removeAttribute("aria-autocomplete");
-        input.removeAttribute("aria-controls");
-        input.removeAttribute("aria-activedescendant");
-        input.removeAttribute("aria-owns");
-        input.removeAttribute("aria-haspopup");
+        input.removeEventListener('focus', focusEventHandler);
+        input.removeEventListener('keyup', keyupEventHandler as EventListenerOrEventListenerObject)
+        input.removeEventListener('click', clickEventHandler as EventListenerOrEventListenerObject)
+        input.removeEventListener('keydown', keydownEventHandler as EventListenerOrEventListenerObject);
+        input.removeEventListener('input', inputEventHandler as EventListenerOrEventListenerObject);
+        input.removeEventListener('blur', blurEventHandler);
+        window.removeEventListener('resize', resizeEventHandler);
+        doc.removeEventListener('scroll', scrollEventHandler, true);
+        input.removeAttribute('role');
+        input.removeAttribute('aria-expanded');
+        input.removeAttribute('aria-autocomplete');
+        input.removeAttribute('aria-controls');
+        input.removeAttribute('aria-activedescendant');
+        input.removeAttribute('aria-owns');
+        input.removeAttribute('aria-haspopup');
         clearDebounceTimer();
         clear();
     }
 
     // setup event handlers
-    input.addEventListener("keyup", keyupEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("click", clickEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("keydown", keydownEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("input", inputEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener("blur", blurEventHandler);
-    input.addEventListener("focus", focusEventHandler);
-    window.addEventListener("resize", resizeEventHandler);
-    doc.addEventListener("scroll", scrollEventHandler, true);
+    input.addEventListener('keyup', keyupEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener('click', clickEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener('keydown', keydownEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener('input', inputEventHandler as EventListenerOrEventListenerObject);
+    input.addEventListener('blur', blurEventHandler);
+    input.addEventListener('focus', focusEventHandler);
+    window.addEventListener('resize', resizeEventHandler);
+    doc.addEventListener('scroll', scrollEventHandler, true);
 
     return {
         destroy

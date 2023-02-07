@@ -29,7 +29,7 @@ var countries = [
     { label: 'United States', value: 'US' }
 ];
 
-var input = document.getElementById("country");
+var input = document.getElementById('country');
 
 autocomplete({
     input: input,
@@ -52,7 +52,7 @@ autocomplete({
 Simply import the autocompleter in your typescript file:
 
 ```javascript
-    import autocomplete from "autocompleter";
+    import autocomplete from 'autocompleter';
 ```
 
 and call the `autocomplete` function as showed below:
@@ -60,8 +60,8 @@ and call the `autocomplete` function as showed below:
 ```javascript
 // replace the `MyInterface` interface with the interface you want to use with autocomplete
 autocomplete<MyInterface>({
-    input: document.getElementById("myinputfield"),
-    emptyMsg: "No items found",
+    input: document.getElementById('myinputfield'),
+    emptyMsg: 'No items found',
     minLength: 1,
     fetch: (text: string, update: (items: MyInterface[]) => void) => {
 	...
@@ -75,14 +75,14 @@ autocomplete<MyInterface>({
 If your custom interface doesn't have the `label` property, you might get a compilation error from typescript. In this case just add an additional type to your code and pass it to the autocompleter:
 
 ```javascript
-import autocomplete, { AutocompleteItem } from "autocompleter";
+import autocomplete, { AutocompleteItem } from 'autocompleter';
 
 // this type will prevent typescript warnings
 type MyItem = Item & AutocompleteItem;
 
 autocomplete<MyItem>({
-    input: document.getElementById("myinputfield"),
-    emptyMsg: "No items found",
+    input: document.getElementById('myinputfield'),
+    emptyMsg: 'No items found',
     minLength: 1,
     fetch: (text: string, update: (items: Item[]) => void) => {
 	...
@@ -91,7 +91,7 @@ autocomplete<MyItem>({
 	...
     },
     render: function(item: Item, currentValue: string): HTMLDivElement | undefined {
-        const itemElement = document.createElement("div");
+        const itemElement = document.createElement('div');
         itemElement.textContent = item.FirstName;
         return itemElement;
     }
@@ -134,19 +134,19 @@ autocomplete({
     minLength: 2,
     emptyMsg: 'No elements found',
     render: function(item, currentValue) {
-        var div = doc.createElement("div");
+        var div = doc.createElement('div');
         div.textContent = item.label;
         return div;
     },
     renderGroup: function(groupName, currentValue) {
-        var div = doc.createElement("div");
+        var div = doc.createElement('div');
         div.textContent = groupName;
         return div;
     },
     className: 'autocomplete-customizations',
     fetch: function(text, callback, trigger, cursorPos) {
         text = text.toLowerCase();
-        var suggestions = [{ label: "United States", value: "US" }];
+        var suggestions = [{ label: 'United States', value: 'US' }];
         callback(suggestions);
     },
     debounceWaitMs: 200,
@@ -155,9 +155,9 @@ autocomplete({
     },
     preventSubmit: true,
     disableAutoSelect: true,
-    container: document.createElement("div"),
-    click: (e) => e.fetch(),
-    keyup: (e) => e.fetch()
+    container: document.createElement('div'),
+    click: e => e.fetch(),
+    keyup: e => e.fetch()
 });
 ```
 
@@ -170,9 +170,9 @@ autocomplete({
     ...,
     customize: function(input, inputRect, container, maxHeight) {
         if (maxHeight < 100) {
-            container.style.top = "";
-            container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
-            container.style.maxHeight = "200px";
+            container.style.top = '';
+            container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + 'px';
+            container.style.maxHeight = '200px';
         }
     }
 });
@@ -186,9 +186,9 @@ export default function autocompleteCustomized<T extends AutocompleteItem>(setti
         ...settings,
         customize: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number): void => {
             if (maxHeight < 100) {
-                container.style.top = "";
-                container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + "px";
-                container.style.maxHeight = "200px";
+                container.style.top = '';
+                container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + 'px';
+                container.style.maxHeight = '200px';
             }
         }
     });
@@ -217,7 +217,7 @@ var countries = [
 
 autocomplete({
     minLength: 1,
-    input: document.getElementById("country"),
+    input: document.getElementById('country'),
     fetch: function(text, update) {
         text = text.toLowerCase();
         var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))

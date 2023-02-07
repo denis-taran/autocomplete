@@ -12,37 +12,37 @@
     function autocomplete(settings) {
         // just an alias to minimize JS file size
         var doc = document;
-        var container = settings.container || doc.createElement("div");
-        container.id = container.id || "autocomplete-" + uid();
+        var container = settings.container || doc.createElement('div');
+        container.id = container.id || 'autocomplete-' + uid();
         var containerStyle = container.style;
         var debounceWaitMs = settings.debounceWaitMs || 0;
         var preventSubmit = settings.preventSubmit || false;
         var disableAutoSelect = settings.disableAutoSelect || false;
         var items = [];
-        var inputValue = "";
+        var inputValue = '';
         var minLen = 2;
         var showOnFocus = settings.showOnFocus;
         var selected;
-        var keypressCounter = 0;
+        var fetchCounter = 0;
         var debounceTimer;
         if (settings.minLength !== undefined) {
             minLen = settings.minLength;
         }
         if (!settings.input) {
-            throw new Error("input undefined");
+            throw new Error('input undefined');
         }
         var input = settings.input;
-        container.className = "autocomplete " + (settings.className || "");
-        container.setAttribute("role", "listbox");
-        input.setAttribute("role", "combobox");
-        input.setAttribute("aria-expanded", "false");
-        input.setAttribute("aria-autocomplete", "list");
-        input.setAttribute("aria-controls", container.id);
-        input.setAttribute("aria-owns", container.id);
-        input.setAttribute("aria-activedescendant", "");
-        input.setAttribute("aria-haspopup", "listbox");
+        container.className = 'autocomplete ' + (settings.className || '');
+        container.setAttribute('role', 'listbox');
+        input.setAttribute('role', 'combobox');
+        input.setAttribute('aria-expanded', 'false');
+        input.setAttribute('aria-autocomplete', 'list');
+        input.setAttribute('aria-controls', container.id);
+        input.setAttribute('aria-owns', container.id);
+        input.setAttribute('aria-activedescendant', '');
+        input.setAttribute('aria-haspopup', 'listbox');
         // IOS implementation for fixed positioning has many bugs, so we will use absolute positioning
-        containerStyle.position = "absolute";
+        containerStyle.position = 'absolute';
         /**
          * Generate a very complex textual ID that greatly reduces the chance of a collision with another ID or text.
          */
@@ -85,12 +85,12 @@
          */
         function clear() {
             // prevent the update call if there are pending AJAX requests
-            keypressCounter++;
+            fetchCounter++;
             items = [];
-            inputValue = "";
+            inputValue = '';
             selected = undefined;
-            input.setAttribute("aria-activedescendant", "");
-            input.setAttribute("aria-expanded", "false");
+            input.setAttribute('aria-activedescendant', '');
+            input.setAttribute('aria-expanded', 'false');
             detach();
         }
         /**
@@ -100,9 +100,9 @@
             if (!containerDisplayed()) {
                 return;
             }
-            input.setAttribute("aria-expanded", "true");
-            containerStyle.height = "auto";
-            containerStyle.width = input.offsetWidth + "px";
+            input.setAttribute('aria-expanded', 'true');
+            containerStyle.height = 'auto';
+            containerStyle.width = input.offsetWidth + 'px';
             var maxHeight = 0;
             var inputRect;
             function calc() {
@@ -114,16 +114,16 @@
                 inputRect = input.getBoundingClientRect();
                 var top = inputRect.top + input.offsetHeight + scrollTop - clientTop;
                 var left = inputRect.left + scrollLeft - clientLeft;
-                containerStyle.top = top + "px";
-                containerStyle.left = left + "px";
+                containerStyle.top = top + 'px';
+                containerStyle.left = left + 'px';
                 maxHeight = window.innerHeight - (inputRect.top + input.offsetHeight);
                 if (maxHeight < 0) {
                     maxHeight = 0;
                 }
-                containerStyle.top = top + "px";
-                containerStyle.bottom = "";
-                containerStyle.left = left + "px";
-                containerStyle.maxHeight = maxHeight + "px";
+                containerStyle.top = top + 'px';
+                containerStyle.bottom = '';
+                containerStyle.left = left + 'px';
+                containerStyle.maxHeight = maxHeight + 'px';
             }
             // the calc method must be called twice, otherwise the calculation may be wrong on resize event (chrome browser)
             calc();
@@ -136,15 +136,12 @@
          * Redraw the autocomplete div element with suggestions
          */
         function update() {
-            // delete all children from autocomplete DOM container
-            while (container.firstChild) {
-                container.removeChild(container.firstChild);
-            }
-            input.setAttribute("aria-activedescendant", "");
+            container.innerHTML = '';
+            input.setAttribute('aria-activedescendant', '');
             // function for rendering autocomplete suggestions
             var render = function (item, _, __) {
-                var itemElement = doc.createElement("div");
-                itemElement.textContent = item.label || "";
+                var itemElement = doc.createElement('div');
+                itemElement.textContent = item.label || '';
                 return itemElement;
             };
             if (settings.render) {
@@ -152,7 +149,7 @@
             }
             // function to render autocomplete groups
             var renderGroup = function (groupName, _) {
-                var groupDiv = doc.createElement("div");
+                var groupDiv = doc.createElement('div');
                 groupDiv.textContent = groupName;
                 return groupDiv;
             };
@@ -166,24 +163,24 @@
                     prevGroup = item.group;
                     var groupDiv = renderGroup(item.group, inputValue);
                     if (groupDiv) {
-                        groupDiv.className += " group";
+                        groupDiv.className += ' group';
                         fragment.appendChild(groupDiv);
                     }
                 }
                 var div = render(item, inputValue, index);
                 if (div) {
                     div.id = container.id + "_" + index;
-                    div.setAttribute("role", "option");
-                    div.addEventListener("click", function (ev) {
+                    div.setAttribute('role', 'option');
+                    div.addEventListener('click', function (ev) {
                         settings.onSelect(item, input);
                         clear();
                         ev.preventDefault();
                         ev.stopPropagation();
                     });
                     if (item === selected) {
-                        div.className += " selected";
-                        div.setAttribute("aria-selected", "true");
-                        input.setAttribute("aria-activedescendant", div.id);
+                        div.className += ' selected';
+                        div.setAttribute('aria-selected', 'true');
+                        input.setAttribute('aria-activedescendant', div.id);
                     }
                     fragment.appendChild(div);
                 }
@@ -191,12 +188,12 @@
             container.appendChild(fragment);
             if (items.length < 1) {
                 if (settings.emptyMsg) {
-                    var empty = doc.createElement("div");
+                    var empty = doc.createElement('div');
                     empty.id = container.id + "_" + uid();
-                    empty.className = "empty";
+                    empty.className = 'empty';
                     empty.textContent = settings.emptyMsg;
                     container.appendChild(empty);
-                    input.setAttribute("aria-activedescendant", empty.id);
+                    input.setAttribute('aria-activedescendant', empty.id);
                 }
                 else {
                     clear();
@@ -230,12 +227,12 @@
          * Automatically move scroll bar if selected item is not visible
          */
         function updateScroll() {
-            var elements = container.getElementsByClassName("selected");
+            var elements = container.getElementsByClassName('selected');
             if (elements.length > 0) {
                 var element = elements[0];
                 // make group visible
                 var previous = element.previousElementSibling;
-                if (previous && previous.className.indexOf("group") !== -1 && !previous.previousElementSibling) {
+                if (previous && previous.className.indexOf('group') !== -1 && !previous.previousElementSibling) {
                     element = previous;
                 }
                 if (element.offsetTop < container.scrollTop) {
@@ -254,71 +251,61 @@
          * Select the previous item in suggestions
          */
         function selectPrev() {
-            if (items.length < 1) {
-                selected = undefined;
-            }
-            else {
-                if (selected === items[0]) {
-                    selected = items[items.length - 1];
-                }
-                else {
-                    for (var i = items.length - 1; i > 0; i--) {
-                        if (selected === items[i] || i === 1) {
-                            selected = items[i - 1];
-                            break;
-                        }
-                    }
-                }
-            }
+            var index = items.indexOf(selected);
+            selected = index === -1
+                ? undefined
+                : items[(index + items.length - 1) % items.length];
         }
         /**
          * Select the next item in suggestions
          */
         function selectNext() {
-            if (items.length < 1) {
-                selected = undefined;
+            var index = items.indexOf(selected);
+            selected = items.length < 1
+                ? undefined
+                : index === -1
+                    ? items[0]
+                    : items[(index + 1) % items.length];
+        }
+        function handleArrowAndEscapeKeys(ev, key) {
+            var containerIsDisplayed = containerDisplayed();
+            if (key === 'Escape') {
+                clear();
             }
-            if (!selected || selected === items[items.length - 1]) {
-                selected = items[0];
-                return;
-            }
-            for (var i = 0; i < (items.length - 1); i++) {
-                if (selected === items[i]) {
-                    selected = items[i + 1];
-                    break;
+            else {
+                if (!containerIsDisplayed || items.length < 1) {
+                    return;
                 }
+                key === 'ArrowUp'
+                    ? selectPrev()
+                    : selectNext();
+                update();
+            }
+            ev.preventDefault();
+            if (containerIsDisplayed) {
+                ev.stopPropagation();
+            }
+        }
+        function handleEnterKey(ev) {
+            if (selected) {
+                settings.onSelect(selected, input);
+                clear();
+            }
+            if (preventSubmit) {
+                ev.preventDefault();
             }
         }
         function keydownEventHandler(ev) {
             var key = ev.key;
-            if (key === "ArrowUp" || key === "ArrowDown" || key === "Escape") {
-                var containerIsDisplayed = containerDisplayed();
-                if (key === "Escape") {
-                    clear();
-                }
-                else {
-                    if (!containerIsDisplayed || items.length < 1) {
-                        return;
-                    }
-                    key === "ArrowUp"
-                        ? selectPrev()
-                        : selectNext();
-                    update();
-                }
-                ev.preventDefault();
-                if (containerIsDisplayed) {
-                    ev.stopPropagation();
-                }
-                return;
-            }
-            if (key === 'Enter') {
-                if (selected) {
-                    settings.onSelect(selected, input);
-                    clear();
-                }
-                if (preventSubmit) {
-                    ev.preventDefault();
-                }
+            switch (key) {
+                case 'ArrowUp':
+                case 'ArrowDown':
+                case 'Escape':
+                    handleArrowAndEscapeKeys(ev, key);
+                    break;
+                case 'Enter':
+                    handleEnterKey(ev);
+                    break;
             }
         }
         function focusEventHandler() {
@@ -327,17 +314,17 @@
             }
         }
         function startFetch(trigger) {
-            // If multiple keys were pressed, before we get an update from server,
-            // this may cause redrawing autocomplete multiple times after the last key was pressed.
-            // To avoid this, the number of times keyboard was pressed will be saved and checked before redraw.
-            var savedKeypressCounter = ++keypressCounter;
+            // If multiple keys were pressed before suggestions received from server, the autocomplete will
+            // be redrawed multiple times, causing 'blinking'. To avoid this, the number of times fetch was
+            // called will be saved and checked before redraw, so only one redraw occurs.
+            var savedFetchCounter = ++fetchCounter;
             var inputText = input.value;
             var cursorPos = input.selectionStart || 0;
             if (inputText.length >= minLen || trigger === 1 /* Focus */) {
                 clearDebounceTimer();
                 debounceTimer = window.setTimeout(function () {
                     settings.fetch(inputText, function (elements) {
-                        if (keypressCounter === savedKeypressCounter && elements) {
+                        if (fetchCounter === savedFetchCounter && elements) {
                             items = elements;
                             inputValue = inputText;
                             selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
@@ -358,7 +345,7 @@
                 });
                 return;
             }
-            if (!containerDisplayed() && e.key === "ArrowDown") {
+            if (!containerDisplayed() && e.key === 'ArrowDown') {
                 startFetch(0 /* Keyboard */);
             }
         }
@@ -369,7 +356,8 @@
             });
         }
         function blurEventHandler() {
-            // we need to delay clear, because when we click on an item, blur will be called before click and remove items from DOM
+            // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
+            // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
             setTimeout(function () {
                 if (doc.activeElement !== input) {
                     clear();
@@ -379,7 +367,7 @@
         /**
          * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
          */
-        container.addEventListener("mousedown", function (evt) {
+        container.addEventListener('mousedown', function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
         });
@@ -387,38 +375,38 @@
          * Fixes #30: autocomplete closes when scrollbar is clicked in IE
          * See: https://stackoverflow.com/a/9210267/13172349
          */
-        container.addEventListener("focus", function () { return input.focus(); });
+        container.addEventListener('focus', function () { return input.focus(); });
         /**
          * This function will remove DOM elements and clear event handlers
          */
         function destroy() {
-            input.removeEventListener("focus", focusEventHandler);
-            input.removeEventListener("keyup", keyupEventHandler);
-            input.removeEventListener("click", clickEventHandler);
-            input.removeEventListener("keydown", keydownEventHandler);
-            input.removeEventListener("input", inputEventHandler);
-            input.removeEventListener("blur", blurEventHandler);
-            window.removeEventListener("resize", resizeEventHandler);
-            doc.removeEventListener("scroll", scrollEventHandler, true);
-            input.removeAttribute("role");
-            input.removeAttribute("aria-expanded");
-            input.removeAttribute("aria-autocomplete");
-            input.removeAttribute("aria-controls");
-            input.removeAttribute("aria-activedescendant");
-            input.removeAttribute("aria-owns");
-            input.removeAttribute("aria-haspopup");
+            input.removeEventListener('focus', focusEventHandler);
+            input.removeEventListener('keyup', keyupEventHandler);
+            input.removeEventListener('click', clickEventHandler);
+            input.removeEventListener('keydown', keydownEventHandler);
+            input.removeEventListener('input', inputEventHandler);
+            input.removeEventListener('blur', blurEventHandler);
+            window.removeEventListener('resize', resizeEventHandler);
+            doc.removeEventListener('scroll', scrollEventHandler, true);
+            input.removeAttribute('role');
+            input.removeAttribute('aria-expanded');
+            input.removeAttribute('aria-autocomplete');
+            input.removeAttribute('aria-controls');
+            input.removeAttribute('aria-activedescendant');
+            input.removeAttribute('aria-owns');
+            input.removeAttribute('aria-haspopup');
             clearDebounceTimer();
             clear();
         }
         // setup event handlers
-        input.addEventListener("keyup", keyupEventHandler);
-        input.addEventListener("click", clickEventHandler);
-        input.addEventListener("keydown", keydownEventHandler);
-        input.addEventListener("input", inputEventHandler);
-        input.addEventListener("blur", blurEventHandler);
-        input.addEventListener("focus", focusEventHandler);
-        window.addEventListener("resize", resizeEventHandler);
-        doc.addEventListener("scroll", scrollEventHandler, true);
+        input.addEventListener('keyup', keyupEventHandler);
+        input.addEventListener('click', clickEventHandler);
+        input.addEventListener('keydown', keydownEventHandler);
+        input.addEventListener('input', inputEventHandler);
+        input.addEventListener('blur', blurEventHandler);
+        input.addEventListener('focus', focusEventHandler);
+        window.addEventListener('resize', resizeEventHandler);
+        doc.addEventListener('scroll', scrollEventHandler, true);
         return {
             destroy: destroy
         };
