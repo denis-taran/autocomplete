@@ -18,6 +18,7 @@
         var debounceWaitMs = settings.debounceWaitMs || 0;
         var preventSubmit = settings.preventSubmit || false;
         var disableAutoSelect = settings.disableAutoSelect || false;
+        var customContainerParent = container.parentElement;
         var items = [];
         var inputValue = '';
         var minLen = 2;
@@ -71,7 +72,7 @@
          */
         function attach() {
             if (!container.parentNode) {
-                doc.body.appendChild(container);
+                (customContainerParent || doc.body).appendChild(container);
             }
         }
         /**

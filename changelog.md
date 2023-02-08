@@ -21,3 +21,5 @@ All notable changes to this project will be documented in this file.
 - The mouse paste operation now activates the autocomplete feature as intended.
 - The autocomplete widget is now correctly activated when input values are altered on mobile
   devices without using the virtual keyboard (by voice or auto-correction).
+- The widget will now properly reattach to its original parent container when a custom
+  container is provided for autocomplete, instead of attaching to the body (issue #83)

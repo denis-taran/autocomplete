@@ -139,6 +139,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
+    const customContainerParent = container.parentElement;
 
     let items: T[] = [];
     let inputValue = '';
@@ -203,7 +204,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function attach() {
         if (!container.parentNode) {
-            doc.body.appendChild(container);
+            (customContainerParent || doc.body).appendChild(container);
         }
     }
 
