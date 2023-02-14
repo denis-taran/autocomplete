@@ -1,7 +1,19 @@
+/**
+ * Copyright (c) 2016 Denys Krasnoshchok
+ *
+ * Homepage: https://smartscheduling.com/en/documentation/autocomplete
+ * Source: https://github.com/kraaden/autocomplete
+ *
+ * MIT License
+ */
 export declare const enum EventTrigger {
     Keyboard = 0,
     Focus = 1,
-    Mouse = 2
+    Mouse = 2,
+    /**
+     * Fetch is triggered manually by calling `fetch` function returned in `AutocompleteResult`
+     */
+    Manual = 3
 }
 export interface AutocompleteItem {
     label?: string;
@@ -101,5 +113,9 @@ export interface AutocompleteResult {
      * Remove event handlers, DOM elements and ARIA/accessibility attributes created by the widget.
      */
     destroy: () => void;
+    /**
+     * Allows to manually start data fetching and display autocomplete.
+     */
+    fetch: () => void;
 }
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;

@@ -19,7 +19,10 @@ export default {
             plugins: [
                 terser({
                     compress: true,
-                    mangle: true
+                    mangle: true,
+                    format: {
+                        comments: /Copyright/ig
+                    }
                 })
             ]
         }

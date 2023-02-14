@@ -1,13 +1,20 @@
-/*
- * https://github.com/kraaden/autocomplete
+/**
  * Copyright (c) 2016 Denys Krasnoshchok
+ * 
+ * Homepage: https://smartscheduling.com/en/documentation/autocomplete
+ * Source: https://github.com/kraaden/autocomplete
+ * 
  * MIT License
  */
 
 export const enum EventTrigger {
     Keyboard = 0,
     Focus = 1,
-    Mouse = 2
+    Mouse = 2,
+    /**
+     * Fetch is triggered manually by calling `fetch` function returned in `AutocompleteResult`
+     */
+    Manual = 3
 }
 
 export interface AutocompleteItem {
@@ -20,6 +27,7 @@ export interface AutocompleteEvent<T extends Event> {
      * Native event object passed by browser to the event handler
      */
     event: T;
+
     /**
      * Fetch data and display autocomplete
      */
@@ -126,6 +134,11 @@ export interface AutocompleteResult {
      * Remove event handlers, DOM elements and ARIA/accessibility attributes created by the widget.
      */
     destroy: () => void;
+
+    /**
+     * Allows to manually start data fetching and display autocomplete.
+     */
+    fetch: () => void;
 }
 
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -148,6 +161,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     let selected: T | undefined;
     let fetchCounter = 0;
     let debounceTimer: number | undefined;
+    let destroyed = false;
 
     if (settings.minLength !== undefined) {
         minLen = settings.minLength;
@@ -380,7 +394,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function inputEventHandler() {
-        startFetch(EventTrigger.Keyboard);
+        fetch(EventTrigger.Keyboard);
     }
 
     /**
@@ -479,54 +493,52 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     function focusEventHandler() {
         if (showOnFocus) {
-            startFetch(EventTrigger.Focus);
+            fetch(EventTrigger.Focus);
         }
     }
 
-    function startFetch(trigger: EventTrigger) {
-        // If multiple keys were pressed before suggestions received from server, the autocomplete will
-        // be redrawed multiple times, causing 'blinking'. To avoid this, the number of times fetch was
-        // called will be saved and checked before redraw, so only one redraw occurs.
-        const savedFetchCounter = ++fetchCounter;
-
-        const inputText = input.value;
-        const cursorPos = input.selectionStart || 0;
-
-        if (inputText.length >= minLen || trigger === EventTrigger.Focus) {
+    function fetch(trigger: EventTrigger) {
+        if (input.value.length >= minLen || trigger === EventTrigger.Focus) {
             clearDebounceTimer();
-            debounceTimer = window.setTimeout(function (): void {
-                settings.fetch(inputText, function (elements: T[] | false): void {
-                    if (fetchCounter === savedFetchCounter && elements) {
-                        items = elements;
-                        inputValue = inputText;
-                        selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
-                        update();
-                    }
-                }, trigger, cursorPos);
-            }, trigger === EventTrigger.Keyboard || trigger === EventTrigger.Mouse ? debounceWaitMs : 0);
+            debounceTimer = window.setTimeout(
+                () => startFetch(input.value, trigger, input.selectionStart || 0),
+                trigger === EventTrigger.Keyboard || trigger === EventTrigger.Mouse ? debounceWaitMs : 0);
         } else {
             clear();
         }
+    }
+
+    function startFetch(inputText: string, trigger: EventTrigger, cursorPos: number) {
+        if (destroyed) return;
+        const savedFetchCounter = ++fetchCounter;
+        settings.fetch(inputText, function (elements: T[] | false): void {
+            if (fetchCounter === savedFetchCounter && elements) {
+                items = elements;
+                inputValue = inputText;
+                selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
+                update();
+            }
+        }, trigger, cursorPos);
     }
 
     function keyupEventHandler(e: KeyboardEvent) {
         if (settings.keyup) {
             settings.keyup({
                 event: e,
-                fetch: () => startFetch(EventTrigger.Keyboard)
+                fetch: () => fetch(EventTrigger.Keyboard)
             });
             return;
         }
 
         if (!containerDisplayed() && e.key === 'ArrowDown') {
-            startFetch(EventTrigger.Keyboard);
+            fetch(EventTrigger.Keyboard);
         }
     }
 
     function clickEventHandler(e: MouseEvent) {
         settings.click && settings.click({
             event: e,
-            fetch: () => startFetch(EventTrigger.Mouse)
+            fetch: () => fetch(EventTrigger.Mouse)
         });
     }
 
@@ -538,6 +550,10 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 clear();
             }
         }, 200);
+    }
+
+    function manualFetch() {
+        startFetch(input.value, EventTrigger.Manual, input.selectionStart || 0);
     }
 
     /**
@@ -575,6 +591,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeAttribute('aria-haspopup');
         clearDebounceTimer();
         clear();
+        destroyed = true;
     }
 
     // setup event handlers
@@ -588,6 +605,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     doc.addEventListener('scroll', scrollEventHandler, true);
 
     return {
-        destroy
+        destroy,
+        fetch: manualFetch
     };
 }

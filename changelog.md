@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.0.3] - 2023-02-14
+
+### Added
+
+- Added a new parameter to `AutocompleteResult` that allows to manually display autocomplete or
+  trigger updates without an event like 'click' or 'keydown'
+
+### Fixed
+
+- Rollup configuration
+
 ## [8.0.0] - 2023-02-07
 
 ### Added

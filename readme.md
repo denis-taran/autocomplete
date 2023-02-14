@@ -1,7 +1,7 @@
 
 Blazing fast and lightweight autocomplete widget without dependencies. Only 1KB gzipped.
 
-Demo: https://kraaden.github.io/autocomplete/
+Demo: https://smartscheduling.com/en/documentation/autocomplete
 
 ## Installation
 

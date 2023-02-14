@@ -4,9 +4,12 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.autocomplete = factory());
 }(this, (function () { 'use strict';
 
-    /*
-     * https://github.com/kraaden/autocomplete
+    /**
      * Copyright (c) 2016 Denys Krasnoshchok
+     *
+     * Homepage: https://smartscheduling.com/en/documentation/autocomplete
+     * Source: https://github.com/kraaden/autocomplete
+     *
      * MIT License
      */
     function autocomplete(settings) {
@@ -26,6 +29,7 @@
         var selected;
         var fetchCounter = 0;
         var debounceTimer;
+        var destroyed = false;
         if (settings.minLength !== undefined) {
             minLen = settings.minLength;
         }
@@ -222,7 +226,7 @@
             }
         }
         function inputEventHandler() {
-            startFetch(0 /* Keyboard */);
+            fetch(0 /* Keyboard */);
         }
         /**
          * Automatically move scroll bar if selected item is not visible
@@ -305,49 +309,47 @@
         }
         function focusEventHandler() {
             if (showOnFocus) {
-                startFetch(1 /* Focus */);
+                fetch(1 /* Focus */);
             }
         }
-        function startFetch(trigger) {
-            // If multiple keys were pressed before suggestions received from server, the autocomplete will
-            // be redrawed multiple times, causing 'blinking'. To avoid this, the number of times fetch was
-            // called will be saved and checked before redraw, so only one redraw occurs.
-            var savedFetchCounter = ++fetchCounter;
-            var inputText = input.value;
-            var cursorPos = input.selectionStart || 0;
-            if (inputText.length >= minLen || trigger === 1 /* Focus */) {
+        function fetch(trigger) {
+            if (input.value.length >= minLen || trigger === 1 /* Focus */) {
                 clearDebounceTimer();
-                debounceTimer = window.setTimeout(function () {
-                    settings.fetch(inputText, function (elements) {
-                        if (fetchCounter === savedFetchCounter && elements) {
-                            items = elements;
-                            inputValue = inputText;
-                            selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
-                            update();
-                        }
-                    }, trigger, cursorPos);
-                }, trigger === 0 /* Keyboard */ || trigger === 2 /* Mouse */ ? debounceWaitMs : 0);
+                debounceTimer = window.setTimeout(function () { return startFetch(input.value, trigger, input.selectionStart || 0); }, trigger === 0 /* Keyboard */ || trigger === 2 /* Mouse */ ? debounceWaitMs : 0);
             }
             else {
                 clear();
             }
         }
+        function startFetch(inputText, trigger, cursorPos) {
+            if (destroyed)
+                return;
+            var savedFetchCounter = ++fetchCounter;
+            settings.fetch(inputText, function (elements) {
+                if (fetchCounter === savedFetchCounter && elements) {
+                    items = elements;
+                    inputValue = inputText;
+                    selected = (items.length < 1 || disableAutoSelect) ? undefined : items[0];
+                    update();
+                }
+            }, trigger, cursorPos);
+        }
         function keyupEventHandler(e) {
             if (settings.keyup) {
                 settings.keyup({
                     event: e,
-                    fetch: function () { return startFetch(0 /* Keyboard */); }
+                    fetch: function () { return fetch(0 /* Keyboard */); }
                 });
                 return;
             }
             if (!containerDisplayed() && e.key === 'ArrowDown') {
-                startFetch(0 /* Keyboard */);
+                fetch(0 /* Keyboard */);
             }
         }
         function clickEventHandler(e) {
             settings.click && settings.click({
                 event: e,
-                fetch: function () { return startFetch(2 /* Mouse */); }
+                fetch: function () { return fetch(2 /* Mouse */); }
             });
         }
         function blurEventHandler() {
@@ -358,6 +360,9 @@
                     clear();
                 }
             }, 200);
+        }
+        function manualFetch() {
+            startFetch(input.value, 3 /* Manual */, input.selectionStart || 0);
         }
         /**
          * Fixes #26: on long clicks focus will be lost and onSelect method will not be called
@@ -392,6 +397,7 @@
             input.removeAttribute('aria-haspopup');
             clearDebounceTimer();
             clear();
+            destroyed = true;
         }
         // setup event handlers
         input.addEventListener('keyup', keyupEventHandler);
@@ -403,7 +409,8 @@
         window.addEventListener('resize', resizeEventHandler);
         doc.addEventListener('scroll', scrollEventHandler, true);
         return {
-            destroy: destroy
+            destroy: destroy,
+            fetch: manualFetch
         };
     }
 
