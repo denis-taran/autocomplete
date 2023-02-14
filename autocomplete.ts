@@ -136,7 +136,9 @@ export interface AutocompleteResult {
     destroy: () => void;
 
     /**
-     * Allows to manually start data fetching and display autocomplete.
+     * This function allows to manually start data fetching and display autocomplete. Note that
+     * it does not automatically place focus on the input field, so you may need to do so manually
+     * in certain situations.
      */
     fetch: () => void;
 }
