@@ -165,6 +165,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     let debounceTimer: number | undefined;
     let destroyed = false;
 
+    // Fixes #104: autocomplete selection is broken on Firefox for Android
+    let suppressAutocomplete = false;
+
     if (settings.minLength !== undefined) {
         minLen = settings.minLength;
     }
@@ -343,7 +346,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 div.id = `${container.id}_${index}`;
                 div.setAttribute('role', 'option');
                 div.addEventListener('click', function (ev: MouseEvent): void {
-                    settings.onSelect(item, input);
+                    suppressAutocomplete = true;
+                    try {
+                        settings.onSelect(item, input);
+                    } finally {
+                        suppressAutocomplete = false;
+                    }
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -396,7 +404,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function inputEventHandler() {
-        fetch(EventTrigger.Keyboard);
+        if (!suppressAutocomplete) {
+            fetch(EventTrigger.Keyboard);
+        }
     }
 
     /**
@@ -467,7 +477,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     function handleEnterKey(ev: KeyboardEvent) {
         if (selected) {
-            settings.onSelect(selected, input);
+            suppressAutocomplete = true;
+            try {
+                settings.onSelect(selected, input);
+            } finally {
+                suppressAutocomplete = false;
+            }
             clear();
         }
 

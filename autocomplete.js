@@ -30,6 +30,7 @@
         var fetchCounter = 0;
         var debounceTimer;
         var destroyed = false;
+        var suppressAutocomplete = false;
         if (settings.minLength !== undefined) {
             minLen = settings.minLength;
         }
@@ -177,7 +178,13 @@
                     div.id = container.id + "_" + index;
                     div.setAttribute('role', 'option');
                     div.addEventListener('click', function (ev) {
-                        settings.onSelect(item, input);
+                        suppressAutocomplete = true;
+                        try {
+                            settings.onSelect(item, input);
+                        }
+                        finally {
+                            suppressAutocomplete = false;
+                        }
                         clear();
                         ev.preventDefault();
                         ev.stopPropagation();
@@ -226,7 +233,9 @@
             }
         }
         function inputEventHandler() {
-            fetch(0 /* Keyboard */);
+            if (!suppressAutocomplete) {
+                fetch(0 /* Keyboard */);
+            }
         }
         /**
          * Automatically move scroll bar if selected item is not visible
@@ -287,7 +296,13 @@
         }
         function handleEnterKey(ev) {
             if (selected) {
-                settings.onSelect(selected, input);
+                suppressAutocomplete = true;
+                try {
+                    settings.onSelect(selected, input);
+                }
+                finally {
+                    suppressAutocomplete = false;
+                }
                 clear();
             }
             if (preventSubmit) {
