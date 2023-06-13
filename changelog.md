@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.0.4] - 2023-06-13
+
+### Fixed
+
+- Resolved an issue where the autocomplete widget was erroneously re-displayed after selection on Firefox Mobile Browser.
+
 ## [8.0.3] - 2023-02-14
 
 ### Added
