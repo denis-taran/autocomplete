@@ -30,6 +30,7 @@
         var fetchCounter = 0;
         var debounceTimer;
         var destroyed = false;
+        // Fixes #104: autocomplete selection is broken on Firefox for Android
         var suppressAutocomplete = false;
         if (settings.minLength !== undefined) {
             minLen = settings.minLength;
@@ -266,6 +267,7 @@
             selected = index === -1
                 ? undefined
                 : items[(index + items.length - 1) % items.length];
+            updateSelectedSuggestion(index);
         }
         function selectNextSuggestion() {
             var index = items.indexOf(selected);
@@ -274,6 +276,30 @@
                 : index === -1
                     ? items[0]
                     : items[(index + 1) % items.length];
+            updateSelectedSuggestion(index);
+        }
+        function updateSelectedSuggestion(index) {
+            if (index > -1 && items.length > 0) {
+                unselectSuggestion(index);
+                selectSuggestion(items.indexOf(selected));
+                updateScroll();
+            }
+        }
+        function selectSuggestion(index) {
+            var element = doc.getElementById(container.id + "_" + index);
+            if (element) {
+                element.classList.add('selected');
+                element.setAttribute('aria-selected', 'true');
+                input.setAttribute('aria-activedescendant', element.id);
+            }
+        }
+        function unselectSuggestion(index) {
+            var element = doc.getElementById(container.id + "_" + index);
+            if (element) {
+                element.classList.remove('selected');
+                element.removeAttribute('aria-selected');
+                input.removeAttribute('aria-activedescendant');
+            }
         }
         function handleArrowAndEscapeKeys(ev, key) {
             var containerIsDisplayed = containerDisplayed();
@@ -287,7 +313,6 @@
                 key === 'ArrowUp'
                     ? selectPreviousSuggestion()
                     : selectNextSuggestion();
-                update();
             }
             ev.preventDefault();
             if (containerIsDisplayed) {

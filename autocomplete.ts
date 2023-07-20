@@ -441,6 +441,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         selected = index === -1
             ? undefined
             : items[(index + items.length - 1) % items.length];
+
+        updateSelectedSuggestion(index);
     }
 
     function selectNextSuggestion() {
@@ -451,6 +453,34 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             : index === -1
                 ? items[0]
                 : items[(index + 1) % items.length];
+
+        updateSelectedSuggestion(index);
+    }
+
+    function updateSelectedSuggestion(index: number) {
+        if (index > -1 && items.length > 0) {
+            unselectSuggestion(index);
+            selectSuggestion(items.indexOf(selected!));
+            updateScroll();
+        }
+    }
+
+    function selectSuggestion(index: number) {
+        var element = doc.getElementById(container.id + "_" + index);
+        if(element) {
+            element.classList.add('selected');
+            element.setAttribute('aria-selected', 'true');
+            input.setAttribute('aria-activedescendant', element.id);
+        }
+    }
+
+    function unselectSuggestion(index: number) {
+        var element = doc.getElementById(container.id + "_" + index);
+        if(element) {
+            element.classList.remove('selected');
+            element.removeAttribute('aria-selected');
+            input.removeAttribute('aria-activedescendant');
+        }
     }
 
     function handleArrowAndEscapeKeys(ev: KeyboardEvent, key: 'ArrowUp' | 'ArrowDown' | 'Escape') {
@@ -465,7 +495,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             key === 'ArrowUp'
                 ? selectPreviousSuggestion()
                 : selectNextSuggestion();
-            update();
         }
 
         ev.preventDefault();
