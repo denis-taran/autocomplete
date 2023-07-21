@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.0.0] - 2023-07-21
+
+### Added
+
+- Improved performance during keyboard navigation (up/down keys) in the autocomplete dropdown. Instead of re-rendering suggestions, the widget now only updates the relevant element attributes. 
+
+### Breaking Changes
+
+- Due to the above optimization, the `render` and `renderGroup` functions will now only be invoked on the initial render and when text in the autocomplete changes.
+
 ## [8.0.4] - 2023-06-13
 
 ### Fixed
