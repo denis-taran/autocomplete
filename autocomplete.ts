@@ -458,7 +458,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function updateSelectedSuggestion(index: number) {
-        if (index > -1 && items.length > 0) {
+        if (items.length > 0) {
             unselectSuggestion(index);
             selectSuggestion(items.indexOf(selected!));
             updateScroll();
@@ -467,7 +467,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     function selectSuggestion(index: number) {
         var element = doc.getElementById(container.id + "_" + index);
-        if(element) {
+        if (element) {
             element.classList.add('selected');
             element.setAttribute('aria-selected', 'true');
             input.setAttribute('aria-activedescendant', element.id);
@@ -476,7 +476,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     function unselectSuggestion(index: number) {
         var element = doc.getElementById(container.id + "_" + index);
-        if(element) {
+        if (element) {
             element.classList.remove('selected');
             element.removeAttribute('aria-selected');
             input.removeAttribute('aria-activedescendant');

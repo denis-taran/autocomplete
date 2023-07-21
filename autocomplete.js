@@ -279,7 +279,7 @@
             updateSelectedSuggestion(index);
         }
         function updateSelectedSuggestion(index) {
-            if (index > -1 && items.length > 0) {
+            if (items.length > 0) {
                 unselectSuggestion(index);
                 selectSuggestion(items.indexOf(selected));
                 updateScroll();
