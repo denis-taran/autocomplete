@@ -15,6 +15,17 @@ export declare const enum EventTrigger {
      */
     Manual = 3
 }
+/**
+ * Enum for controlling form submission when `ENTER` key is pressed in the autocomplete input field.
+ */
+export declare const enum PreventSubmit {
+    Never = 0,
+    Always = 1,
+    /**
+     * Form submission is prevented only when an item is selected from the autocomplete list.
+     */
+    OnSelect = 2
+}
 export interface AutocompleteItem {
     label?: string;
     group?: string;
@@ -91,9 +102,9 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
      */
     customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
     /**
-     * Prevents automatic form submit when ENTER is pressed
+     * Controls form submission when the ENTER key is pressed in a input field.
      */
-    preventSubmit?: boolean;
+    preventSubmit?: PreventSubmit;
     /**
      * Prevents the first item in the list from being selected automatically. This option allows you
      * to submit a custom text by pressing ENTER even when autocomplete is displayed.

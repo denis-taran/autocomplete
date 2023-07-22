@@ -17,6 +17,18 @@ export const enum EventTrigger {
     Manual = 3
 }
 
+/**
+ * Enum for controlling form submission when `ENTER` key is pressed in the autocomplete input field.
+ */
+export const enum PreventSubmit {
+    Never = 0,
+    Always = 1,
+    /**
+     * Form submission is prevented only when an item is selected from the autocomplete list.
+     */
+    OnSelect = 2
+}
+
 export interface AutocompleteItem {
     label?: string;
     group?: string;
@@ -108,9 +120,9 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
 
     /**
-     * Prevents automatic form submit when ENTER is pressed
+     * Controls form submission when the ENTER key is pressed in a input field.
      */
-    preventSubmit?: boolean;
+    preventSubmit?: PreventSubmit;
 
     /**
      * Prevents the first item in the list from being selected automatically. This option allows you
@@ -149,10 +161,11 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const doc = document;
 
     const container: HTMLDivElement = settings.container || doc.createElement('div');
+    const preventSubmit: PreventSubmit = settings.preventSubmit || PreventSubmit.Never;
+
     container.id = container.id || 'autocomplete-' + uid();
     const containerStyle = container.style;
     const debounceWaitMs = settings.debounceWaitMs || 0;
-    const preventSubmit = settings.preventSubmit || false;
     const disableAutoSelect = settings.disableAutoSelect || false;
     const customContainerParent = container.parentElement;
 
@@ -506,6 +519,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     function handleEnterKey(ev: KeyboardEvent) {
         if (selected) {
+            if (preventSubmit === PreventSubmit.OnSelect) {
+                ev.preventDefault();
+            }
             suppressAutocomplete = true;
             try {
                 settings.onSelect(selected, input);
@@ -515,7 +531,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             clear();
         }
 
-        if (preventSubmit) {
+        if (preventSubmit === PreventSubmit.Always) {
             ev.preventDefault();
         }
     }

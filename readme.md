@@ -116,7 +116,7 @@ You can pass the following options to `autocomplete`:
 |`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. If you pass `false` to the callback function, autocomplete will show previous suggestions and will not re-render.|`-`|
 |`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
 |`customize`|Callback for additional autocomplete customization after rendering is finished. Use this function if you want to change autocomplete default position.|`undefined`|
-|`preventSubmit`|Prevents automatic form submit when ENTER is pressed.|`false`|
+|`preventSubmit`|This option controls form submission when the ENTER key is pressed in a input field. Three settings are available: `Never`, `Always`, and `OnSelect`. Choose the appropriate setting to customize form submission behavior as per your needs.|`Never`|
 |`showOnFocus`|Displays suggestions on focus of the input element. Note that if `true`, the minLength property will be ignored and it will always call `fetch`.|`false`|
 |`disableAutoSelect`|Prevents the first item in the list from being selected automatically. This option allows you to submit a custom text by pressing `ENTER` even when autocomplete is displayed.|`false`|
 |`container`|Provide your own container for the widget. If not specified, a new DIV element will be created.|`undefined`|

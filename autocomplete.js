@@ -16,10 +16,10 @@
         // just an alias to minimize JS file size
         var doc = document;
         var container = settings.container || doc.createElement('div');
+        var preventSubmit = settings.preventSubmit || 0 /* Never */;
         container.id = container.id || 'autocomplete-' + uid();
         var containerStyle = container.style;
         var debounceWaitMs = settings.debounceWaitMs || 0;
-        var preventSubmit = settings.preventSubmit || false;
         var disableAutoSelect = settings.disableAutoSelect || false;
         var customContainerParent = container.parentElement;
         var items = [];
@@ -321,6 +321,9 @@
         }
         function handleEnterKey(ev) {
             if (selected) {
+                if (preventSubmit === 2 /* OnSelect */) {
+                    ev.preventDefault();
+                }
                 suppressAutocomplete = true;
                 try {
                     settings.onSelect(selected, input);
@@ -330,7 +333,7 @@
                 }
                 clear();
             }
-            if (preventSubmit) {
+            if (preventSubmit === 1 /* Always */) {
                 ev.preventDefault();
             }
         }

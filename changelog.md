@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.0.1] - 2023-07-22
+
+### Breaking Changes
+
+- Modified the `preventSubmit` option, which now accepts enum values for more granular control. Previously a boolean, it now accepts `Never` (form submission is not prevented), `Always` (form submission is always prevented), and `OnSelect` (form submission is only prevented when a value is selected in dropdown).
+
 ## [9.0.0] - 2023-07-21
 
 ### Added
