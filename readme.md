@@ -153,7 +153,7 @@ autocomplete({
     customize: function(input, inputRect, container, maxHeight) {
         ...
     },
-    preventSubmit: true,
+    preventSubmit: PreventSubmit.Always,
     disableAutoSelect: true,
     container: document.createElement('div'),
     click: e => e.fetch(),
