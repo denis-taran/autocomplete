@@ -12,11 +12,16 @@
      *
      * MIT License
      */
+    // Constants for blur event timeout in milliseconds
+    var IOS_BLUR_TIMEOUT = 800;
+    var DEFAULT_BLUR_TIMEOUT = 200;
     function autocomplete(settings) {
+        var _a, _b;
         // just an alias to minimize JS file size
         var doc = document;
         var container = settings.container || doc.createElement('div');
         var preventSubmit = settings.preventSubmit || 0 /* Never */;
+        var isIos = isMobileSafari();
         container.id = container.id || 'autocomplete-' + uid();
         var containerStyle = container.style;
         var debounceWaitMs = settings.debounceWaitMs || 0;
@@ -32,6 +37,8 @@
         var destroyed = false;
         // Fixes #104: autocomplete selection is broken on Firefox for Android
         var suppressAutocomplete = false;
+        var lastViewportHeight = ((_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.height) || 0;
+        var blurTimeoutId = null;
         if (settings.minLength !== undefined) {
             minLen = settings.minLength;
         }
@@ -86,6 +93,13 @@
          */
         function containerDisplayed() {
             return !!container.parentNode;
+        }
+        /**
+         * Detect if the user is using a mobile IOS device
+         */
+        function isMobileSafari() {
+            var platforms = ['iPhone', 'iPad', 'iPod'];
+            return platforms.indexOf(navigator.platform || '') !== -1;
         }
         /**
          * Clear autocomplete state and hide container
@@ -221,6 +235,21 @@
             if (containerDisplayed()) {
                 update();
             }
+        }
+        /**
+         * Prevents execution of the blur callback (which removes autocomplete suggestions) when the virtual keyboard closes on iOS
+         * Compares the current and last viewport heights, if the current height is greater and
+         * a blur timeout is set, it cancels the timeout
+         */
+        function iosBlurFix() {
+            var _a, _b;
+            if (!isIos)
+                return;
+            if ((((_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.height) || 0) > lastViewportHeight && blurTimeoutId) {
+                clearTimeout(blurTimeoutId);
+                blurTimeoutId = null;
+            }
+            lastViewportHeight = ((_b = window.visualViewport) === null || _b === void 0 ? void 0 : _b.height) || 0;
         }
         function resizeEventHandler() {
             updateIfDisplayed();
@@ -398,11 +427,12 @@
         function blurEventHandler() {
             // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
             // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
-            setTimeout(function () {
+            blurTimeoutId = setTimeout(function () {
                 if (doc.activeElement !== input) {
                     clear();
                 }
-            }, 200);
+                blurTimeoutId = null;
+            }, isIos ? IOS_BLUR_TIMEOUT : DEFAULT_BLUR_TIMEOUT);
         }
         function manualFetch() {
             startFetch(input.value, 3 /* Manual */, input.selectionStart || 0);
@@ -423,6 +453,7 @@
          * This function will remove DOM elements and clear event handlers
          */
         function destroy() {
+            var _a;
             input.removeEventListener('focus', focusEventHandler);
             input.removeEventListener('keyup', keyupEventHandler);
             input.removeEventListener('click', clickEventHandler);
@@ -430,6 +461,7 @@
             input.removeEventListener('input', inputEventHandler);
             input.removeEventListener('blur', blurEventHandler);
             window.removeEventListener('resize', resizeEventHandler);
+            (_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.removeEventListener('resize', iosBlurFix);
             doc.removeEventListener('scroll', scrollEventHandler, true);
             input.removeAttribute('role');
             input.removeAttribute('aria-expanded');
@@ -450,6 +482,7 @@
         input.addEventListener('blur', blurEventHandler);
         input.addEventListener('focus', focusEventHandler);
         window.addEventListener('resize', resizeEventHandler);
+        (_b = window.visualViewport) === null || _b === void 0 ? void 0 : _b.addEventListener('resize', iosBlurFix);
         doc.addEventListener('scroll', scrollEventHandler, true);
         return {
             destroy: destroy,

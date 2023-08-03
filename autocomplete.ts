@@ -155,6 +155,10 @@ export interface AutocompleteResult {
     fetch: () => void;
 }
 
+// Constants for blur event timeout in milliseconds
+const IOS_BLUR_TIMEOUT = 800;
+const DEFAULT_BLUR_TIMEOUT = 200;
+
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
 
     // just an alias to minimize JS file size
@@ -162,6 +166,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     const container: HTMLDivElement = settings.container || doc.createElement('div');
     const preventSubmit: PreventSubmit = settings.preventSubmit || PreventSubmit.Never;
+    const isIos = isMobileSafari();
 
     container.id = container.id || 'autocomplete-' + uid();
     const containerStyle = container.style;
@@ -180,6 +185,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     // Fixes #104: autocomplete selection is broken on Firefox for Android
     let suppressAutocomplete = false;
+
+    let lastViewportHeight = window.visualViewport?.height || 0;
+    let blurTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     if (settings.minLength !== undefined) {
         minLen = settings.minLength;
@@ -245,6 +253,14 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function containerDisplayed(): boolean {
         return !!container.parentNode;
+    }
+
+    /**
+     * Detect if the user is using a mobile IOS device
+     */
+    function isMobileSafari() {
+        var platforms = ['iPhone', 'iPad', 'iPod'];
+        return platforms.indexOf(navigator.platform || '') !== -1;
     }
 
     /**
@@ -402,6 +418,22 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         if (containerDisplayed()) {
             update();
         }
+    }
+
+    /**
+     * Prevents execution of the blur callback (which removes autocomplete suggestions) when the virtual keyboard closes on iOS
+     * Compares the current and last viewport heights, if the current height is greater and 
+     * a blur timeout is set, it cancels the timeout
+     */
+    function iosBlurFix() {
+        if (!isIos) return;
+
+        if ((window.visualViewport?.height || 0) > lastViewportHeight && blurTimeoutId) {
+            clearTimeout(blurTimeoutId);
+            blurTimeoutId = null;
+        }
+
+        lastViewportHeight = window.visualViewport?.height || 0;
     }
 
     function resizeEventHandler() {
@@ -607,11 +639,12 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     function blurEventHandler() {
         // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
         // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
-        setTimeout(() => {
+        blurTimeoutId = setTimeout(() => {
             if (doc.activeElement !== input) {
                 clear();
             }
-        }, 200);
+            blurTimeoutId = null;
+        }, isIos ? IOS_BLUR_TIMEOUT : DEFAULT_BLUR_TIMEOUT);
     }
 
     function manualFetch() {
@@ -643,6 +676,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeEventListener('input', inputEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener('blur', blurEventHandler);
         window.removeEventListener('resize', resizeEventHandler);
+        window.visualViewport?.removeEventListener('resize', iosBlurFix)
         doc.removeEventListener('scroll', scrollEventHandler, true);
         input.removeAttribute('role');
         input.removeAttribute('aria-expanded');
@@ -664,6 +698,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     input.addEventListener('blur', blurEventHandler);
     input.addEventListener('focus', focusEventHandler);
     window.addEventListener('resize', resizeEventHandler);
+    window.visualViewport?.addEventListener('resize', iosBlurFix)
     doc.addEventListener('scroll', scrollEventHandler, true);
 
     return {
