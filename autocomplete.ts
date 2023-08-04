@@ -156,7 +156,7 @@ export interface AutocompleteResult {
 }
 
 // Constants for blur event timeout in milliseconds
-const IOS_BLUR_TIMEOUT = 800;
+const IOS_BLUR_FIX_TIMEOUT = 800;
 const DEFAULT_BLUR_TIMEOUT = 200;
 
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
@@ -636,7 +636,13 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         });
     }
 
-    function blurEventHandler() {
+    function blurEventHandler(e: FocusEvent) {
+        const delay = isIos
+            ? e.relatedTarget === doc.body || e.relatedTarget === null
+                ? IOS_BLUR_FIX_TIMEOUT
+                : DEFAULT_BLUR_TIMEOUT
+            : DEFAULT_BLUR_TIMEOUT;
+
         // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
         // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
         blurTimeoutId = setTimeout(() => {
@@ -644,7 +650,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
                 clear();
             }
             blurTimeoutId = null;
-        }, isIos ? IOS_BLUR_TIMEOUT : DEFAULT_BLUR_TIMEOUT);
+        }, delay);
     }
 
     function manualFetch() {
@@ -674,7 +680,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
         input.removeEventListener('click', clickEventHandler as EventListenerOrEventListenerObject)
         input.removeEventListener('keydown', keydownEventHandler as EventListenerOrEventListenerObject);
         input.removeEventListener('input', inputEventHandler as EventListenerOrEventListenerObject);
-        input.removeEventListener('blur', blurEventHandler);
+        input.removeEventListener('blur', blurEventHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('resize', resizeEventHandler);
         window.visualViewport?.removeEventListener('resize', iosBlurFix)
         doc.removeEventListener('scroll', scrollEventHandler, true);
@@ -695,7 +701,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     input.addEventListener('click', clickEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener('keydown', keydownEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener('input', inputEventHandler as EventListenerOrEventListenerObject);
-    input.addEventListener('blur', blurEventHandler);
+    input.addEventListener('blur', blurEventHandler as EventListenerOrEventListenerObject);
     input.addEventListener('focus', focusEventHandler);
     window.addEventListener('resize', resizeEventHandler);
     window.visualViewport?.addEventListener('resize', iosBlurFix)

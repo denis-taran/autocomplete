@@ -13,7 +13,7 @@
      * MIT License
      */
     // Constants for blur event timeout in milliseconds
-    var IOS_BLUR_TIMEOUT = 800;
+    var IOS_BLUR_FIX_TIMEOUT = 800;
     var DEFAULT_BLUR_TIMEOUT = 200;
     function autocomplete(settings) {
         var _a, _b;
@@ -424,7 +424,12 @@
                 fetch: function () { return fetch(2 /* Mouse */); }
             });
         }
-        function blurEventHandler() {
+        function blurEventHandler(e) {
+            var delay = isIos
+                ? e.relatedTarget === doc.body || e.relatedTarget === null
+                    ? IOS_BLUR_FIX_TIMEOUT
+                    : DEFAULT_BLUR_TIMEOUT
+                : DEFAULT_BLUR_TIMEOUT;
             // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
             // so that the click event will never be triggered. In order to avoid this issue, DOM removal should be delayed.
             blurTimeoutId = setTimeout(function () {
@@ -432,7 +437,7 @@
                     clear();
                 }
                 blurTimeoutId = null;
-            }, isIos ? IOS_BLUR_TIMEOUT : DEFAULT_BLUR_TIMEOUT);
+            }, delay);
         }
         function manualFetch() {
             startFetch(input.value, 3 /* Manual */, input.selectionStart || 0);
