@@ -422,8 +422,6 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     /**
      * Prevents execution of the blur callback (which removes autocomplete suggestions) when the virtual keyboard closes on iOS
-     * Compares the current and last viewport heights, if the current height is greater and 
-     * a blur timeout is set, it cancels the timeout
      */
     function iosBlurFix() {
         if (!isIos) return;
@@ -637,10 +635,8 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     }
 
     function blurEventHandler(e: FocusEvent) {
-        const delay = isIos
-            ? e.relatedTarget === doc.body || e.relatedTarget === null
-                ? IOS_BLUR_FIX_TIMEOUT
-                : DEFAULT_BLUR_TIMEOUT
+        const delay = isIos && (e.relatedTarget === doc.body || e.relatedTarget === null)
+            ? IOS_BLUR_FIX_TIMEOUT
             : DEFAULT_BLUR_TIMEOUT;
 
         // when an item is selected by mouse click, the blur event will be initiated before the click event and remove DOM elements,
