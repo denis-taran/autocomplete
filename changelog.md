@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.0] - 2023-08-23
+
+### Fixed
+
+- Detach custom autocomplete container during plugin initialization if it was already appended to the DOM (issue #103).
+
 ## [9.0.0] - 2023-07-22
 
 ### Added

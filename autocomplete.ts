@@ -632,6 +632,9 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     container.addEventListener('focus', () => input.focus());
 
+    // If the custom autocomplete container is already appended to the DOM during widget initialization, detach it.
+    detach();
+
     /**
      * This function will remove DOM elements and clear event handlers
      */

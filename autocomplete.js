@@ -419,6 +419,8 @@
          * See: https://stackoverflow.com/a/9210267/13172349
          */
         container.addEventListener('focus', function () { return input.focus(); });
+        // If the custom autocomplete container is already appended to the DOM during widget initialization, detach it.
+        detach();
         /**
          * This function will remove DOM elements and clear event handlers
          */
