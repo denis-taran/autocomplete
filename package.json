@@ -3,6 +3,7 @@
     "version": "9.1.0",
     "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
     "main": "autocomplete.js",
+    "style": "autocomplete.css",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:js": "rollup -c",
