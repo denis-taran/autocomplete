@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.1] - 2023-10-17
+
+- Allows postcss-import to know which default file to use (#109)
+
 ## [9.1.0] - 2023-08-23
 
 ### Fixed
