@@ -134,12 +134,12 @@ autocomplete({
     minLength: 2,
     emptyMsg: 'No elements found',
     render: function(item, currentValue) {
-        var div = doc.createElement('div');
+        var div = document.createElement('div');
         div.textContent = item.label;
         return div;
     },
     renderGroup: function(groupName, currentValue) {
-        var div = doc.createElement('div');
+        var div = document.createElement('div');
         div.textContent = groupName;
         return div;
     },
