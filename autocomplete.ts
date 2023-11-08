@@ -319,7 +319,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
      */
     function update() {
 
-        container.innerHTML = '';
+        container.textContent = '';
         input.setAttribute('aria-activedescendant', '');
 
         // function for rendering autocomplete suggestions
