@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.2] - 2023-11-08
+
+### Fixed
+
+- Use textContent for CSP compliance (#111)
+
 ## [9.1.1] - 2023-10-17
+
+### Fixed
 
 - Allows postcss-import to know which default file to use (#109)
 
