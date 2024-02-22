@@ -11,9 +11,29 @@ export default {
             format: 'umd',
             sourcemap: true,
             name: 'autocomplete'
-        }, {
+        },
+        {
             file: pkg.main.replace('.js', '.min.js'),
             format: 'umd',
+            sourcemap: true,
+            name: 'autocomplete',
+            plugins: [
+                terser({
+                    compress: true,
+                    mangle: true,
+                    format: {
+                        comments: /Copyright/ig
+                    }
+                })
+            ]
+        }, {
+            file: pkg.module,
+            format: 'es',
+            sourcemap: true,
+            name: 'autocomplete'
+        }, {
+            file: pkg.module.replace('.js', '.min.js'),
+            format: 'es',
             sourcemap: true,
             name: 'autocomplete',
             plugins: [

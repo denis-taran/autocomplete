@@ -3,7 +3,18 @@
     "version": "9.1.2",
     "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
     "main": "autocomplete.js",
+    "module": "autocomplete.es.js",
     "style": "autocomplete.css",
+    "types": "./autocomplete.d.ts",
+    "exports": {
+        ".": {
+            "types": "./autocomplete.d.ts",
+            "node": "./autocomplete.js",
+            "require": "./autocomplete.js",
+            "default": "./autocomplete.es.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:js": "rollup -c",
@@ -29,7 +40,6 @@
     "bugs": {
         "url": "https://github.com/kraaden/autocomplete/issues"
     },
-    "types": "./autocomplete.d.ts",
     "keywords": [
         "ajax",
         "auto-complete",
