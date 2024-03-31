@@ -10,8 +10,8 @@
         ".": {
             "types": "./autocomplete.d.ts",
             "node": "./autocomplete.js",
-            "require": "./autocomplete.js",
-            "default": "./autocomplete.es.js"
+            "import": "./autocomplete.es.js",
+            "require": "./autocomplete.js"
         },
         "./package.json": "./package.json"
     },
