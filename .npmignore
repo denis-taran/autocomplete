@@ -1,5 +1,6 @@
 *.tgz
 .git
+.github
 .rpt2_cache
 .vs
 bower.json
