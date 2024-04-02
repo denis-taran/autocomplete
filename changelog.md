@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.0] - 2024-04-02
+
+### Added
+
+- Provide ESM builds so that modern bundlers and frameworks can take advantage and use the package as ESM instead of CommonJS or UMD.
+
 ## [9.1.2] - 2023-11-08
 
 ### Fixed
@@ -24,7 +30,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Improved performance during keyboard navigation (up/down keys) in the autocomplete dropdown. Instead of re-rendering suggestions, the widget now only updates the relevant element attributes. 
+- Improved performance during keyboard navigation (up/down keys) in the autocomplete dropdown. Instead of re-rendering suggestions, the widget now only updates the relevant element attributes.
 
 ### Breaking Changes
 
