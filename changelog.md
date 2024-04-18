@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.1] - 2024-04-19
+
+### Added
+
+- Export `autocomplete.css` in `package.json` (#113)
+
 ## [9.2.0] - 2024-04-02
 
 ### Added

@@ -1,6 +1,6 @@
 {
     "name": "autocompleter",
-    "version": "9.2.0",
+    "version": "9.2.1",
     "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
     "main": "autocomplete.js",
     "module": "autocomplete.es.js",
@@ -13,7 +13,8 @@
             "import": "./autocomplete.es.js",
             "require": "./autocomplete.js"
         },
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./autocomplete.css": "./autocomplete.css"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
