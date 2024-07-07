@@ -5,7 +5,7 @@
 }(this, (function () { 'use strict';
 
     /**
-     * Copyright (c) 2016 Denys Krasnoshchok
+     * Copyright (c) 2016 Denis Taran
      *
      * Homepage: https://smartscheduling.com/en/documentation/autocomplete
      * Source: https://github.com/kraaden/autocomplete

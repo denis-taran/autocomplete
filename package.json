@@ -22,7 +22,7 @@
         "build:css": "node ./node_modules/clean-css-cli/bin/cleancss ./autocomplete.css -o ./autocomplete.min.css",
         "build": "npm run build:js && npm run build:css"
     },
-    "author": "Denys Krasnoshchok",
+    "author": "Denis Taran",
     "license": "MIT",
     "devDependencies": {
         "clean-css-cli": "4.3.0",
