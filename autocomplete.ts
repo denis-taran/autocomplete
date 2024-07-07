@@ -191,7 +191,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
     const input: HTMLInputElement | HTMLTextAreaElement = settings.input;
 
-    container.className = 'autocomplete ' + (settings.className || '');
+    container.className = [container.className, 'autocomplete', settings.className || ''].join(' ').trim();
     container.setAttribute('role', 'listbox');
 
     input.setAttribute('role', 'combobox');

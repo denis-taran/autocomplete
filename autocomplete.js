@@ -39,7 +39,7 @@
             throw new Error('input undefined');
         }
         var input = settings.input;
-        container.className = 'autocomplete ' + (settings.className || '');
+        container.className = [container.className, 'autocomplete', settings.className || ''].join(' ').trim();
         container.setAttribute('role', 'listbox');
         input.setAttribute('role', 'combobox');
         input.setAttribute('aria-expanded', 'false');

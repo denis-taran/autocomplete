@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.3.0] - 2024-07-07
+
+### Fixed
+
+- Fixed an issue where the autocomplete widget removes classes from a container (#116).
+
 ## [9.2.1] - 2024-04-19
 
 ### Added
