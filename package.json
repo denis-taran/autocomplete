@@ -36,10 +36,10 @@
     "homepage": "https://smartscheduling.com/en/documentation/autocomplete",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/kraaden/autocomplete.git"
+        "url": "git+https://github.com/denis-taran/autocomplete.git"
     },
     "bugs": {
-        "url": "https://github.com/kraaden/autocomplete/issues"
+        "url": "https://github.com/denis-taran/autocomplete/issues"
     },
     "keywords": [
         "ajax",
