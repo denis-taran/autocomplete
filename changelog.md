@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.3.2] - 2024-08-08
+
+- Updated some links in the documentation. No functionality was changed.
+
 ## [9.3.0] - 2024-07-07
 
 ### Fixed

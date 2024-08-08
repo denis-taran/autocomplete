@@ -1,4 +1,3 @@
-
 Blazing fast and lightweight autocomplete widget without dependencies. Only 1KB gzipped.
 
 Demo: https://smartscheduling.com/en/documentation/autocomplete
@@ -16,43 +15,45 @@ npm install autocompleter
 Then import it into your javascript code:
 
 ```javascript
-import autocomplete from 'autocompleter';
+import autocomplete from "autocompleter";
 // or
-var autocomplete = require('autocompleter');
+var autocomplete = require("autocompleter");
 ```
 
 ## Getting Started
 
 ```javascript
 var countries = [
-    { label: 'United Kingdom', value: 'UK' },
-    { label: 'United States', value: 'US' }
+  { label: "United Kingdom", value: "UK" },
+  { label: "United States", value: "US" },
 ];
 
-var input = document.getElementById('country');
+var input = document.getElementById("country");
 
 autocomplete({
-    input: input,
-    fetch: function(text, update) {
-        text = text.toLowerCase();
-        // you can also use AJAX requests instead of preloaded data
-        var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
-        update(suggestions);
-    },
-    onSelect: function(item) {
-        input.value = item.label;
-    }
+  input: input,
+  fetch: function (text, update) {
+    text = text.toLowerCase();
+    // you can also use AJAX requests instead of preloaded data
+    var suggestions = countries.filter((n) =>
+      n.label.toLowerCase().startsWith(text)
+    );
+    update(suggestions);
+  },
+  onSelect: function (item) {
+    input.value = item.label;
+  },
 });
 ```
 
-[Try online](https://jsbin.com/gocayupedo/edit?html,js,output)
+[Try online](https://jsbin.com/tuvijarero/edit?html,js,output)
 
 ## Use with Typescript and Webpack
 
 Simply import the autocompleter in your typescript file:
 
 ```javascript
-    import autocomplete from 'autocompleter';
+import autocomplete from "autocompleter";
 ```
 
 and call the `autocomplete` function as showed below:
@@ -104,24 +105,24 @@ If your interface doesn't have a `label` property, you also have to provide a cu
 
 You can pass the following options to `autocomplete`:
 
-| Parameter | Description | Default |
-| --------- | ----------- | ------- |
-|`onSelect`|This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.|`-`|
-|`input`|DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.|`-`|
-|`minLength`|Specify the minimum length, when autocomplete should appear on the screen.|`2`|
-|`emptyMsg`|The message that will be showed when there are no suggestions that match the entered value.|`undefined`|
-|`render`|This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. The current input field value will be passed as second parameter. This function must return a DIV element or `undefined` to skip rendering.|`undefined`|
-|`renderGroup`|The same as `render`, but will be called for each group. The first parameter of the function will be the group name. The current input field value will be passed as second parameter. This function must return a `DIV` element or `undefined` to skip rendering.|`undefined`|
-|`className`|The autocomplete container will have this class name if specified.|`undefined`|
-|`fetch`|This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. If you pass `false` to the callback function, autocomplete will show previous suggestions and will not re-render.|`-`|
-|`debounceWaitMs`|Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.|`0`|
-|`customize`|Callback for additional autocomplete customization after rendering is finished. Use this function if you want to change autocomplete default position.|`undefined`|
-|`preventSubmit`|This option controls form submission when the ENTER key is pressed in a input field. Three settings are available: `Never`, `Always`, and `OnSelect`. Choose the appropriate setting to customize form submission behavior as per your needs.|`Never`|
-|`showOnFocus`|Displays suggestions on focus of the input element. Note that if `true`, the minLength property will be ignored and it will always call `fetch`.|`false`|
-|`disableAutoSelect`|Prevents the first item in the list from being selected automatically. This option allows you to submit a custom text by pressing `ENTER` even when autocomplete is displayed.|`false`|
-|`container`|Provide your own container for the widget. If not specified, a new DIV element will be created.|`undefined`|
-|`click`|Allows to display autocomplete on mouse clicks or perform some additional actions.|`undefined`|
-|`keyup`|Allows to display autocomplete when a key is pressed that doesn't modify the content.|see code|
+| Parameter           | Description                                                                                                                                                                                                                                                                                                                                                                            | Default     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `onSelect`          | This method will be called when user choose an item in autocomplete. The selected item will be passed as first parameter.                                                                                                                                                                                                                                                              | `-`         |
+| `input`             | DOM input element must be passed with this parameter and autocomplete will attach itself to this field. Selectors are not supported, but you can just use `document.querySelector('...')` to find the required element.                                                                                                                                                                | `-`         |
+| `minLength`         | Specify the minimum length, when autocomplete should appear on the screen.                                                                                                                                                                                                                                                                                                             | `2`         |
+| `emptyMsg`          | The message that will be showed when there are no suggestions that match the entered value.                                                                                                                                                                                                                                                                                            | `undefined` |
+| `render`            | This method allows you to override the rendering function. It will be called for each suggestion and the suggestion object will be passed as first parameter. The current input field value will be passed as second parameter. This function must return a DIV element or `undefined` to skip rendering.                                                                              | `undefined` |
+| `renderGroup`       | The same as `render`, but will be called for each group. The first parameter of the function will be the group name. The current input field value will be passed as second parameter. This function must return a `DIV` element or `undefined` to skip rendering.                                                                                                                     | `undefined` |
+| `className`         | The autocomplete container will have this class name if specified.                                                                                                                                                                                                                                                                                                                     | `undefined` |
+| `fetch`             | This method will be called to prepare suggestions and then pass them to autocomplete. The first parameter is the text in the input field. The second parameter is a callback function that must be called after suggestions are prepared with an array as parameter. If you pass `false` to the callback function, autocomplete will show previous suggestions and will not re-render. | `-`         |
+| `debounceWaitMs`    | Enforces that the `fetch` function will only be called once within the specified time frame (in milliseconds) and delays execution. This prevents flooding your server with AJAX requests.                                                                                                                                                                                             | `0`         |
+| `customize`         | Callback for additional autocomplete customization after rendering is finished. Use this function if you want to change autocomplete default position.                                                                                                                                                                                                                                 | `undefined` |
+| `preventSubmit`     | This option controls form submission when the ENTER key is pressed in a input field. Three settings are available: `Never`, `Always`, and `OnSelect`. Choose the appropriate setting to customize form submission behavior as per your needs.                                                                                                                                          | `Never`     |
+| `showOnFocus`       | Displays suggestions on focus of the input element. Note that if `true`, the minLength property will be ignored and it will always call `fetch`.                                                                                                                                                                                                                                       | `false`     |
+| `disableAutoSelect` | Prevents the first item in the list from being selected automatically. This option allows you to submit a custom text by pressing `ENTER` even when autocomplete is displayed.                                                                                                                                                                                                         | `false`     |
+| `container`         | Provide your own container for the widget. If not specified, a new DIV element will be created.                                                                                                                                                                                                                                                                                        | `undefined` |
+| `click`             | Allows to display autocomplete on mouse clicks or perform some additional actions.                                                                                                                                                                                                                                                                                                     | `undefined` |
+| `keyup`             | Allows to display autocomplete when a key is pressed that doesn't modify the content.                                                                                                                                                                                                                                                                                                  | see code    |
 
 ### Sample config using all options
 
@@ -181,17 +182,25 @@ autocomplete({
 If you don't want to pass this function every time, you can also use spread operator to create your own autocomplete version with default implementation:
 
 ```typescript
-export default function autocompleteCustomized<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult {
-    return autocomplete({
-        ...settings,
-        customize: (input: HTMLInputElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number): void => {
-            if (maxHeight < 100) {
-                container.style.top = '';
-                container.style.bottom = (window.innerHeight - inputRect.bottom + input.offsetHeight) + 'px';
-                container.style.maxHeight = '200px';
-            }
-        }
-    });
+export default function autocompleteCustomized<T extends AutocompleteItem>(
+  settings: AutocompleteSettings<T>
+): AutocompleteResult {
+  return autocomplete({
+    ...settings,
+    customize: (
+      input: HTMLInputElement,
+      inputRect: ClientRect | DOMRect,
+      container: HTMLDivElement,
+      maxHeight: number
+    ): void => {
+      if (maxHeight < 100) {
+        container.style.top = "";
+        container.style.bottom =
+          window.innerHeight - inputRect.bottom + input.offsetHeight + "px";
+        container.style.maxHeight = "200px";
+      }
+    },
+  });
 }
 ```
 
@@ -200,7 +209,9 @@ export default function autocompleteCustomized<T extends AutocompleteItem>(setti
 You can call `destroy` method on the returned object in order to remove event handlers and DOM elements after usage:
 
 ```javascript
-var autocompl = autocomplete({ /* options */ });
+var autocompl = autocomplete({
+  /* options */
+});
 autocompl.destroy();
 ```
 
@@ -210,26 +221,28 @@ You can display suggestions separated into one or multiple groups/categories:
 
 ```javascript
 var countries = [
-    { label: 'Canada', value: 'CA', group: 'North America' },
-    { label: 'United States', value: 'US', group: 'North America' },
-    { label: 'Uzbekistan', value: 'UZ', group: 'Asia' },
+  { label: "Canada", value: "CA", group: "North America" },
+  { label: "United States", value: "US", group: "North America" },
+  { label: "Uzbekistan", value: "UZ", group: "Asia" },
 ];
 
 autocomplete({
-    minLength: 1,
-    input: document.getElementById('country'),
-    fetch: function(text, update) {
-        text = text.toLowerCase();
-        var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
-        update(suggestions);
-    },
-    onSelect: function(item) {
-        alert(item.value);
-    }
+  minLength: 1,
+  input: document.getElementById("country"),
+  fetch: function (text, update) {
+    text = text.toLowerCase();
+    var suggestions = countries.filter((n) =>
+      n.label.toLowerCase().startsWith(text)
+    );
+    update(suggestions);
+  },
+  onSelect: function (item) {
+    alert(item.value);
+  },
 });
 ```
 
-[Try online](http://jsbin.com/sodicopeya/1/edit?html,js,output)
+[Try online](https://jsbin.com/yekozasoza/edit?html,js,output)
 
 Note: Please make sure that all items are sorted by the group property.
 
@@ -255,7 +268,7 @@ autocomplete({
 });
 ```
 
-[Try online](https://jsbin.com/cuyamokeki/edit?html,js,output)
+[Try online](https://jsbin.com/fololajava/edit?html,js,output)
 
 ## License
 
