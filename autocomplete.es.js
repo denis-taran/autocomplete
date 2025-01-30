@@ -449,7 +449,11 @@ function autocomplete(settings) {
     doc.addEventListener('scroll', scrollEventHandler, true);
     return {
         destroy: destroy,
-        fetch: manualFetch
+        fetch: manualFetch,
+        hide: clear,
+        updatePosition: updatePosition,
+        redraw: update,
+        redrawIfDisplayed: updateIfDisplayed
     };
 }
 

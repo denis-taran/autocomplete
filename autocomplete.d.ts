@@ -130,5 +130,21 @@ export interface AutocompleteResult {
      * in certain situations.
      */
     fetch: () => void;
+    /**
+     * Clear autocomplete state and hide container
+     */
+    hide: () => void;
+    /**
+     * Update autocomplete position
+     */
+    updatePosition: () => void;
+    /**
+     * Redraw the autocomplete div element with suggestions
+     */
+    redraw: () => void;
+    /**
+     * Redraw the autocomplete div element with suggestions if the element is currently being displayed
+     */
+    redrawIfDisplayed: () => void;
 }
 export default function autocomplete<T extends AutocompleteItem>(settings: AutocompleteSettings<T>): AutocompleteResult;

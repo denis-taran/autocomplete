@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.3.3] - 2025-01-29
+
+- Exposed more methods in `AutocompleteResult` object
+
 ## [9.3.2] - 2024-08-08
 
 - Updated some links in the documentation. No functionality was changed.
