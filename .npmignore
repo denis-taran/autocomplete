@@ -6,11 +6,14 @@
 bower.json
 changelog.md
 debug.log
+autocomplete.compat.mjs
+eslint.config.mjs
 favicon.ico
 index.html
 node_modules
 npm-debug.log
 readme.md
 rollup.config.js
+rollup.config.mjs
 tsconfig.json
 tslint.json

@@ -487,4 +487,4 @@ function autocomplete(settings) {
 }
 
 export { EventTrigger, PreventSubmit, autocomplete as default };
-//# sourceMappingURL=autocomplete.es.js.map
+//# sourceMappingURL=autocomplete.mjs.map

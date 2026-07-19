@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Copyright (c) 2016 Denis Taran
  *
@@ -486,5 +488,8 @@ function autocomplete(settings) {
     };
 }
 
-export { EventTrigger, PreventSubmit, autocomplete as default };
-//# sourceMappingURL=autocomplete.es.js.map
+autocomplete.EventTrigger = EventTrigger;
+autocomplete.PreventSubmit = PreventSubmit;
+
+module.exports = autocomplete;
+//# sourceMappingURL=autocomplete.cjs.map

@@ -6,26 +6,28 @@
  *
  * MIT License
  */
-export declare const enum EventTrigger {
-    Keyboard = 0,
-    Focus = 1,
-    Mouse = 2,
+export declare const EventTrigger: {
+    readonly Keyboard: 0;
+    readonly Focus: 1;
+    readonly Mouse: 2;
     /**
      * Fetch is triggered manually by calling `fetch` function returned in `AutocompleteResult`
      */
-    Manual = 3
-}
+    readonly Manual: 3;
+};
+export type EventTrigger = (typeof EventTrigger)[keyof typeof EventTrigger];
 /**
  * Enum for controlling form submission when `ENTER` key is pressed in the autocomplete input field.
  */
-export declare const enum PreventSubmit {
-    Never = 0,
-    Always = 1,
+export declare const PreventSubmit: {
+    readonly Never: 0;
+    readonly Always: 1;
     /**
      * Form submission is prevented only when an item is selected from the autocomplete list.
      */
-    OnSelect = 2
-}
+    readonly OnSelect: 2;
+};
+export type PreventSubmit = (typeof PreventSubmit)[keyof typeof PreventSubmit];
 export interface AutocompleteItem {
     label?: string;
     group?: string;
@@ -96,11 +98,11 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     /**
      * Callback for additional autocomplete customization
      * @param {HTMLInputElement | HTMLTextAreaElement} input - input box associated with autocomplete
-     * @param {ClientRect | DOMRect} inputRect - size of the input box and its position relative to the viewport
+     * @param {DOMRect} inputRect - size of the input box and its position relative to the viewport
      * @param {HTMLDivElement} container - container with suggestions
      * @param {number} maxHeight - max height that can be used by autocomplete
      */
-    customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: ClientRect | DOMRect, container: HTMLDivElement, maxHeight: number) => void;
+    customize?: (input: HTMLInputElement | HTMLTextAreaElement, inputRect: DOMRect, container: HTMLDivElement, maxHeight: number) => void;
     /**
      * Controls form submission when the ENTER key is pressed in a input field.
      */

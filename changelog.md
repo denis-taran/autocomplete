@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [10.0.0] - 2026-07-19
+
+### Breaking Changes
+
+- JavaScript builds now target ES2015. ES5 is no longer supported.
+- ESM and CommonJS builds now use `.mjs` and `.cjs` extensions.
+
+### Added
+
+- Export `EventTrigger` and `PreventSubmit` at runtime (#123).
+
+### Changed
+
+- Updated Rollup and TypeScript.
+- Replaced TSLint with ESLint.
+- Replaced the deprecated Rollup terser plugin.
+- Replaced `ClientRect` with `DOMRect` in the `customize` callback.
+
+### Fixed
+
+- Cancel pending debounced fetches when autocomplete is cleared or destroyed.
+- Use the correct build for ESM imports and CommonJS `require`.
+
 ## [9.3.2] - 2024-08-08
 
 - Updated some links in the documentation. No functionality was changed.

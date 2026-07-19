@@ -76,7 +76,7 @@ autocomplete<MyInterface>({
 If your custom interface lacks the `label` property, TypeScript may produce a compilation error. To avoid this, use an additional type:
 
 ```javascript
-import autocomplete, { AutocompleteItem } from 'autocompleter';
+import autocomplete, { AutocompleteItem, PreventSubmit } from 'autocompleter';
 
 // this type will prevent typescript warnings
 type MyItem = Item & AutocompleteItem;
@@ -189,7 +189,7 @@ export default function autocompleteCustomized<T extends AutocompleteItem>(
     ...settings,
     customize: (
       input: HTMLInputElement,
-      inputRect: ClientRect | DOMRect,
+      inputRect: DOMRect,
       container: HTMLDivElement,
       maxHeight: number
     ): void => {
