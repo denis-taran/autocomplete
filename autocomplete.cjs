@@ -485,6 +485,8 @@ function autocomplete(settings) {
     return {
         destroy,
         fetch: manualFetch,
+        hide: clear,
+        updatePosition,
     };
 }
 

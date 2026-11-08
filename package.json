@@ -1,6 +1,6 @@
 {
     "name": "autocompleter",
-    "version": "10.0.0",
+    "version": "10.1.0",
     "type": "module",
     "description": "Blazing fast and lightweight autocomplete library without dependencies. 1KB gzipped.",
     "main": "autocomplete.cjs",

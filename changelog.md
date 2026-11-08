@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [10.1.0] - 2026-11-08
+
+### Added
+
+- `hide` and `updatePosition` functions on the object returned by `autocomplete()` (#121, thanks @rajniszp).
+
 ## [10.0.0] - 2026-07-19
 
 ### Breaking Changes

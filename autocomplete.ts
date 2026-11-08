@@ -174,6 +174,16 @@ export interface AutocompleteResult {
    * in certain situations.
    */
   fetch: () => void;
+
+  /**
+   * Clear autocomplete state and hide the container. Pending fetches will be cancelled.
+   */
+  hide: () => void;
+
+  /**
+   * Recalculate the container position. This will do nothing if the container is not displayed.
+   */
+  updatePosition: () => void;
 }
 
 export default function autocomplete<T extends AutocompleteItem>(
@@ -755,5 +765,7 @@ export default function autocomplete<T extends AutocompleteItem>(
   return {
     destroy,
     fetch: manualFetch,
+    hide: clear,
+    updatePosition,
   };
 }

@@ -36,7 +36,7 @@ autocomplete({
     text = text.toLowerCase();
     // you can also use AJAX requests instead of preloaded data
     var suggestions = countries.filter((n) =>
-      n.label.toLowerCase().startsWith(text)
+      n.label.toLowerCase().startsWith(text),
     );
     update(suggestions);
   },
@@ -183,7 +183,7 @@ If you don't want to pass this function every time, you can also use spread oper
 
 ```typescript
 export default function autocompleteCustomized<T extends AutocompleteItem>(
-  settings: AutocompleteSettings<T>
+  settings: AutocompleteSettings<T>,
 ): AutocompleteResult {
   return autocomplete({
     ...settings,
@@ -191,7 +191,7 @@ export default function autocompleteCustomized<T extends AutocompleteItem>(
       input: HTMLInputElement,
       inputRect: DOMRect,
       container: HTMLDivElement,
-      maxHeight: number
+      maxHeight: number,
     ): void => {
       if (maxHeight < 100) {
         container.style.top = "";
@@ -215,6 +215,18 @@ var autocompl = autocomplete({
 autocompl.destroy();
 ```
 
+### Control the dropdown from outside code
+
+The returned object also has functions to hide the dropdown or update its position.
+
+```javascript
+var autocompl = autocomplete({
+  /* ... */
+});
+autocompl.hide();
+autocompl.updatePosition();
+```
+
 ## Grouping suggestions
 
 You can display suggestions separated into one or multiple groups/categories:
@@ -232,7 +244,7 @@ autocomplete({
   fetch: function (text, update) {
     text = text.toLowerCase();
     var suggestions = countries.filter((n) =>
-      n.label.toLowerCase().startsWith(text)
+      n.label.toLowerCase().startsWith(text),
     );
     update(suggestions);
   },
